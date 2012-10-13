@@ -96,7 +96,7 @@ d3.tsv("data.tsv", function(error, data) {
       .style("stroke", function(d) { return color(d.name); });
 
   var label = g.append("g")
-      .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; )
+      .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
       .attr("class", "label")
       .attr("transform", function(d) { return "translate(" + (x(d.value.date) + 6) + "," + y(d.value.temperature) + ")"; })
       .style("fill", function(d) { return color(d.name); });
