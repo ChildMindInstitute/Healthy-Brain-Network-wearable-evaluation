@@ -36,7 +36,8 @@ var margin = {top: 20, right: 80, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
-var parseDate = d3.time.format("%Y%m%d").parse;
+var parseDate = d3.time.format("%Y%m%d").parse,
+    formatDegrees = function(d) { return d + "º"; };
 
 var x = d3.time.scale()
     .range([0, width]);
@@ -52,7 +53,8 @@ var xAxis = d3.svg.axis()
 
 var yAxis = d3.svg.axis()
     .scale(y)
-    .orient("left");
+    .orient("left")
+    .tickFormat(formatDegrees);
 
 var line = d3.svg.line()
     .interpolate("step-after")
