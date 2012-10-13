@@ -70,7 +70,7 @@ d3.tsv("data.tsv", function(error, data) {
     return {
       name: name,
       values: data.map(function(d) {
-        return {date: d.date, temperature: +d[location]};
+        return {date: d.date, temperature: +d[name]};
       })
     };
   });
