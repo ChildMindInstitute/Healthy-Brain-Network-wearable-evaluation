@@ -78,8 +78,8 @@ d3.tsv("data.tsv", function(error, data) {
   x.domain(d3.extent(data, function(d) { return d.date; }));
 
   y.domain([
-    d3.min(locations, function(l) { return d3.min(l.values, function(v) { return v.temperature; }),
-    d3.max(locations, function(l) { return d3.max(l.values, function(v) { return v.temperature; })
+    d3.min(locations, function(l) { return d3.min(l.values, function(v) { return v.temperature; }); }),
+    d3.max(locations, function(l) { return d3.max(l.values, function(v) { return v.temperature; }); })
   ]);
 
   var g = svg.selectAll(".line")
