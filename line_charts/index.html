@@ -57,7 +57,7 @@ var yAxis = d3.svg.axis()
     .tickFormat(formatDegrees);
 
 var line = d3.svg.line()
-    .interpolate("step-after")
+    .interpolate("basis")
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.temperature); });
 
