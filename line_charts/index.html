@@ -32,7 +32,7 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
-var parseDate = d3.time.format("%d-%b-%y").parse;
+var parseDate = d3.time.format("%Y%m%d").parse;
 
 var x = d3.time.scale()
     .range([0, width]);
@@ -50,7 +50,7 @@ var yAxis = d3.svg.axis()
 
 var line = d3.svg.line()
     .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.close); });
+    .y(function(d) { return y(d.temperature); });
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -59,18 +59,36 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 d3.tsv("data.tsv", function(error, data) {
+
   data.forEach(function(d) {
     d.date = parseDate(d.date);
-    d.close = +d.close;
+  });
+
+  var locationNames = d3.keys(data[0]).filter(function(key) { return key !== "date"; });
+
+  var locations = locationNames.map(function(name) {
+    return {
+      name: name,
+      values: data.map(function(d) {
+        return {date: d.date, temperature: +d[location]};
+      })
+    };
   });
 
   x.domain(d3.extent(data, function(d) { return d.date; }));
-  y.domain(d3.extent(data, function(d) { return d.close; }));
 
-  svg.append("path")
-      .datum(data)
-      .attr("class", "line")
-      .attr("d", line);
+  y.domain([
+    d3.min(locations, function(l) { return d3.min(l.values, function(v) { return v.temperature; }),
+    d3.max(locations, function(l) { return d3.max(l.values, function(v) { return v.temperature; })
+  ]);
+
+  var g = svg.selectAll(".line")
+      .data(locations)
+    .enter().append("g")
+      .attr("class", "line");
+
+  g.append("path")
+      .attr("d", function(d) { return line(d.values); });
 
   svg.append("g")
       .attr("class", "x axis")
