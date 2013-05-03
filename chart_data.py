@@ -227,8 +227,15 @@ def plplot(device_data, device_names):
                 data.append(Scatter(x=path['Timestamp'], y=path[column], name=
                             ': '.join([device_names[i], column])))
     return(data)
-                
-            
+
+
+def rolling_window(a, window):
+    # http://wichita.ogs.ou.edu/documents/python/xcor.py
+    shape = a.shape[:-1] + (a.shape[-1] - window + 1, window)
+    strides = a.strides + (a.strides[-1],)
+    return np.lib.stride_tricks.as_strided(a, shape=shape, strides=strides)  
+
+
 def xcorr(x,y):
     """
     c=xcor(x,y)
