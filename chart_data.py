@@ -457,6 +457,12 @@ def get_startstop(df, person):
             stops.append(datetimeint(df.loc[i, 'stop'].strftime(ssdt), ssdt))
     return(person, starts, stops)
 
+def rolling_window(a, window):
+    # http://wichita.ogs.ou.edu/documents/python/xcor.py
+    shape = a.shape[:-1] + (a.shape[-1] - window + 1, window)
+    strides = a.strides + (a.strides[-1],)
+    return np.lib.stride_tricks.as_strided(a, shape=shape, strides=strides)
+
 def split_datetimes(df):
     """
     Function to split datetimes into dates and times.
@@ -546,6 +552,28 @@ def write_csv(df, person, sensor, device=None, d=None, normal=None):
     print(''.join(["Saving ", csv_out]))
     df.to_csv(csv_out, index=False)
     return(df)
+
+def xcorr(x,y):
+  """
+  c=xcor(x,y)
+  Fast implementation to compute the normalized cross correlation where x and y are 1D numpy arrays
+  x is the timeseries
+  y is the template time series
+  returns a numpy 1D array of correlation coefficients, c"
+  
+  The standard deviation algorithm in numpy is the biggest slow down in this method.  
+  The issue has been identified hopefully they make improvements.
+
+  http://wichita.ogs.ou.edu/documents/python/xcor.py
+  """
+  N=len(x)
+  M=len(y)
+  meany=np.mean(y)
+  stdy=np.std(np.asarray(y))
+  tmp=rolling_window(x,M)
+  c=np.sum((y-meany)*(tmp-np.reshape(np.mean(tmp,-1),(N-M+1,1))),-1)/(M*np.std(tmp,-1)*stdy)
+
+  return c
 
 # ============================================================================
 if __name__ == '__main__':
