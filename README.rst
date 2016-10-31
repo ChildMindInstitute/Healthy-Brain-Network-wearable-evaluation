@@ -6,7 +6,7 @@ Software -- UNDERGOING ALPHA TESTING
 The Mindboggle software package automates shape analysis of anatomical labels
 and features extracted from human brain magnetic resonance image data.
 Mindboggle can be run as a single command, and can be installed as a
-cross-platform virtual machine for convenience and reproducibility of results.
+cross-platform Docker container for convenience and reproducibility of results.
 Behind the scenes, open source Python 3 and C++ code run within a modular
 Nipype pipeline framework on Linux (tested with Python 3.5.1 on Ubuntu 14.04).
 
@@ -42,41 +42,30 @@ Mindboggle comes as a single installation script,
 that may be directly called to install Mindboggle on a Linux machine
 ($ ``source install_mindboggle.sh``).
 However, for reasons of convenience and reproducibility of results,
-we recommend using a different script,
-`install_mindboggle_vm <https://raw.githubusercontent.com/nipy/mindboggle/master/install/install_mindboggle_vm>`_,
-to perform the same installation on Linux, MacOSX, or Windows,
-but in a virtual machine (VM). Download this script to wherever you want
-the VM startup directory to be, and do the following (type commands in a
-terminal for steps 2 and 3).
+we recommend installing Mindboggle as a cross-platform Docker container.
 
-1. Install VM dependencies:
 
-    `Vagrant <http://www.vagrantup.com>`_ manages virtual machines.
-        Vagrant provides reproducible and portable work environments
-        that isolate dependencies and their configuration within a single
-        disposable, consistent environment that can run on
-        Linux, MacOSX, or Windows.
+NOTE::
 
-    `Virtualbox <https://www.virtualbox.org>`_ provides virtual machines used by Vagrant.
+    DOCKER INSTALLATION IS UNDERGOING TESTS!
 
-2. Download and configure the virtual machine to access your local
-brain image (usually FreeSurfer output) data by typing the following
-in the same directory as the VM script. This generates a configuration
-file called "Vagrantfile"::
 
-        python install_mindboggle_vm
 
-For help with more options, such as how to mount your local ANTs data
-directory, set the number of processors, etc., add "-h" to the above::
+1. Install and run Docker (only once): 
 
-        python install_mindboggle_vm -h
+    https://docs.docker.com/engine/installation/
 
-3. Henceforth, whenever running Mindboggle, first type the following
-in the same directory as the Vagrantfile::
 
-        vagrant up
-        vagrant ssh
+2. Clone the mindboggle Docker container app (only once):
 
+    git clone https://github.com/BIDS-Apps/mindboggle
+    cd mindboggle
+
+3. Set the path on the host and enter the bash shell of the container:
+
+    PATH_ON_HOST=/
+    docker run --rm -ti -v $PATH_ON_HOST:/root/data \
+               --entrypoint /bin/bash bids/mindboggle 
 
 ------------------------------------------------------------------------------
 Running Mindboggle
@@ -89,8 +78,22 @@ directory (450 MB), which contains some example preprocessed data.
 More example input and output data can be found
 on Mindboggle's `examples <https://osf.io/8cf5z>`_ osf.io site.
 
-If using the Mindboggle virtual machine, type the commands in step 3 of
-`Installing Mindboggle`_ above to enter the VM before continuing.
+Set path environment variables:
+
+    HOST=$HOME
+    PATH_TO_FREESURFER=$HOST/mindboggle_input_example/freesurfer/subjects
+    PATH_TO_ANTS=$HOST/mindboggle_input_example/ants/subjects
+
+    If using Docker:
+
+    1. Set HOST to /root/data/ plus the host's $HOME directory:
+
+        HOST=/root/data/Users/arno.klein
+
+    2. Set the output and working directories for Mindboggle by adding the following to the commands below:
+
+        --out $HOST/mindboggled --working $HOST/working
+
 
 For help after installing, type the following in a terminal window::
 
@@ -100,20 +103,20 @@ For help after installing, type the following in a terminal window::
 The following bare-bones command runs Mindboggle
 on data processed by FreeSurfer but not ANTs::
 
-    mindboggle $HOME/mindboggle_input_example/freesurfer/subjects/arno
+    mindboggle $PATH_TO_FREESURFER/arno
 
 **Example 2:**
 The same command, but takes advantage of ANTs output
 (backslash denotes line return)::
 
-    mindboggle $HOME/mindboggle_input_example/freesurfer/subjects/arno \
-    --ants $HOME/mindboggle_input_example/ants/subjects/arno/antsBrainSegmentation.nii.gz
+    mindboggle $PATH_TO_FREESURFER/arno \
+        --ants $PATH_TO_ANTS/arno/antsBrainSegmentation.nii.gz \
 
 **Example 3:**
 To generate only volume (and not surface) labels and shape measures
 from FreeSurfer data, using 8 processors::
 
-    mindboggle $HOME/mindboggle_input_example/freesurfer/subjects/arno --no_surfaces -p 8
+    mindboggle $PATH_TO_FREESURFER/arno --no_surfaces -p 8 \
 
 ------------------------------------------------------------------------------
 Preprocessing
