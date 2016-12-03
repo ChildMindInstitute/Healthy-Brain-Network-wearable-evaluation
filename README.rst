@@ -29,6 +29,7 @@ Links:
     license
 
 - `GitHub <http://github.com/nipy/mindboggle>`_
+- `Circleci test results <https://circleci.com/gh/nipy/mindboggle>`_
 - `Contributors <http://mindboggle.info/people.html>`_
 
 * :ref:`modindex`
