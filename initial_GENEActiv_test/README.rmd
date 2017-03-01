@@ -193,7 +193,7 @@ names(acc_data) = c('timestamp', 'x', 'y', 'z', 'light', 'button', 'temperature'
 ```{r plot light over time by device}
 ggplot(acc_data, aes(x=timestamp, y=light)) + geom_point(aes(col=factor(
        device), shape=factor(device))) + labs(title = 
-       "Light exposure over time by device") + guide_legend(title = "Device")
+       "Light exposure over time by device")
 ```
 
 
