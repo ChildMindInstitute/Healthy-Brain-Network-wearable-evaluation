@@ -92,7 +92,7 @@ def actigraph_datetimeint(x):
     Returns
     -------
     timestamp : int
-        integer representation of Linux timestamp (from datetimeformat)
+        Linux timestamp (from datetimeformat)
     """
     dt_format='%Y-%m-%d %H:%M:%S'
     return(datetimeint(x, dt_format))
@@ -265,7 +265,7 @@ general functions
 """
 def datetimeint(x, dt_format='%Y-%m-%d %H:%M:%S:%f'):
     """
-    Function to turn a datetime string into an integer
+    Function to turn a datetime string into an datetime
     
     Parameters
     ----------
@@ -277,10 +277,10 @@ def datetimeint(x, dt_format='%Y-%m-%d %H:%M:%S:%f'):
        
     Returns
     -------
-    timestamp : int
-        integer representation of Linux timestamp
+    timestamp : datetime
+        Linux timestamp
     """
-    return(int(datetime.strptime(x, dt_format)))
+    return(datetime.strptime(x, dt_format))
 
 def drop_non_csv(open_csv_file, drop_rows, header_row=False):
     """
