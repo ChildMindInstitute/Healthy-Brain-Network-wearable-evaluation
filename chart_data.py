@@ -16,7 +16,8 @@ def main():
     location = pd.read_csv(os.path.join(placement_dir, 'location.csv'))
     person = pd.read_csv(os.path.join(placement_dir, 'person.csv'))
     wrist = pd.read_csv(os.path.join(placement_dir, 'wrist.csv'))
-    print(pd.merge(person, wrist, how="outer", on="﻿Timestamp"))
+    print(pd.merge(person, wrist, how="outer", on="﻿Timestamp", suffixes=(
+          '_person', '_wrist')))
 
 # ============================================================================
 if __name__ == '__main__':
