@@ -10,7 +10,8 @@ Created on Mon Apr 10 17:25:39 2017
 @author: jon.clucas
 """
 from config import devices, organized_dir, placement_dir
-import numpy as np, os, pandas as pd
+from datetime import datetime
+import numpy as np, os, pandas as pd, time
 
 def main():
     people_df = getpeople()
@@ -45,12 +46,20 @@ def buildperson(df, pw):
     person_df.reset_index(drop=True, inplace=True)
     print(person)
     print(pd.unique(person_df.device))
+    csv_df = pd.DataFrame(columns=['device', 't', 'x', 'y', 'z'])
     for device in pd.unique(person_df.device):
         acc_path = os.path.join(organized_dir, 'accelerometer', '.'.join([
                    device, 'csv']))
         if os.path.exists(acc_path):
-            print(acc_path)
-    
+            device_df = pd.read_csv(acc_path)
+            person_device_df = device_df.loc[start <= device_df["Timestamp"] <=
+                               stop].copy()
+            del device_df
+            person_device_df['device'] = device
+            person_device_df = person_device_df['device', "Timestamp", "x",
+                               "y", "z"]
+            print(person_device_df)
+
 def getpeople():
     """
     Function to organize timestamps by people and wrists.

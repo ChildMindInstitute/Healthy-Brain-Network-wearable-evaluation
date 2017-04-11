@@ -13,7 +13,7 @@ Created on Fri Apr 7 17:27:05 2017
 """
 from config import actigraph_dir, e4_dir, geneactiv_dir, organized_dir
 from datetime import datetime
-import numpy as np, os, pandas as pd
+import numpy as np, os, pandas as pd, time
 
 """
 --------------------------------
@@ -75,7 +75,8 @@ def actigraph_acc_data(open_csv):
     df = drop_non_csv(open_csv, 10, True)
     df['timestamp'] = df['timestamp'].map(actigraph_datetimeint)
     new_df = pd.DataFrame()
-    new_df[['Timestamp', 'x', 'y', 'z']] = df[['timestamp','axis1','axis2','axis3']]
+    new_df[['Timestamp', 'x', 'y', 'z']] = df[['timestamp', 'axis1', 'axis2',
+                                           'axis3']]
     new_df.set_index('Timestamp', inplace=True)
     return(new_df)
 
@@ -92,7 +93,7 @@ def actigraph_datetimeint(x):
     Returns
     -------
     timestamp : int
-        Linux timestamp (from datetimeformat)
+        Linux timestamp (as integer, from datetimeformat)
     """
     dt_format='%Y-%m-%d %H:%M:%S'
     return(datetimeint(x, dt_format))
@@ -140,8 +141,8 @@ def e4_acc(dirpath):
     
 def e4_timestamp(df):
     """
-    Function to move the timestamp data from its own rows to an index column
-    for E4 accelerometry data
+    Function to move the timestamp data (as integer) from its own rows to an
+    index column for E4 accelerometry data
     
     Parameters
     ----------
@@ -151,8 +152,8 @@ def e4_timestamp(df):
     Returns
     -------
     new_df : pandas dataframe
-        dataframe with Linux time-series index column and sensor-specific value
-        columns
+        dataframe with Linux time-series (as integer) index column and sensor-
+        specific value columns
     """
     start_time = int(df.iloc[0,0])
     sample_rate = int(df.iloc[1,0])
@@ -265,7 +266,7 @@ general functions
 """
 def datetimeint(x, dt_format='%Y-%m-%d %H:%M:%S:%f'):
     """
-    Function to turn a datetime string into an datetime
+    Function to turn a datetime string into an datetime (as integer)
     
     Parameters
     ----------
@@ -277,10 +278,10 @@ def datetimeint(x, dt_format='%Y-%m-%d %H:%M:%S:%f'):
        
     Returns
     -------
-    timestamp : datetime
-        Linux timestamp
+    timestamp : int
+        Linux timestamp (as integer)
     """
-    return(datetime.strptime(x, dt_format))
+    return(int(time.mktime(datetime.strptime(x, dt_format).timetuple())))
 
 def drop_non_csv(open_csv_file, drop_rows, header_row=False):
     """
