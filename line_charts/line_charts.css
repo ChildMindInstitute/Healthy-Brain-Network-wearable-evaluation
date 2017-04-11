@@ -1,0 +1,16 @@
+charts {
+    display : block;
+    margin : 0 auto;
+    text-align : center;
+    width : 100%;
+}
+
+svg {
+    margin : 20 80 30 50;
+}
+svg[wrist=left] {
+    background-color: lightblue;
+}
+svg[wrist=right] {
+    background-color: pink;
+}
