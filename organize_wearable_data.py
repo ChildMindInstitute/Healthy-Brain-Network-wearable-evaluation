@@ -74,8 +74,8 @@ def actigraph_acc_data(open_csv):
     
     df = drop_non_csv(open_csv, 10, True)
     df['timestamp'] = df['timestamp'].map(actigraph_datetimeint)
-    new_df = df[['timestamp','axis1','axis2','axis3']]
-    new_df.rename(columns=['Timestamp', 'x', 'y', 'z'])
+    new_df = pd.DataFrame()
+    new_df[['Timestamp', 'x', 'y', 'z']] = df[['timestamp','axis1','axis2','axis3']]
     new_df.set_index('Timestamp', inplace=True)
     return(new_df)
 
@@ -123,7 +123,7 @@ def e4_acc(dirpath):
         comma-separated-values file with Linux time-series index column and x,
         y, z accelerometer value columns
     """    
-    acc_data = pd.DataFrame
+    acc_data = pd.DataFrame()
     for acc in os.listdir(dirpath):
         if "ACC" in acc and acc.endswith("csv"):
             if acc_data.empty:
@@ -202,8 +202,8 @@ def geneactiv_acc(dirpath):
         comma-separated-values file with Linux time-series index column and x,
         y, z accelerometer value columns
     """    
-    acc_data_black = pd.DataFrame
-    acc_data_pink = pd.DataFrame
+    acc_data_black = pd.DataFrame()
+    acc_data_pink = pd.DataFrame()
     for acc in os.listdir(dirpath):
         if "Jon" in acc and acc.endswith("csv"):
             if acc_data_black.empty:
@@ -246,8 +246,8 @@ def geneactiv_acc_data(open_csv):
     """
     df = drop_non_csv(open_csv, 100)
     df[0] = df[0].map(datetimeint)
-    new_df = df[[0,1,2,3]]
-    new_df.rename(columns=['Timestamp', 'x', 'y', 'z'])
+    new_df = pd.DataFrame()
+    new_df[['Timestamp', 'x', 'y', 'z']] = df[[0,1,2,3]]
     new_df.set_index('Timestamp', inplace=True)
     return(new_df)
 
