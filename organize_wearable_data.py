@@ -308,14 +308,14 @@ def drop_non_csv(open_csv_file, drop_rows, header_row=False):
     for x in range(0, drop_rows):
         open_csv_file.readline()
     if header_row:
-        header = open_csv_file.reeadline()
+        header = open_csv_file.readline().split(',')
     lines = open_csv_file.readlines()
     df = pd.DataFrame([sub.split(',') for sub in lines], columns=header)
     return(df)
 
 def main():
     # e4_acc(e4_dir)
-    geneactiv_acc(geneactiv_dir)
+    # geneactiv_acc(geneactiv_dir)
     actigraph_acc(actigraph_dir)
     pass
 
