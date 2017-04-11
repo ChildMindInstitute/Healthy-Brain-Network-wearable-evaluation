@@ -55,10 +55,10 @@ def buildperson(df, pw):
             device_df = pd.read_csv(acc_path)
             try:
                 device_df[['Timestamp']] = device_df.Timestamp.map(lambda x:
-                                       datetimeint(x))
+                                       datetimeint(str(x)))
             except:
                 device_df[['Timestamp']] = device_df.Timestamp.map(lambda x:
-                                           actigraph_datetimeint(x))
+                                           actigraph_datetimeint(str(x)))
             person_device_df = device_df.loc[(device_df['Timestamp'] >= start)
                                & (device_df['Timestamp'] <= stop)].copy()
             del device_df
