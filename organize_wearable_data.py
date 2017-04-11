@@ -282,7 +282,7 @@ def datetimeint(x, dt_format='%Y-%m-%d %H:%M:%S:%f'):
     timestamp : datetime
         Linux timestamp
     """
-    return(datetime.strptime(x, dt_format).timetuple())
+    return(datetime.strptime(x, dt_format))
 
 def drop_non_csv(open_csv_file, drop_rows, header_row=False):
     """

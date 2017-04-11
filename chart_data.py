@@ -11,7 +11,8 @@ Created on Mon Apr 10 17:25:39 2017
 """
 from config import devices, organized_dir, placement_dir
 from datetime import datetime
-import numpy as np, os, pandas as pd, time
+from organize_wearable_data import actigraph_datetimeint, datetimeint
+import numpy as np, os, pandas as pd
 
 def main():
     people_df = getpeople()
@@ -46,19 +47,27 @@ def buildperson(df, pw):
     person_df.reset_index(drop=True, inplace=True)
     print(person)
     print(pd.unique(person_df.device))
-    csv_df = pd.DataFrame(columns=['device', 't', 'x', 'y', 'z'])
+    csv_df = pd.DataFrame(columns=['device', 'Timestamp', 'x', 'y', 'z'])
     for device in pd.unique(person_df.device):
         acc_path = os.path.join(organized_dir, 'accelerometer', '.'.join([
                    device, 'csv']))
         if os.path.exists(acc_path):
             device_df = pd.read_csv(acc_path)
-            person_device_df = device_df.loc[start <= device_df["Timestamp"] <=
-                               stop].copy()
+            try:
+                device_df[['Timestamp']] = device_df.Timestamp.map(lambda x:
+                                       datetimeint(x))
+            except:
+                device_df[['Timestamp']] = device_df.Timestamp.map(lambda x:
+                                           actigraph_datetimeint(x))
+            person_device_df = device_df.loc[(device_df['Timestamp'] >= start)
+                               & (device_df['Timestamp'] <= stop)].copy()
             del device_df
             person_device_df['device'] = device
-            person_device_df = person_device_df['device', "Timestamp", "x",
-                               "y", "z"]
-            print(person_device_df)
+            person_device_df = person_device_df[['device', "Timestamp", "x",
+                               "y", "z"]]
+            csv_df = pd.concat([csv_df, person_device_df])
+    if len(csv_df) > 0:
+        print(csv_df.pivot(index="Timestamp", columns="device"))
 
 def getpeople():
     """
@@ -99,7 +108,7 @@ def getpeople():
     for v in list(pd.unique(person_wrist.values.ravel())):
         if(type(v)) == tuple and v != (np.nan, np.nan):
             chart_wrists.append(v)
-        elif(type(v)) == int:
+        elif(type(v) == int):
             times.append(v)
     chart_wrists.sort()
     times.sort()
@@ -115,8 +124,13 @@ def getpeople():
                     people.append([pw, device, person_wrist.loc[i, 'Timestamp'
                                   ],  start_stop[person_wrist.loc[i,
                                   'Timestamp']]])
-    return(pd.DataFrame(people, columns=["person_wrist", "device", "start",
-           "stop"]))
+    people_df = pd.DataFrame(people, columns=["person_wrist", "device", "start",
+                "stop"])
+    people_df[['start']] = people_df.start.map(lambda x:
+                           datetime.fromtimestamp(int(x)))
+    people_df[['stop']] = people_df.stop.map(lambda x:
+                          datetime.fromtimestamp(int(x)))
+    return(people_df)
     
 def get_startstop(df, person):
     """
@@ -132,9 +146,9 @@ def get_startstop(df, person):
 
     Returns
     -------
-    person_start_stop : 3-tuple (string, int, int)
+    person_start_stop : 3-tuple (string, datetime, datetime)
         person-wrist, overall start time, overall stop time (times in Linux
-        time format, as integers)
+        time format)
     """
     starts = []
     stops = []
