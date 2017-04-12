@@ -45,7 +45,7 @@ def buildperson(df, pw):
     person, start, stop = get_startstop(df, pw)
     person_df = df.loc[df['person_wrist'] == pw].copy()
     person_df.reset_index(drop=True, inplace=True)
-    print(person)
+    print(person, end=": ")
     print(pd.unique(person_df.device))
     csv_df = pd.DataFrame(columns=['device', 'Timestamp', 'x', 'y', 'z'])
     for device in pd.unique(person_df.device):
@@ -188,8 +188,8 @@ def write_csv(df, person, sensor):
     """
     csv_out = os.path.join(organized_dir, sensor, "".join([person[0], '_',
               person[1], '.csv']))
-    if not os.path.exists(csv_out):
-        os.makedirs(csv_out)
+    if not os.path.exists(os.dirname(csv_out)):
+        os.makedirs(os.dirname(csv_out))
     print(''.join(["Saving ", csv_out]))
     df.to_csv(csv_out)
     return(df)
