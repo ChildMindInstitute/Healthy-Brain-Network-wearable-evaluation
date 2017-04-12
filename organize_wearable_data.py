@@ -13,7 +13,7 @@ Created on Fri Apr 7 17:27:05 2017
 """
 from config import actigraph_dir, e4_dir, geneactiv_dir, organized_dir
 from datetime import datetime
-import numpy as np, os, pandas as pd
+import numpy as np, os, pandas as pd, time
 
 """
 --------------------------------
@@ -161,7 +161,8 @@ def e4_timestamp(df):
     new_index = np.arange(start_time, len(new_df)*sample_rate+start_time,
                 sample_rate)
     new_df['Timestamp'] = pd.Series(new_index).apply(lambda x:
-                          datetime.fromtimestamp(int(x)))
+                          datetime.fromtimestamp(int(x)).strftime(
+                          "%Y-%m-%d %H:%M:%S.%f"))
     new_df.set_index('Timestamp', inplace=True)
     return(new_df)
 
@@ -265,9 +266,27 @@ Wavelet Biostrap
 general functions
 -----------------
 """
+def datetimedt(x):
+    """
+    Function to turn a datetime in format "%Y-%m-%d %H:%M:%S.%f" (e.g., outputs
+    from datetimeint()) into a datetime object
+    
+    Parameter
+    ---------
+    x : string
+        datetime string in format "%Y-%m-%d %H:%M:%S.%f"
+        
+    Returns
+    -------
+    timestamp : datetime
+        Linux timestamp
+    """
+    return(datetime.strptime(x, "%Y-%m-%d %H:%M:%S.%f"))
+
 def datetimeint(x, dt_format='%Y-%m-%d %H:%M:%S:%f'):
     """
-    Function to turn a datetime string into an datetime
+    Function to turn a datetime string into an datetime formatted as
+    "%Y-%m-%d %H:%M:%S.%f"
     
     Parameters
     ----------
@@ -279,10 +298,10 @@ def datetimeint(x, dt_format='%Y-%m-%d %H:%M:%S:%f'):
        
     Returns
     -------
-    timestamp : datetime
-        Linux timestamp
+    timestamp : string
+        Linux timestamp as string formatted as "%Y-%m-%d %H:%M:%S.%f"
     """
-    return(datetime.strptime(x, dt_format))
+    return(datetime.strptime(x, dt_format).strftime("%Y-%m-%d %H:%M:%S.%f"))
 
 def drop_non_csv(open_csv_file, drop_rows, header_row=False):
     """
@@ -318,7 +337,6 @@ def main():
     e4_acc(e4_dir)
     geneactiv_acc(geneactiv_dir)
     actigraph_acc(actigraph_dir)
-    pass
 
 def save_df(df, sensor, device):
     """

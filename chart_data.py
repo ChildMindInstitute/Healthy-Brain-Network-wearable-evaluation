@@ -11,7 +11,7 @@ Created on Mon Apr 10 17:25:39 2017
 """
 from config import devices, organized_dir, placement_dir
 from datetime import datetime
-from organize_wearable_data import actigraph_datetimeint, datetimeint
+from organize_wearable_data import datetimedt, datetimeint
 import numpy as np, os, pandas as pd
 
 def main():
@@ -57,8 +57,7 @@ def buildperson(df, pw):
                 device_df[['Timestamp']] = device_df.Timestamp.map(lambda x:
                                        datetimeint(str(x)))
             except:
-                device_df[['Timestamp']] = device_df.Timestamp.map(lambda x:
-                                           actigraph_datetimeint(str(x)))
+                pass
             person_device_df = device_df.loc[(device_df['Timestamp'] >= start)
                                & (device_df['Timestamp'] <= stop)].copy()
             del device_df
@@ -156,7 +155,9 @@ def get_startstop(df, person):
         if item == person:
             starts.append(df.loc[i, 'start'])
             stops.append(df.loc[i, 'stop'])
-    return(person, min(starts), max(stops))
+    ssdt = "%Y-%m-%d %H:%M:%S"
+    return(person, datetimeint(min(starts).strftime(ssdt), ssdt),
+           datetimeint(max(stops).strftime(ssdt), "%Y-%m-%d %H:%M:%S"))
 
 # ============================================================================
 if __name__ == '__main__':
