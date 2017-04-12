@@ -188,8 +188,8 @@ def write_csv(df, person, sensor):
     """
     csv_out = os.path.join(organized_dir, sensor, "".join([person[0], '_',
               person[1], '.csv']))
-    if not os.path.exists(os.dirname(csv_out)):
-        os.makedirs(os.dirname(csv_out))
+    if not os.path.exists(os.path.dirname(csv_out)):
+        os.makedirs(os.path.dirname(csv_out))
     print(''.join(["Saving ", csv_out]))
     df.to_csv(csv_out)
     return(df)
