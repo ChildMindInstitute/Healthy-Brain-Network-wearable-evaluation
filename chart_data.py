@@ -67,13 +67,8 @@ def buildperson(df, pw):
             csv_df = pd.concat([csv_df, person_device_df])
     if len(csv_df) > 0:
         person_df_to_csv = csv_df.pivot(index="Timestamp", columns="device")
-        csv_out = os.path.join(organized_dir, 'actigraphy', "".join([person[0],
-                  '_', person[1], '.csv']))
-        if not os.path.exists(csv_out):
-            os.makedirs(csv_out)
-        person_df_to_csv.to_csv(csv_out)
+        write_csv(person_df_to_csv, person, 'accelerometer')   
         
-
 def getpeople():
     """
     Function to organize timestamps by people and wrists.
@@ -164,6 +159,39 @@ def get_startstop(df, person):
     ssdt = "%Y-%m-%d %H:%M:%S"
     return(person, datetimeint(min(starts).strftime(ssdt), ssdt),
            datetimeint(max(stops).strftime(ssdt), "%Y-%m-%d %H:%M:%S"))
+
+def write_csv(df, person, sensor):
+    """
+    Function to write a csv for a person-wrist for a particular sensor.
+    
+    Parameters
+    ----------
+    df : pandas dataframe
+        dataframe to write to csv
+        
+    person : 2-tuple (string, string)
+        person_name, wrist
+        
+    sensor : string
+        type of sensor data included in df
+        
+    Returns
+    -------
+    df : pandas dataframe
+        unchanged dataframe
+        
+    Output
+    ------
+    csv : csv file
+        csv copy of dataframe stored in
+        organized_dir/`sensor`/`person_name`_`wrist`.csv
+    """
+    csv_out = os.path.join(organized_dir, sensor, "".join([person[0], '_',
+              person[1], '.csv']))
+    if not os.path.exists(csv_out):
+        os.makedirs(csv_out)
+    df.to_csv(csv_out)
+    return(df)
 
 # ============================================================================
 if __name__ == '__main__':
