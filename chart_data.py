@@ -190,6 +190,7 @@ def write_csv(df, person, sensor):
               person[1], '.csv']))
     if not os.path.exists(csv_out):
         os.makedirs(csv_out)
+    print(''.join(["Saving ", csv_out]))
     df.to_csv(csv_out)
     return(df)
 
