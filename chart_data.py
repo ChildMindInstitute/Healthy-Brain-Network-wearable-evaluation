@@ -66,7 +66,13 @@ def buildperson(df, pw):
                                "y", "z"]]
             csv_df = pd.concat([csv_df, person_device_df])
     if len(csv_df) > 0:
-        print(csv_df.pivot(index="Timestamp", columns="device"))
+        person_df_to_csv = csv_df.pivot(index="Timestamp", columns="device")
+        csv_out = os.path.join(organized_dir, 'actigraphy', "".join([person[0],
+                  '_', person[1], '.csv']))
+        if not os.path.exists(csv_out):
+            os.makedirs(csv_out)
+        person_df_to_csv.to_csv(csv_out)
+        
 
 def getpeople():
     """
