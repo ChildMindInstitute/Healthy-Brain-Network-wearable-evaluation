@@ -5,12 +5,23 @@ charts {
     width : 100%;
 }
 
+g {
+
+}
+
 svg {
-    margin : 20 80 30 50;
+    margin : 5px 80px 5px 50px;
 }
 svg[wrist=left] {
-    background-color: lightblue;
+    background-color : lightblue;
 }
 svg[wrist=right] {
-    background-color: pink;
+    background-color : pink;
+}
+
+text {
+    color : black;
+    font-size : 26px;
+    margin : 10px;
+    padding : 10px;
 }
