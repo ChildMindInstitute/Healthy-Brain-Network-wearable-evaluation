@@ -11,5 +11,12 @@ Created on Fri Apr  7 17:35:28 2017
 """
 import os
 
+actigraph_dir = os.path.abspath('./ActiLife/Downloads')
 e4_dir = os.path.abspath('./E4')
+geneactiv_dir = os.path.abspath('./GENEActiv/Data/')
+
+devices = ['Actigraph', 'E4', 'Embrace', 'GENEActiv_black', 'GENEActiv_pink',
+          'Wavelet']
+
 organized_dir = os.path.abspath('./organized')
+placement_dir = os.path.join(organized_dir, 'device_placement')
