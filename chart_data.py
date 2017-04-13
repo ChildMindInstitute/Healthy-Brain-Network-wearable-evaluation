@@ -126,6 +126,7 @@ def linechart(df, pw):
             i = i + 1
         plt.suptitle(''.join([pw[0], ', ', pw[1], ' wrist']))
         plt.xticks(rotation=65)
+        print("".join(["Saving ", svg_out]))
         fig.savefig(svg_out)
         plt.close()
         
