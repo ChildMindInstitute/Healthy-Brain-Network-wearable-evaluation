@@ -45,10 +45,11 @@ def buildperson(df, pw):
     person, start, stop = get_startstop(df, pw)
     person_df = df.loc[df['person_wrist'] == pw].copy()
     person_df.reset_index(drop=True, inplace=True)
+    devices = pd.unique(person_df.device)
     print(person, end=": ")
-    print(pd.unique(person_df.device))
+    print(devices)
     csv_df = pd.DataFrame(columns=['device', 'Timestamp', 'x', 'y', 'z'])
-    for device in pd.unique(person_df.device):
+    for device in devices:
         acc_path = os.path.join(organized_dir, 'accelerometer', '.'.join([
                    device, 'csv']))
         if os.path.exists(acc_path):
@@ -60,6 +61,7 @@ def buildperson(df, pw):
                 pass
             person_device_df = device_df.loc[(device_df['Timestamp'] >= start)
                                & (device_df['Timestamp'] <= stop)].copy()
+            write_csv(device_df, person, 'accelerometer', device)
             del device_df
             person_device_df['device'] = device
             person_device_df = person_device_df[['device', "Timestamp", "x",
@@ -160,7 +162,7 @@ def get_startstop(df, person):
     return(person, datetimeint(min(starts).strftime(ssdt), ssdt),
            datetimeint(max(stops).strftime(ssdt), "%Y-%m-%d %H:%M:%S"))
 
-def write_csv(df, person, sensor):
+def write_csv(df, person, sensor, device=None):
     """
     Function to write a csv for a person-wrist for a particular sensor.
     
@@ -174,6 +176,9 @@ def write_csv(df, person, sensor):
         
     sensor : string
         type of sensor data included in df
+    
+    device : string
+        device name
         
     Returns
     -------
@@ -184,10 +189,14 @@ def write_csv(df, person, sensor):
     ------
     csv : csv file
         csv copy of dataframe stored in
-        organized_dir/`sensor`/`person_name`_`wrist`.csv
+        organized_dir/`sensor`/`person_name`_`wrist`_`sensor`.csv
     """
-    csv_out = os.path.join(organized_dir, sensor, "".join([person[0], '_',
-              person[1], '.csv']))
+    if device:
+        csv_out = os.path.join(organized_dir, sensor, "_".join([person[0],
+                  person[1], '.'.join([device, 'csv'])]))
+    else:
+        csv_out = os.path.join(organized_dir, sensor, "_".join([person[0],
+                  '.'.join([person[1], 'csv'])]))
     if not os.path.exists(os.path.dirname(csv_out)):
         os.makedirs(os.path.dirname(csv_out))
     print(''.join(["Saving ", csv_out]))
