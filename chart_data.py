@@ -102,6 +102,7 @@ def linechart(df, pw):
     """
     sensors = ['accelerometer']
     for sensor in sensors:
+        print("Plotting...")
         print(pw)
         svg_out = os.path.join(organized_dir, sensor, "_".join([pw[0], 
                   '.'.join([pw[1], 'svg'])]))
