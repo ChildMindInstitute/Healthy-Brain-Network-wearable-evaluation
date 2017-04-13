@@ -66,8 +66,10 @@ def buildperson(df, pw):
                 pass
             person_device_df = device_df.loc[(device_df['Timestamp'] >= start)
                                & (device_df['Timestamp'] <= stop)].copy()
-            write_csv(person_device_df, person, 'accelerometer', device)
             del device_df
+            # write_csv(person_device_df, person, 'accelerometer', device)
+            person_device_df[['Timestamp']] = person_device_df.Timestamp.map(
+                                              lambda x: datetimedt(x))
             person_device_df['device'] = device
             person_device_df = person_device_df[['device', "Timestamp", "x",
                                "y", "z"]]
@@ -112,13 +114,12 @@ def linechart(df, pw):
         i = 0
         for axis in ['x', 'y', 'z']:
             plot_df = df.xs(axis, level=0, axis=1)
+            print(type(plot_df.index.values[0]))
             if colormap == []:
                 for device in list(plot_df.columns):
                     colormap.append(color_key[device])
             plot_df.plot(ax=axes[i], color=colormap, alpha=0.5, title=' '.join(
                          [axis, "axis"]))
-            axes[i].set_xticklabels([datetimedt(x).strftime("%m-%d %H:%M") for
-                                    x in list(df.index.values)])
             if i == 0:
                 axes[i].legend(loc='best', fancybox=True, framealpha=0.5)
             else:

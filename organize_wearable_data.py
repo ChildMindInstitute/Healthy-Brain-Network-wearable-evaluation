@@ -98,7 +98,7 @@ def actigraph_datetimeint(x):
         
     Returns
     -------
-    timestamp : int
+    timestamp : string
         Linux timestamp (from datetimeformat)
     """
     dt_format='%Y-%m-%d %H:%M:%S'
