@@ -45,8 +45,9 @@ for (i = 0; i < people.length; i += 1) {
          .text(people[i] + ", " + wrists[j] + " wrist, " + axes[k] + " axis");
       for (l = 0; l < devices.length; l += 1) {
          d3.csv("../organized/accelerometer/" + people[i] + "_" +
-                wrists[j] + "_" + devices[l] + ".csv", function(data) {
-                  console.log(data[0])
+                wrists[j] + "_" + devices[l] + ".csv", function(data, error) {
+                  if(error){throw error;}
+                  console.log(data)
                 });
       }
     }
