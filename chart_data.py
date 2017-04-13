@@ -67,7 +67,7 @@ def buildperson(df, pw):
             person_device_df = device_df.loc[(device_df['Timestamp'] >= start)
                                & (device_df['Timestamp'] <= stop)].copy()
             del device_df
-            # write_csv(person_device_df, person, 'accelerometer', device)
+            write_csv(person_device_df, person, 'accelerometer', device)
             person_device_df[['Timestamp']] = person_device_df.Timestamp.map(
                                               lambda x: datetimedt(x))
             person_device_df['device'] = device
