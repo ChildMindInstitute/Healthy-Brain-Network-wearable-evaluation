@@ -11,7 +11,8 @@ Created on Fri Apr 7 17:27:05 2017
 
 @author: jon.clucas
 """
-from config import actigraph_dir, e4_dir, geneactiv_dir, organized_dir
+from config import actigraph_dir, e4_dir, geneactiv_dir, organized_dir, \
+                   wavelet_dir
 from datetime import datetime
 import numpy as np, os, pandas as pd, time
 
@@ -259,7 +260,50 @@ def geneactiv_acc_data(open_csv):
 Wavelet Biostrap
 ----------------
 """
-
+def wavelet_acc(dirpath):
+    """
+    Function to take all Wavelet accelerometry data from a directory and format
+    those data with Linux time-series index columns and x, y, z value columns
+    
+    Parameters
+    ----------
+    dirpath : string
+        path to Wavelet outputs
+        
+    Returns
+    -------
+    acc_data_returns : pandas dataframe
+        dataframe with Linux time-series index column and x, y, z value columns
+    
+    Outputs
+    -------
+    Wavelet.csv : csv file (via save_df() function)
+        comma-separated-values file with Linux time-series index column and x,
+        y, z accelerometer value columns
+    """    
+    csv_path = os.path.join(dirpath, 'CSV')
+    acc_data = pd.DataFrame()
+    for acc in os.listdir(csv_path):
+        if acc.endswith("csv"):
+            if acc_data.empty:
+                acc_data = pd.read_csv(os.path.join(csv_path, acc),
+                           header=0, skip_blank_lines=True, comment="C")
+                print(' : '.join([acc, str(acc_data.shape)]))
+            else:
+                acc_data = pd.concat([acc_data, pd.read_csv(os.path.join(
+                           csv_path, acc), header=0, skip_blank_lines=True,
+                           comment="C")])
+            print(' : '.join(['Wavelet accelorometer data, adding',  acc, str(
+                      acc_data.shape)]))
+    acc_data['timestamp'] = acc_data['timestamp'].map(lambda x:
+                            datetime.fromtimestamp(int(x)/1000).strftime(
+                            "%Y-%m-%d %H:%M:%S.%f"), na_action='ignore')
+    acc_data_returns = pd.DataFrame()
+    acc_data_returns[['Timestamp', 'x', 'y', 'z']] = acc_data[['timestamp',
+                                                     ' accel.X', ' accel.Y',
+                                                     ' accel.Z']]
+    save_df(acc_data_returns, 'accelerometer', 'Wavelet')
+    
 
 """
 -----------------
@@ -334,9 +378,10 @@ def drop_non_csv(open_csv_file, drop_rows, header_row=False):
     return(df)
 
 def main():
-    e4_acc(e4_dir)
-    geneactiv_acc(geneactiv_dir)
-    actigraph_acc(actigraph_dir)
+    # e4_acc(e4_dir)
+    # geneactiv_acc(geneactiv_dir)
+    # actigraph_acc(actigraph_dir)
+    wavelet_acc(wavelet_dir)
 
 def save_df(df, sensor, device):
     """
