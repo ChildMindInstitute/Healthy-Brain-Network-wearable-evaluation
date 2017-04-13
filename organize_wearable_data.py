@@ -325,8 +325,8 @@ general functions
 """
 def datetimedt(x):
     """
-    Function to turn a datetime in format "%Y-%m-%d %H:%M:%S.%f" (e.g., outputs
-    from datetimeint()) into a datetime object
+    Function to turn a datetime string in format "%Y-%m-%d %H:%M:%S.%f" 
+    into a datetime object
     
     Parameter
     ---------

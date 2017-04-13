@@ -11,7 +11,7 @@ Created on Mon Apr 10 17:25:39 2017
 """
 from config import devices, organized_dir, placement_dir
 from datetime import datetime
-from organize_wearable_data import datetimeint
+from organize_wearable_data import datetimedt, datetimeint
 import json, matplotlib.dates as mdates, numpy as np, os, pandas as pd, \
        matplotlib.pyplot as plt
 
@@ -65,6 +65,7 @@ def buildperson(df, pw):
                 pass
             person_device_df = device_df.loc[(device_df['Timestamp'] >= start)
                                & (device_df['Timestamp'] <= stop)].copy()
+            device_df.sort_values(by='Timestamp', inplace=True)
             write_csv(device_df, person, 'accelerometer', device)
             del device_df
             person_device_df['device'] = device
@@ -73,6 +74,7 @@ def buildperson(df, pw):
             csv_df = pd.concat([csv_df, person_device_df])
     if len(csv_df) > 0:
         person_df_to_csv = csv_df.pivot(index="Timestamp", columns="device")
+        person_df_to_csv.sort_values(by="Timestamp", inplace=True)
         write_csv(person_df_to_csv, person, 'accelerometer')
         linechart(person_df_to_csv, pw)
         
@@ -114,7 +116,8 @@ def linechart(df, pw):
                     colormap.append(color_key[device])
             plot_df.plot(ax=axes[i], color=colormap, alpha=0.5, title=' '.join(
                          [axis, "axis"]))
-            axes[i].set_xticklabels([x[5:15] for x in list(df.index.values)])
+            axes[i].set_xticklabels([datetimedt(x).strftime("%m-%d %H:%M") for
+                                    x in list(df.index.values)])
             if i == 0:
                 axes[i].legend(loc='best', fancybox=True, framealpha=0.5)
             else:
