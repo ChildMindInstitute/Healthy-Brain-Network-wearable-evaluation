@@ -302,6 +302,7 @@ def wavelet_acc(dirpath):
     acc_data_returns[['Timestamp', 'x', 'y', 'z']] = acc_data[['timestamp',
                                                      ' accel.X', ' accel.Y',
                                                      ' accel.Z']]
+    acc_data_returns.set_index('Timestamp', inplace=True)
     save_df(acc_data_returns, 'accelerometer', 'Wavelet')
     
 
@@ -378,9 +379,9 @@ def drop_non_csv(open_csv_file, drop_rows, header_row=False):
     return(df)
 
 def main():
-    # e4_acc(e4_dir)
-    # geneactiv_acc(geneactiv_dir)
-    # actigraph_acc(actigraph_dir)
+    e4_acc(e4_dir)
+    geneactiv_acc(geneactiv_dir)
+    actigraph_acc(actigraph_dir)
     wavelet_acc(wavelet_dir)
 
 def save_df(df, sensor, device):
