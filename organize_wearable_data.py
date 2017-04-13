@@ -16,6 +16,8 @@ from config import actigraph_dir, e4_dir, geneactiv_dir, organized_dir, \
 from datetime import datetime
 import numpy as np, os, pandas as pd, time
 
+axes = ['x', 'y', 'z']
+
 """
 --------------------------------
 Actigraph wGT3X-BT with Polar H7
@@ -79,6 +81,9 @@ def actigraph_acc_data(open_csv):
     new_df[['Timestamp', 'x', 'y', 'z']] = df[['timestamp', 'axis1', 'axis2',
                                            'axis3']]
     new_df.set_index('Timestamp', inplace=True)
+    # convert from 1/128g to g
+    for axis in axes:
+        new_df[axis] = new_df[axis].map(lambda x: float(x)/128)
     return(new_df)
 
 def actigraph_datetimeint(x):
@@ -130,14 +135,17 @@ def e4_acc(dirpath):
         if "ACC" in acc and acc.endswith("csv"):
             if acc_data.empty:
                 acc_data = e4_timestamp(pd.read_csv(os.path.join(dirpath, acc),
-                           names=['x', 'y', 'z'], index_col=False))
+                           names=axes, index_col=False))
                 print(' : '.join([acc, str(acc_data.shape)]))
             else:
                 acc_data = pd.concat([acc_data, e4_timestamp(pd.read_csv(
-                           os.path.join(dirpath, acc), names=['x', 'y', 'z'],
+                           os.path.join(dirpath, acc), names=axes,
                            index_col=False))])
             print(' : '.join(['E4 accelorometer data, adding',  acc, str(
                       acc_data.shape)]))
+    # convert from 1/64g to g
+    for axis in axes:
+        acc_data[axis] = acc_data[axis].map(lambda x: float(x)/64)
     save_df(acc_data, 'accelerometer', 'E4')
     
 def e4_timestamp(df):
@@ -303,6 +311,10 @@ def wavelet_acc(dirpath):
                                                      ' accel.X', ' accel.Y',
                                                      ' accel.Z']]
     acc_data_returns.set_index('Timestamp', inplace=True)
+    # convert from 1/64g to g
+    for axis in axes:
+        acc_data_returns[axis] = acc_data_returns[axis].map(lambda x: float(x)/
+                                 64)
     save_df(acc_data_returns, 'accelerometer', 'Wavelet')
     
 

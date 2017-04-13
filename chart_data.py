@@ -11,8 +11,12 @@ Created on Mon Apr 10 17:25:39 2017
 """
 from config import devices, organized_dir, placement_dir
 from datetime import datetime
-from organize_wearable_data import datetimedt, datetimeint
-import numpy as np, os, pandas as pd
+from organize_wearable_data import datetimeint
+import json, matplotlib.dates as mdates, numpy as np, os, pandas as pd, \
+       matplotlib.pyplot as plt
+
+with open(os.path.join('./line_charts/device_colors.json')) as fp:
+    color_key = json.load(fp)
 
 def main():
     people_df = getpeople()
@@ -69,7 +73,57 @@ def buildperson(df, pw):
             csv_df = pd.concat([csv_df, person_device_df])
     if len(csv_df) > 0:
         person_df_to_csv = csv_df.pivot(index="Timestamp", columns="device")
-        write_csv(person_df_to_csv, person, 'accelerometer')   
+        write_csv(person_df_to_csv, person, 'accelerometer')
+        linechart(person_df_to_csv, pw)
+        
+def linechart(df, pw):
+    """
+    Function to build a linechart of the given (person, wrist) and export an
+    SVG of the image.
+    
+    Parameters
+    ----------
+    df : pandas dataframe
+        dataframe to plot
+    
+    pw : 2-tuple (person_name : string, wrist : string)
+        identifiers for plot
+        
+    Returns
+    -------
+    None
+    
+    Outputs
+    -------
+    person_wrist.svg : svg file
+        svg of lineplot
+    """
+    sensors = ['accelerometer']
+    for sensor in sensors:
+        print(pw)
+        svg_out = os.path.join(organized_dir, sensor, "_".join([pw[0], 
+                  '.'.join([pw[1], 'svg'])]))
+        fig, axes = plt.subplots(figsize=(10, 8), dpi=200, nrows=3, ncols=1,
+                    sharex=True)
+        colormap = []
+        i = 0
+        for axis in ['x', 'y', 'z']:
+            plot_df = df.xs(axis, level=0, axis=1)
+            if colormap == []:
+                for device in list(plot_df.columns):
+                    colormap.append(color_key[device])
+            plot_df.plot(ax=axes[i], color=colormap, alpha=0.5, title=' '.join(
+                         [axis, "axis"]))
+            axes[i].set_xticklabels([x[5:15] for x in list(df.index.values)])
+            if i == 0:
+                axes[i].legend(loc='best', fancybox=True, framealpha=0.5)
+            else:
+                axes[i].legend().set_visible(False)
+            i = i + 1
+        plt.suptitle(''.join([pw[0], ', ', pw[1], ' wrist']))
+        plt.xticks(rotation=65)
+        fig.savefig(svg_out)
+        plt.close()
         
 def getpeople():
     """
@@ -126,12 +180,14 @@ def getpeople():
                     people.append([pw, device, person_wrist.loc[i, 'Timestamp'
                                   ],  start_stop[person_wrist.loc[i,
                                   'Timestamp']]])
-    people_df = pd.DataFrame(people, columns=["person_wrist", "device", "start",
-                "stop"])
+    people_df = pd.DataFrame(people, columns=["person_wrist", "device",
+                "start", "stop"])
     people_df[['start']] = people_df.start.map(lambda x:
                            datetime.fromtimestamp(int(x)))
     people_df[['stop']] = people_df.stop.map(lambda x:
                           datetime.fromtimestamp(int(x)))
+    print(people_df)
+    print('\n')
     return(people_df)
     
 def get_startstop(df, person):
@@ -160,7 +216,7 @@ def get_startstop(df, person):
             stops.append(df.loc[i, 'stop'])
     ssdt = "%Y-%m-%d %H:%M:%S"
     return(person, datetimeint(min(starts).strftime(ssdt), ssdt),
-           datetimeint(max(stops).strftime(ssdt), "%Y-%m-%d %H:%M:%S"))
+           datetimeint(max(stops).strftime(ssdt), ssdt))
 
 def write_csv(df, person, sensor, device=None):
     """
@@ -200,7 +256,7 @@ def write_csv(df, person, sensor, device=None):
     if not os.path.exists(os.path.dirname(csv_out)):
         os.makedirs(os.path.dirname(csv_out))
     print(''.join(["Saving ", csv_out]))
-    df.to_csv(csv_out)
+    df.to_csv(csv_out, index=False)
     return(df)
 
 # ============================================================================
