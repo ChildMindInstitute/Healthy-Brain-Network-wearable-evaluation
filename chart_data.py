@@ -58,6 +58,7 @@ def buildperson(df, pw):
                    device, 'csv']))
         if os.path.exists(acc_path):
             device_df = pd.read_csv(acc_path)
+            device_df.sort_values(by='Timestamp', inplace=True)
             try:
                 device_df[['Timestamp']] = device_df.Timestamp.map(lambda x:
                                        datetimeint(str(x)))
@@ -65,7 +66,6 @@ def buildperson(df, pw):
                 pass
             person_device_df = device_df.loc[(device_df['Timestamp'] >= start)
                                & (device_df['Timestamp'] <= stop)].copy()
-            device_df.sort_values(by='Timestamp', inplace=True)
             write_csv(device_df, person, 'accelerometer', device)
             del device_df
             person_device_df['device'] = device
@@ -73,8 +73,8 @@ def buildperson(df, pw):
                                "y", "z"]]
             csv_df = pd.concat([csv_df, person_device_df])
     if len(csv_df) > 0:
+        csv_df.sort_values(by="Timestamp", inplace=True)
         person_df_to_csv = csv_df.pivot(index="Timestamp", columns="device")
-        person_df_to_csv.sort_values(by="Timestamp", inplace=True)
         write_csv(person_df_to_csv, person, 'accelerometer')
         linechart(person_df_to_csv, pw)
         
