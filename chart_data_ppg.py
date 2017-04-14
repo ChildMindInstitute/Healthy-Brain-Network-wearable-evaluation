@@ -140,7 +140,7 @@ def linechart(df, pw, d=None):
             if light == "nW":
                 label = "E4 PPG (amplified ×1,000)"
             else:
-                label = " ".join("Wavelet", ' '.join(light.split('_')))
+                label = " ".join(["Wavelet", ' '.join(light.split('_'))])
             plot_line = df[[light]].dropna()
             ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
                          label], alpha=0.5, label=label, marker="", linestyle=
