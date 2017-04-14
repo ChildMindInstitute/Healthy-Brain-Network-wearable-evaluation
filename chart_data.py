@@ -64,13 +64,13 @@ def buildperson(df, pw):
             device_df.sort_values(by='Timestamp', inplace=True)
             try:
                 device_df[['Timestamp']] = device_df.Timestamp.map(lambda x:
-                                       datetimeint(str(x)))
+                                           datetimeint(str(x)))
             except:
                 pass
             person_device_df = device_df.loc[(device_df['Timestamp'] >= start)
                                & (device_df['Timestamp'] <= stop)].copy()
             del device_df
-            # write_csv(person_device_df, person, 'accelerometer', device)
+            write_csv(person_device_df, person, 'accelerometer', device)
             person_device_df[['Timestamp']] = person_device_df.Timestamp.map(
                                               lambda x: datetimedt(x))
             print(device, end=" ranges: x=(")
@@ -94,7 +94,7 @@ def buildperson(df, pw):
             person_df_to_csv.sortlevel(inplace=True)
             del person_df_to_csv['Datestamp']
             linechart(person_df_to_csv, pw, d)
-            # write_csv(person_df_to_csv, person, 'accelerometer', d)
+            write_csv(person_df_to_csv, person, 'accelerometer', d=d)
         
 def linechart(df, pw, d=None):
     """
@@ -144,8 +144,8 @@ def linechart(df, pw, d=None):
                 else:
                     label = device
                 axes[i].plot_date(x=plot_line.index, y=plot_line, color=
-                        color_key[device], alpha=0.5, label=label, marker="",
-                        linestyle="solid")
+                                  color_key[device], alpha=0.5, label=label,
+                                  marker="", linestyle="solid")
             if i == 0:
                 axes[i].legend(loc='best', fancybox=True, framealpha=0.5)
             i = i + 1

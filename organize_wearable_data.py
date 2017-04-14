@@ -81,9 +81,9 @@ def actigraph_acc_data(open_csv):
     new_df[['Timestamp', 'x', 'y', 'z']] = df[['timestamp', 'axis1', 'axis2',
                                            'axis3']]
     new_df.set_index('Timestamp', inplace=True)
-    # convert from +1/256g to ±g
+    # convert from 1/512g to g
     for axis in axes:
-        new_df[axis] = new_df[axis].map(lambda x: float(x)/256 - 2)
+        new_df[axis] = new_df[axis].map(lambda x: float(x)/512)
     return(new_df)
 
 def actigraph_datetimeint(x):
@@ -476,14 +476,14 @@ def drop_non_csv(open_csv_file, drop_rows, header_row=False):
 
 def main():
     # accelerometry
-    e4_acc(e4_dir)
-    geneactiv_acc(geneactiv_dir)
+    #e4_acc(e4_dir)
+    #geneactiv_acc(geneactiv_dir)
     actigraph_acc(actigraph_dir)
-    wavelet_acc(wavelet_dir)
+    #wavelet_acc(wavelet_dir)
     
     # PPG
-    e4_ppg(e4_dir)
-    wavelet_ppg(wavelet_dir)
+    #e4_ppg(e4_dir)
+    #wavelet_ppg(wavelet_dir)
 
 def save_df(df, sensor, device):
     """
@@ -518,6 +518,7 @@ def save_df(df, sensor, device):
         os.makedirs(out_dir)
     print(''.join(['Saving formatted ', sensor, ' data from ', device]))
     df.to_csv(os.path.join(out_dir, '.'.join([device, 'csv'])))
+    print("Saved.")
     return(df)
 
 # ============================================================================
