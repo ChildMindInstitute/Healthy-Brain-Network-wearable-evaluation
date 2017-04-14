@@ -476,14 +476,14 @@ def drop_non_csv(open_csv_file, drop_rows, header_row=False):
 
 def main():
     # accelerometry
-    #e4_acc(e4_dir)
-    #geneactiv_acc(geneactiv_dir)
+    e4_acc(e4_dir)
+    geneactiv_acc(geneactiv_dir)
     actigraph_acc(actigraph_dir)
-    #wavelet_acc(wavelet_dir)
+    wavelet_acc(wavelet_dir)
     
     # PPG
-    #e4_ppg(e4_dir)
-    #wavelet_ppg(wavelet_dir)
+    e4_ppg(e4_dir)
+    wavelet_ppg(wavelet_dir)
 
 def save_df(df, sensor, device):
     """
