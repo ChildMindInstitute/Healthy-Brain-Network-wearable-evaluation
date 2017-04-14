@@ -142,11 +142,47 @@ def e4_acc(dirpath):
                            os.path.join(dirpath, acc), names=axes,
                            index_col=False))])
             print(' : '.join(['E4 accelorometer data, adding',  acc, str(
-                      acc_data.shape)]))
+                  acc_data.shape)]))
     # convert from 1/64g to g
     for axis in axes:
         acc_data[axis] = acc_data[axis].map(lambda x: float(x)/64)
     save_df(acc_data, 'accelerometer', 'E4')
+    
+def e4_ppg(dirpath):
+    """
+    Function to take all e4 PPG data from a directory and format those data
+    with Linux time-series index columns and nanowatt value columns
+    
+    Parameters
+    ----------
+    dirpath : string
+        path to E4 outputs
+        
+    Returns
+    -------
+    ppg_data : pandas dataframe
+        dataframe with Linux time-series index column and nanowatt value column
+    
+    Outputs
+    -------
+    E4.csv : csv file (via save_df() function)
+        comma-separated-values file with Linux time-series index column and 
+        nanowatt value column
+    """
+    ppg_data = pd.DataFrame()
+    for ppg in os.listdir(dirpath):
+        if "BPV" in ppg and ppg.endswith("csv"):
+            if ppg_data.empty:
+                ppg_data = e4_timestamp(pd.read_csv(os.path.join(dirpath, ppg),
+                           names=axes, index_col=False))
+                print(' : '.join([ppg, str(ppg_data.shape)]))
+            else:
+                ppg_data = pd.concat([ppg_data, e4_timestamp(pd.read_csv(
+                           os.path.join(dirpath, ppg), names=axes,
+                           index_col=False))])
+            print(' : '.join(['E4 photoplethysmograph data, adding',  ppg, str(
+                  ppg_data.shape)]))
+    save_df(ppg_data, 'photoplethysmograph', 'E4')
     
 def e4_timestamp(df):
     """
@@ -317,6 +353,51 @@ def wavelet_acc(dirpath):
                                  64)
     save_df(acc_data_returns, 'accelerometer', 'Wavelet')
     
+def wavelet_ppg(dirpath):
+    """
+    Function to take all Wavelet photoplethysmograph data from a directory and
+    format those data with Linux time-series index columns and nanowatt value
+    columns
+    
+    Parameters
+    ----------
+    dirpath : string
+        path to Wavelet outputs
+        
+    Returns
+    -------
+    acc_data_returns : pandas dataframe
+        dataframe with Linux time-series index column and nanowatt value columns
+    
+    Outputs
+    -------
+    Wavelet.csv : csv file (via save_df() function)
+        comma-separated-values file with Linux time-series index column and 
+        nanowatt PPG value columns
+    """    
+    csv_path = os.path.join(dirpath, 'CSV')
+    ppg_data = pd.DataFrame()
+    for ppg in os.listdir(csv_path):
+        if ppg.endswith("csv"):
+            if ppg_data.empty:
+                ppg_data = pd.read_csv(os.path.join(csv_path, ppg),
+                           header=0, skip_blank_lines=True, comment="C")
+                print(' : '.join([ppg, str(ppg_data.shape)]))
+            else:
+                ppg_data = pd.concat([ppg_data, pd.read_csv(os.path.join(
+                           csv_path, ppg), header=0, skip_blank_lines=True,
+                           comment="C")])
+            print(' : '.join(['Wavelet photoplethysmograph data, adding',  ppg,
+                  str(ppg_data.shape)]))
+    ppg_data['timestamp'] = ppg_data['timestamp'].map(lambda x:
+                            datetime.fromtimestamp(int(x)/1000).strftime(
+                            "%Y-%m-%d %H:%M:%S.%f"), na_action='ignore')
+    ppg_data_returns = pd.DataFrame()
+    ppg_data_returns[['Timestamp', 'infrared', 'red', 'infrared_filtered',
+                      'red_filtered']] = ppg_data[['timestamp', ' ir', ' red',
+                                         ' ir_filt', ' red_filt']]
+    ppg_data_returns.set_index('Timestamp', inplace=True)
+    save_df(ppg_data_returns, 'photoplethysmograph', 'Wavelet')
 
 """
 -----------------
@@ -391,10 +472,14 @@ def drop_non_csv(open_csv_file, drop_rows, header_row=False):
     return(df)
 
 def main():
+    # accelerometry
     e4_acc(e4_dir)
     geneactiv_acc(geneactiv_dir)
     actigraph_acc(actigraph_dir)
     wavelet_acc(wavelet_dir)
+    
+    # PPG
+    e4_ppg(e4_dir)
 
 def save_df(df, sensor, device):
     """
