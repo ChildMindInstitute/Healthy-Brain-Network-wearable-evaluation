@@ -73,6 +73,13 @@ def buildperson(df, pw):
             # write_csv(person_device_df, person, 'accelerometer', device)
             person_device_df[['Timestamp']] = person_device_df.Timestamp.map(
                                               lambda x: datetimedt(x))
+            print(device, end=" ranges: x=(")
+            print(min(person_device_df.x), end=", ")
+            print(max(person_device_df.x), end="), y=(")
+            print(min(person_device_df.y), end=", ")
+            print(max(person_device_df.y), end="), z=(")
+            print(min(person_device_df.z), end=", ")
+            print(max(person_device_df.z), end=")\n")
             person_device_df['device'] = device
             person_device_df = person_device_df[['device', "Timestamp", "x",
                                "y", "z"]]
@@ -132,8 +139,12 @@ def linechart(df, pw, d=None):
             plot_df = df.xs(axis, level=0, axis=1)
             for device in list(plot_df.columns):
                 plot_line = plot_df[[device]].dropna()
+                if "GENEActiv" in device:
+                    label = "GENEActiv"
+                else:
+                    label = device
                 axes[i].plot_date(x=plot_line.index, y=plot_line, color=
-                        color_key[device], alpha=0.5, label=device, marker="",
+                        color_key[device], alpha=0.5, label=label, marker="",
                         linestyle="solid")
             if i == 0:
                 axes[i].legend(loc='best', fancybox=True, framealpha=0.5)
