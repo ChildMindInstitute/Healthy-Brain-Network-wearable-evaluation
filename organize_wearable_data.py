@@ -14,7 +14,7 @@ Created on Fri Apr 7 17:27:05 2017
 from config import actigraph_dir, e4_dir, geneactiv_dir, organized_dir, \
                    wavelet_dir
 from datetime import datetime
-import numpy as np, os, pandas as pd, time
+import numpy as np, os, pandas as pd
 
 axes = ['x', 'y', 'z']
 
@@ -81,9 +81,9 @@ def actigraph_acc_data(open_csv):
     new_df[['Timestamp', 'x', 'y', 'z']] = df[['timestamp', 'axis1', 'axis2',
                                            'axis3']]
     new_df.set_index('Timestamp', inplace=True)
-    # convert from 1/128g to g
+    # convert from +1/256g to ±g
     for axis in axes:
-        new_df[axis] = new_df[axis].map(lambda x: float(x)/128)
+        new_df[axis] = new_df[axis].map(lambda x: float(x)/256 - 2)
     return(new_df)
 
 def actigraph_datetimeint(x):
@@ -297,6 +297,9 @@ def geneactiv_acc_data(open_csv):
     new_df = pd.DataFrame()
     new_df[['Timestamp', 'x', 'y', 'z']] = df[[0,1,2,3]]
     new_df.set_index('Timestamp', inplace=True)
+    # convert from 1/8g to g
+    for axis in axes:
+        new_df[axis] = new_df[axis].map(lambda x: float(x)/4)
     return(new_df)
 
 """
