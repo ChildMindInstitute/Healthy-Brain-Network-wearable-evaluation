@@ -174,11 +174,11 @@ def e4_ppg(dirpath):
         if "BVP" in ppg and ppg.endswith("csv"):
             if ppg_data.empty:
                 ppg_data = e4_timestamp(pd.read_csv(os.path.join(dirpath, ppg),
-                           names=axes, index_col=False))
+                           names=['nW'], index_col=False))
                 print(' : '.join([ppg, str(ppg_data.shape)]))
             else:
                 ppg_data = pd.concat([ppg_data, e4_timestamp(pd.read_csv(
-                           os.path.join(dirpath, ppg), names=axes,
+                           os.path.join(dirpath, ppg), names=['nW'],
                            index_col=False))])
             print(' : '.join(['E4 photoplethysmograph data, adding',  ppg, str(
                   ppg_data.shape)]))
@@ -473,16 +473,14 @@ def drop_non_csv(open_csv_file, drop_rows, header_row=False):
 
 def main():
     # accelerometry
-    """
     e4_acc(e4_dir)
     geneactiv_acc(geneactiv_dir)
     actigraph_acc(actigraph_dir)
     wavelet_acc(wavelet_dir)
-    """
     
     # PPG
     e4_ppg(e4_dir)
-    #wavelet_ppg(wavelet_dir)
+    wavelet_ppg(wavelet_dir)
 
 def save_df(df, sensor, device):
     """
