@@ -480,6 +480,7 @@ def main():
     
     # PPG
     e4_ppg(e4_dir)
+    wavelet_ppg(wavelet_dir)
 
 def save_df(df, sensor, device):
     """
