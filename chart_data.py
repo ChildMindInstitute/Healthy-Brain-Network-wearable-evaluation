@@ -3,20 +3,23 @@
 """
 chart_data.py
 
-Functions to organize data into charts from which we can comare our devices.
+Functions to organize data into charts from which we can compare
+our devices.
 
 Created on Mon Apr 10 17:25:39 2017
 
 @author: jon.clucas
 """
 from config import devices, organized_dir, placement_dir
-from datetime import date, datetime, time
+from datetime import datetime
 from organize_wearable_data import datetimedt, datetimeint
-import json, matplotlib.dates as mdates, numpy as np, os, pandas as pd, \
-       matplotlib.pyplot as plt
+import json, numpy as np, os, pandas as pd, matplotlib.pyplot as plt
 
 with open(os.path.join('./line_charts/device_colors.json')) as fp:
     color_key = json.load(fp)
+facecolors = {}
+facecolors['left'] = 'lightblue'
+facecolors['right'] = 'red'
 
 def main():
     people_df = getpeople()
@@ -78,10 +81,10 @@ def buildperson(df, pw):
         csv_df = split_datetimes(csv_df)
         csv_df.sort_values(by=["Datestamp", "Timestamp"], inplace=True)
         for d in csv_df.Datestamp.unique():
-            person_df_to_csv = csv_df.loc[(csv_df['Datestamp'] == d)]
-            person_df_to_csv = csv_df.pivot(index="Timestamp", columns="device"
-                               )
-            person_df_to_csv.sort_index(inplace=True)
+            df_to_csv = csv_df.loc[(csv_df['Datestamp'] == d)]
+            person_df_to_csv = df_to_csv.pivot(index="Timestamp", columns=
+                               "device")
+            person_df_to_csv.sortlevel(inplace=True)
             del person_df_to_csv['Datestamp']
             linechart(person_df_to_csv, pw, d)
             # write_csv(person_df_to_csv, person, 'accelerometer', d)
@@ -114,33 +117,36 @@ def linechart(df, pw, d=None):
     sensors = ['accelerometer']
     for sensor in sensors:
         print("Plotting...")
-        print(pw)
+        print(pw, end=" ")
         if d:
+            print(d, end=" ")
             svg_out = os.path.join(organized_dir, sensor, "_".join([
                       d.isoformat(), pw[0], '.'.join([pw[1], 'svg'])]))
         else:
             svg_out = os.path.join(organized_dir, sensor, "_".join([pw[0], 
                   '.'.join([pw[1], 'svg'])]))   
-        fig, axes = plt.subplots(figsize=(10, 8), dpi=200, nrows=3, ncols=1,
+        fig, axes = plt.subplots(figsize=(10, 8), dpi=75, nrows=3, ncols=1,
                     sharex=True)
-        colormap = []
         i = 0
         for axis in ['x', 'y', 'z']:
             plot_df = df.xs(axis, level=0, axis=1)
-            if colormap == []:
-                for device in list(plot_df.columns):
-                    colormap.append(color_key[device])
-            plot_df.plot(ax=axes[i], color=colormap, alpha=0.5, title=' '.join(
-                         [axis, "axis"]))
+            for device in list(plot_df.columns):
+                plot_line = plot_df[[device]].dropna()
+                axes[i].plot_date(x=plot_line.index, y=plot_line, color=
+                        color_key[device], alpha=0.5, label=device, marker="",
+                        linestyle="solid")
             if i == 0:
                 axes[i].legend(loc='best', fancybox=True, framealpha=0.5)
-            else:
-                axes[i].legend().set_visible(False)
             i = i + 1
-        plt.suptitle(''.join([pw[0], ', ', pw[1], ' wrist']))
+        if d:
+            plt.suptitle(''.join([d.isoformat(), ' ', pw[0], ', ', pw[1],
+                         ' wrist']))
+        else:
+            plt.suptitle(''.join([pw[0], ', ', pw[1], ' wrist']))
         plt.xticks(rotation=65)
         print("".join(["Saving ", svg_out]))
-        fig.savefig(svg_out)
+        fig.savefig(svg_out, facecolor=facecolors[pw[1]])
+        print("Saved.")
         plt.close()
         
 def getpeople():
@@ -204,8 +210,6 @@ def getpeople():
                            datetime.fromtimestamp(int(x)))
     people_df[['stop']] = people_df.stop.map(lambda x:
                           datetime.fromtimestamp(int(x)))
-    print(people_df)
-    print('\n')
     return(people_df)
     
 def get_startstop(df, person):
