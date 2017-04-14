@@ -120,8 +120,8 @@ def linechart(df, pw, d=None):
     """
     for filtered in ['red_filtered', 'infrared_filtered']:
         df = df.drop(filtered, axis=1, errors='ignore')
-    if 'nw' in list(df.columns):
-        df['nw'] = df['nw'].map(lambda x: x * 1000)
+    if 'nW' in list(df.columns):
+        df['nW'] = df['nW'].map(lambda x: x * 1000)
     sensors = ['photoplethysmograph']
     for sensor in sensors:
         print("Plotting...")
