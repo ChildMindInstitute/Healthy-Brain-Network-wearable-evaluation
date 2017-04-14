@@ -10,7 +10,7 @@ Created on Mon Apr 10 17:25:39 2017
 @author: jon.clucas
 """
 from config import devices, organized_dir, placement_dir
-from datetime import datetime
+from datetime import date, datetime, time
 from organize_wearable_data import datetimedt, datetimeint
 import json, matplotlib.dates as mdates, numpy as np, os, pandas as pd, \
        matplotlib.pyplot as plt
@@ -67,7 +67,7 @@ def buildperson(df, pw):
             person_device_df = device_df.loc[(device_df['Timestamp'] >= start)
                                & (device_df['Timestamp'] <= stop)].copy()
             del device_df
-            write_csv(person_device_df, person, 'accelerometer', device)
+            # write_csv(person_device_df, person, 'accelerometer', device)
             person_device_df[['Timestamp']] = person_device_df.Timestamp.map(
                                               lambda x: datetimedt(x))
             person_device_df['device'] = device
@@ -75,12 +75,18 @@ def buildperson(df, pw):
                                "y", "z"]]
             csv_df = pd.concat([csv_df, person_device_df])
     if len(csv_df) > 0:
-        csv_df.sort_values(by="Timestamp", inplace=True)
-        person_df_to_csv = csv_df.pivot(index="Timestamp", columns="device")
-        write_csv(person_df_to_csv, person, 'accelerometer')
-        linechart(person_df_to_csv, pw)
+        csv_df = split_datetimes(csv_df)
+        csv_df.sort_values(by=["Datestamp", "Timestamp"], inplace=True)
+        for d in csv_df.Datestamp.unique():
+            person_df_to_csv = csv_df.loc[(csv_df['Datestamp'] == d)]
+            person_df_to_csv = csv_df.pivot(index="Timestamp", columns="device"
+                               )
+            person_df_to_csv.sort_index(inplace=True)
+            del person_df_to_csv['Datestamp']
+            linechart(person_df_to_csv, pw, d)
+            # write_csv(person_df_to_csv, person, 'accelerometer', d)
         
-def linechart(df, pw):
+def linechart(df, pw, d=None):
     """
     Function to build a linechart of the given (person, wrist) and export an
     SVG of the image.
@@ -92,6 +98,9 @@ def linechart(df, pw):
     
     pw : 2-tuple (person_name : string, wrist : string)
         identifiers for plot
+        
+    d : date or None
+        date
         
     Returns
     -------
@@ -106,15 +115,18 @@ def linechart(df, pw):
     for sensor in sensors:
         print("Plotting...")
         print(pw)
-        svg_out = os.path.join(organized_dir, sensor, "_".join([pw[0], 
-                  '.'.join([pw[1], 'svg'])]))
+        if d:
+            svg_out = os.path.join(organized_dir, sensor, "_".join([
+                      d.isoformat(), pw[0], '.'.join([pw[1], 'svg'])]))
+        else:
+            svg_out = os.path.join(organized_dir, sensor, "_".join([pw[0], 
+                  '.'.join([pw[1], 'svg'])]))   
         fig, axes = plt.subplots(figsize=(10, 8), dpi=200, nrows=3, ncols=1,
                     sharex=True)
         colormap = []
         i = 0
         for axis in ['x', 'y', 'z']:
             plot_df = df.xs(axis, level=0, axis=1)
-            print(type(plot_df.index.values[0]))
             if colormap == []:
                 for device in list(plot_df.columns):
                     colormap.append(color_key[device])
@@ -223,8 +235,30 @@ def get_startstop(df, person):
     ssdt = "%Y-%m-%d %H:%M:%S"
     return(person, datetimeint(min(starts).strftime(ssdt), ssdt),
            datetimeint(max(stops).strftime(ssdt), ssdt))
+    
+def split_datetimes(df):
+    """
+    Function to split datetimes into dates and times.
+    
+    Parameters
+    ----------
+    df : pandas dataframe
+        dataframe with "Timestamp" column
+        
+    Returns
+    -------
+    dtdf : pandas dataframe
+        dataframe with "Datestamp" and "Timestamp" columns
+    """
+    dtdf = df.copy()
+    try:
+        dtdf['Datestamp'] = dtdf.Timestamp.map(lambda x: x.to_datetime().date()
+                            )
+    except:
+        dtdf['Datestamp'] = dtdf.Timestamp.map(lambda x: x.date())
+    return(dtdf)
 
-def write_csv(df, person, sensor, device=None):
+def write_csv(df, person, sensor, device=None, d=None):
     """
     Function to write a csv for a person-wrist for a particular sensor.
     
@@ -239,9 +273,12 @@ def write_csv(df, person, sensor, device=None):
     sensor : string
         type of sensor data included in df
     
-    device : string
+    device : string or None
         device name
         
+    d : datetime.date or None
+        date  
+    
     Returns
     -------
     df : pandas dataframe
@@ -254,11 +291,20 @@ def write_csv(df, person, sensor, device=None):
         organized_dir/`sensor`/`person_name`_`wrist`_`sensor`.csv
     """
     if device:
-        csv_out = os.path.join(organized_dir, sensor, "_".join([person[0],
-                  person[1], '.'.join([device, 'csv'])]))
+        if d:
+            csv_out = os.path.join(organized_dir, sensor, "_".join([
+                      d.isoformat(), person[0], person[1], '.'.join([device,
+                      'csv'])]))
+        else:
+            csv_out = os.path.join(organized_dir, sensor, "_".join([person[0],
+                      person[1], '.'.join([device, 'csv'])]))
     else:
-        csv_out = os.path.join(organized_dir, sensor, "_".join([person[0],
-                  '.'.join([person[1], 'csv'])]))
+        if d:
+            csv_out = os.path.join(organized_dir, sensor, "_".join([
+                      d.isoformat(), person[0], '.'.join([person[1], 'csv'])]))
+        else:
+            csv_out = os.path.join(organized_dir, sensor, "_".join([person[0],
+                      '.'.join([person[1], 'csv'])]))
     if not os.path.exists(os.path.dirname(csv_out)):
         os.makedirs(os.path.dirname(csv_out))
     print(''.join(["Saving ", csv_out]))
