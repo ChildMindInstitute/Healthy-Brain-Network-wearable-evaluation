@@ -11,7 +11,7 @@ Created on Mon Apr 10 17:25:39 2017
 @author: jon.clucas
 """
 from config import devices, organized_dir, placement_dir
-from datetime import datetime
+from datetime import datetime, timedelta
 from organize_wearable_data import datetimedt, datetimeint
 import json, numpy as np, os, pandas as pd, matplotlib.pyplot as plt
 
@@ -70,7 +70,7 @@ def buildperson(df, pw):
             person_device_df = device_df.loc[(device_df['Timestamp'] >= start)
                                & (device_df['Timestamp'] <= stop)].copy()
             del device_df
-            write_csv(person_device_df, person, 'accelerometer', device)
+            # write_csv(person_device_df, person, 'accelerometer', device)
             person_device_df[['Timestamp']] = person_device_df.Timestamp.map(
                                               lambda x: datetimedt(x))
             print(device, end=" ranges: x=(")
@@ -85,17 +85,15 @@ def buildperson(df, pw):
                                "y", "z"]]
             csv_df = pd.concat([csv_df, person_device_df])
     if len(csv_df) > 0:
-        csv_df = split_datetimes(csv_df)
-        csv_df.sort_values(by=["Datestamp", "Timestamp"], inplace=True)
-        for d in csv_df.Datestamp.unique():
-            df_to_csv = csv_df.loc[(csv_df['Datestamp'] == d)]
+        csv_dfs = split_datetimes(csv_df)
+        for df_to_csv in csv_dfs:
             person_df_to_csv = df_to_csv.pivot(index="Timestamp", columns=
                                "device")
             person_df_to_csv.sortlevel(inplace=True)
-            del person_df_to_csv['Datestamp']
+            print(person_df_to_csv)
             linechart(person_df_to_csv, pw, d)
             write_csv(person_df_to_csv, person, 'accelerometer', d=d)
-        
+
 def linechart(df, pw, d=None):
     """
     Function to build a linechart of the given (person, wrist) and export an
@@ -178,9 +176,9 @@ def getpeople():
     person = pd.read_csv(os.path.join(placement_dir, 'person.csv'))
     wrist = pd.read_csv(os.path.join(placement_dir, 'wrist.csv'))
     person_wrist = pd.DataFrame()
-    pw0 = pd.merge(person, wrist, how="outer", on="﻿Timestamp", suffixes=(
+    pw0 = pd.merge(person, wrist, how="outer", on="Timestamp", suffixes=(
           '_person', '_wrist'))
-    person_wrist[['Timestamp']] = pw0[["﻿Timestamp"]]
+    person_wrist[['Timestamp']] = pw0[["Timestamp"]]
     person_wrist['Actigraph'] = tuple(zip(pw0.Actigraph_person,
                                 pw0.Actigraph_wrist))
     person_wrist['E4'] = tuple(zip(pw0.E4_person, pw0.E4_wrist))
@@ -262,16 +260,22 @@ def split_datetimes(df):
         
     Returns
     -------
-    dtdf : pandas dataframe
-        dataframe with "Datestamp" and "Timestamp" columns
+    dtdfs : list of pandas dataframes
+        dataframes of 1 day or less "Timestamp" columns
     """
     dtdf = df.copy()
-    try:
-        dtdf['Datestamp'] = dtdf.Timestamp.map(lambda x: x.to_datetime().date()
-                            )
-    except:
-        dtdf['Datestamp'] = dtdf.Timestamp.map(lambda x: x.date())
-    return(dtdf)
+    dtdf.reset_index(inplace=True)
+    start = dtdf.Timestamp[0]
+    stop = min(start + timedelta(hours=24), dtdf.Timestamp[0])
+    if stop >= start + timedelta(hours=24):
+        return([dtdf])
+    else:
+        dtdfs = []
+        while(stop < start + timedelta(hours=24)):
+            dtdfs.append(dtdf.copy().loc[(dtdf.Timestamp >= start) & (dtdf.Timestamp <= stop)])
+            start = stop
+            stop = min(start + timedelta(hours=24), dtdf.Timestamp[0])
+        return(dtdfs)
 
 def write_csv(df, person, sensor, device=None, d=None):
     """
@@ -305,6 +309,7 @@ def write_csv(df, person, sensor, device=None, d=None):
         csv copy of dataframe stored in
         organized_dir/`sensor`/`person_name`_`wrist`_`sensor`.csv
     """
+
     if device:
         if d:
             csv_out = os.path.join(organized_dir, sensor, "_".join([
