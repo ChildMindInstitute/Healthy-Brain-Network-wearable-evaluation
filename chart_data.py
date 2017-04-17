@@ -87,6 +87,10 @@ def buildperson(df, pw):
     if len(csv_df) > 0:
         csv_dfs = split_datetimes(csv_df)
         for df_to_csv in csv_dfs:
+            try:
+                d = df_to_csv.Timestamp[0].to_datetime().date()
+            except:
+                d = df_to_csv.Timestamp[0].date()
             person_df_to_csv = df_to_csv.pivot(index="Timestamp", columns=
                                "device")
             person_df_to_csv.sortlevel(inplace=True)
