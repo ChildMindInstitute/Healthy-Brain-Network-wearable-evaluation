@@ -17,9 +17,7 @@ import json, numpy as np, os, pandas as pd, matplotlib.pyplot as plt
 
 with open(os.path.join('./line_charts/device_colors.json')) as fp:
     color_key = json.load(fp)
-facecolors = {}
-facecolors['left'] = 'lightblue'
-facecolors['right'] = 'red'
+facecolors = {'left':'lightblue', 'right':'pink'}
 
 def main():
     people_df = getpeople()
@@ -180,9 +178,9 @@ def getpeople():
     person = pd.read_csv(os.path.join(placement_dir, 'person.csv'))
     wrist = pd.read_csv(os.path.join(placement_dir, 'wrist.csv'))
     person_wrist = pd.DataFrame()
-    pw0 = pd.merge(person, wrist, how="outer", on="Timestamp", suffixes=(
+    pw0 = pd.merge(person, wrist, how="outer", on="﻿Timestamp", suffixes=(
           '_person', '_wrist'))
-    person_wrist[['Timestamp']] = pw0[["Timestamp"]]
+    person_wrist[['Timestamp']] = pw0[["﻿Timestamp"]]
     person_wrist['Actigraph'] = tuple(zip(pw0.Actigraph_person,
                                 pw0.Actigraph_wrist))
     person_wrist['E4'] = tuple(zip(pw0.E4_person, pw0.E4_wrist))
@@ -270,15 +268,17 @@ def split_datetimes(df):
     dtdf = df.copy()
     dtdf.reset_index(inplace=True)
     start = dtdf.Timestamp[0]
-    stop = min(start + timedelta(hours=24), dtdf.Timestamp[0])
+    final = len(dtdf) - 1
+    stop = min(start + timedelta(hours=24), dtdf.Timestamp[final])
     if stop >= start + timedelta(hours=24):
         return([dtdf])
     else:
         dtdfs = []
         while(stop < start + timedelta(hours=24)):
-            dtdfs.append(dtdf.copy().loc[(dtdf.Timestamp >= start) & (dtdf.Timestamp <= stop)])
+            dtdfs.append(dtdf.copy().loc[(dtdf.Timestamp >= start) & (
+                         dtdf.Timestamp <= stop)])
             start = stop
-            stop = min(start + timedelta(hours=24), dtdf.Timestamp[0])
+            stop = min(start + timedelta(hours=24), dtdf.Timestamp[final])
         return(dtdfs)
 
 def write_csv(df, person, sensor, device=None, d=None):

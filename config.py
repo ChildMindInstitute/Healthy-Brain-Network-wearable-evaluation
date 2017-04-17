@@ -21,3 +21,9 @@ devices = ['Actigraph', 'E4', 'Embrace', 'GENEActiv_black', 'GENEActiv_pink',
 
 organized_dir = os.path.abspath('./organized')
 placement_dir = os.path.join(organized_dir, 'device_placement')
+
+sensor_dictionary = {'Actigraph':['accelerometer', 'ecg', 'light'],
+                    'Embrace':['accelerometer', 'gyro', 'eda', 'temp'],
+                    'E4':['accelerometer', 'ppg', 'eda', 'temp'],
+                    'Wavelet':['accelerometer', 'gyro', 'ppg'],
+                    'GENEActiv':['accelerometer', 'light', 'temp']}
