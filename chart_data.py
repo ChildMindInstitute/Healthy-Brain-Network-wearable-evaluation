@@ -10,6 +10,7 @@ Created on Mon Apr 10 17:25:39 2017
 
 @author: jon.clucas
 """
+from annotate_range import annotation_line
 from config import devices, organized_dir, placement_dir
 from datetime import datetime, timedelta
 from organize_wearable_data import datetimedt, datetimeint
@@ -121,44 +122,54 @@ def linechart(df, pw, d=None):
     person_wrist.svg : svg file
         svg of lineplot
     """
-    sensors = ['accelerometer']
-    for sensor in sensors:
-        print("Plotting...")
-        print(pw, end=" ")
-        if d:
-            print(d, end=" ")
-            svg_out = os.path.join(organized_dir, sensor, "_".join([
-                      d.isoformat(), pw[0], '.'.join([pw[1], 'svg'])]))
-        else:
-            svg_out = os.path.join(organized_dir, sensor, "_".join([pw[0], 
-                  '.'.join([pw[1], 'svg'])]))   
-        fig, axes = plt.subplots(figsize=(10, 8), dpi=75, nrows=3, ncols=1,
-                    sharex=True)
-        i = 0
-        for axis in ['x', 'y', 'z']:
-            plot_df = df.xs(axis, level=0, axis=1)
-            for device in list(plot_df.columns):
-                plot_line = plot_df[[device]].dropna()
-                if "GENEActiv" in device:
-                    label = "GENEActiv"
-                else:
-                    label = device
-                axes[i].plot_date(x=plot_line.index, y=plot_line, color=
-                                  color_key[device], alpha=0.5, label=label,
-                                  marker="", linestyle="solid")
+    start = min(df.Timestamp)
+    stop = max(df.Timestamp)
+    w_log = pd.read_csv(os.path.join(placement_dir, 'wearable_log.csv'),
+            parse_dates={'start':['start date', 'start time'], 'stop':[
+            'end date', 'end time']})
+    print("Plotting...")
+    print(pw, end=" ")
+    if d:
+        print(d, end=" ")
+        svg_out = os.path.join(organized_dir, 'accelerometer', "_".join([
+                  d.isoformat(), pw[0], '.'.join([pw[1], 'svg'])]))
+    else:
+        svg_out = os.path.join(organized_dir, 'accelerometer', "_".join([pw[0], 
+              '.'.join([pw[1], 'svg'])]))   
+    fig, axes = plt.subplots(figsize=(10, 8), dpi=75, nrows=3, ncols=1,
+                sharex=True)
+    i = 0
+    for axis in ['x', 'y', 'z']:
+        plot_df = df.xs(axis, level=0, axis=1)
+        for device in list(plot_df.columns):
+            pw_log = w_log.loc[(w_log['wearer'] == pw[0]) & (w_log['wrist'] ==
+                     pw[1]) & (w_log['start'] >= start) & (w_log['stop'] <=
+                     stop) & (w_log['device'] == device)].copy()
+            plot_line = plot_df[[device]].dropna()
+            if "GENEActiv" in device:
+                label = "GENEActiv"
+            else:
+                label = device
+            axes[i].plot_date(x=plot_line.index, y=plot_line, color=
+                              color_key[device], alpha=0.5, label=label,
+                              marker="", linestyle="solid")
             if i == 0:
-                axes[i].legend(loc='best', fancybox=True, framealpha=0.5)
-            i = i + 1
-        if d:
-            plt.suptitle(''.join([d.isoformat(), ' ', pw[0], ', ', pw[1],
-                         ' wrist']))
-        else:
-            plt.suptitle(''.join([pw[0], ', ', pw[1], ' wrist']))
-        plt.xticks(rotation=65)
-        print("".join(["Saving ", svg_out]))
-        fig.savefig(svg_out, facecolor=facecolors[pw[1]])
-        print("Saved.")
-        plt.close()
+                for row in pw_log.iterrows():
+                    annotation_line(axes[0], start, stop, row['activity'])
+        if i == 0:
+            axes[i].legend(loc='best', fancybox=True, framealpha=0.5)
+        i = i + 1
+    if d:
+        plt.suptitle(''.join(['–'.join([d.isoformat(), (d + timedelta(days=
+                     1)).isoformat()]), ' ', pw[0], ', ', pw[1], ' wrist'])
+                     )
+    else:
+        plt.suptitle(''.join([pw[0], ', ', pw[1], ' wrist']))
+    plt.xticks(rotation=65)
+    print("".join(["Saving ", svg_out]))
+    fig.savefig(svg_out, facecolor=facecolors[pw[1]])
+    print("Saved.")
+    plt.close()
         
 def getpeople():
     """
