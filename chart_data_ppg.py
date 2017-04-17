@@ -15,15 +15,10 @@ from chart_data import getpeople, get_startstop, split_datetimes, write_csv
 from organize_wearable_data import datetimedt, datetimeint
 import os, pandas as pd, matplotlib.pyplot as plt
 
-color_key = {}
-color_key['Wavelet red'] = 'red'
-color_key['Wavelet infrared'] = 'black'
-color_key['E4 PPG (amplified ×1,000)'] = 'green'
-color_key['Wavelet infrared filtered'] = 'grey'
-color_key['Wavelet red filtered'] = 'pink'
-facecolors = {}
-facecolors['left'] = 'lightblue'
-facecolors['right'] = 'red'
+color_key = {'Wavelet red':'red', 'Wavelet infrared':'black',
+             'E4 PPG (amplified ×1,000)':'green', 'Wavelet infrared filtered':
+             'grey', 'Wavelet red filtered': 'pink'}
+facecolors = {'left':'lightblue', 'right':'pink'}
 
 def main():
     people_df = getpeople()
