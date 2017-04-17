@@ -104,6 +104,76 @@ def actigraph_datetimeint(x):
     dt_format='%Y-%m-%d %H:%M:%S'
     return(datetimeint(x, dt_format))
 
+def actigraph_1c(dirpath, feature):
+    """
+    Function to take all Actigraph accelerometry data from a directory and
+    format those data with Linux time-series index columns and x, y, z value
+    columns
+    
+    Parameters
+    ----------
+    dirpath : string
+        path to E4 outputs
+        
+    Returns
+    -------
+    acc_data : pandas dataframe
+        dataframe with Linux time-series index column and x, y, z value columns
+    
+    Outputs
+    -------
+    Actigraph.csv : csv file (via save_df() function)
+        comma-separated-values file with Linux time-series index column and x,
+        y, z accelerometer value columns
+    """
+    sensors = {'lux':'light', 'hr':'heartrate'}
+    acc_data = pd.DataFrame
+    for acc in os.listdir(dirpath):
+        if acc.endswith("1sec.csv"):
+            if acc_data.empty:
+                with open(os.path.join(dirpath, acc), 'r') as acc_f:
+                    try:
+                        acc_data = actigraph_1c_data(acc_f, feature)
+                    except:
+                        pass
+            else:
+                with open(os.path.join(dirpath, acc), 'r') as acc_f:
+                    try:
+                        acc_data = pd.concat([acc_data, actigraph_1c_data(
+                                   acc_f, feature)])
+                    except:
+                        pass
+            print(' : '.join([' '.join(['Actigraph', sensors[feature] ,
+                  'data, adding']), acc, str(acc_data.shape)]))
+    save_df(acc_data, sensors[feature], 'Actigraph')
+    
+def actigraph_1c_data(open_csv, feature):
+    """
+    Function to collect Actigraph data and return dataframe with Linux time-
+    series index column and feature value columns
+    
+    Parameters
+    ----------
+    df : pandas dataframe
+        dataframe for which to organize data
+        
+    feature : string
+        the column name in the source file for the feature we want to look at
+        
+    Returns
+    -------
+    new_df : pandas dataframe
+        dataframe with Linux time-series index column and feature value
+        columns
+    """
+    
+    df = drop_non_csv(open_csv, 10, True)
+    df['timestamp'] = df['timestamp'].map(actigraph_datetimeint)
+    new_df = pd.DataFrame()
+    new_df[['Timestamp', feature]] = df[['timestamp', feature]]
+    new_df.set_index('Timestamp', inplace=True)
+    return(new_df)
+
 """
 -----------
 Empatica E4
@@ -112,7 +182,7 @@ Empatica E4
 def e4_acc(dirpath):
     """
     Function to take all e4 accelerometry data from a directory and format
-    those data with Linux time-series index columns and x, y, z value columns
+    those data with Linux time-series index column and x, y, z value columns
     
     Parameters
     ----------
@@ -211,6 +281,46 @@ def e4_timestamp(df):
     new_df.set_index('Timestamp', inplace=True)
     return(new_df)
 
+def e4_1c(dirpath, feature):
+    """
+    Function to take all e4 accelerometry data from a directory and format
+    those data with Linux time-series index column and feature value column
+    
+    Parameters
+    ----------
+    dirpath : string
+        path to E4 outputs
+        
+    feature : string
+        the column name in the source file for the feature we want to look at
+        
+    Returns
+    -------
+    acc_data : pandas dataframe
+        dataframe with Linux time-series index column and feature value column
+    
+    Outputs
+    -------
+    E4.csv : csv file (via save_df() function)
+        comma-separated-values file with Linux time-series index column and 
+        feature value columns
+    """    
+    sensors = {'HR':'heartrate', 'TEMP':'temperature'}
+    feat_data = pd.DataFrame()
+    for feat_file in os.listdir(dirpath):
+        if feature in feat_file and feat_file.endswith("csv"):
+            if feat_data.empty:
+                feat_data = e4_timestamp(pd.read_csv(os.path.join(dirpath, 
+                            feat_file), names=axes, index_col=False))
+                print(' : '.join([feat_file, str(feat_data.shape)]))
+            else:
+                feat_data = pd.concat([feat_data, e4_timestamp(pd.read_csv(
+                           os.path.join(dirpath, feat_file), names=axes,
+                           index_col=False))])
+            print(' : '.join(['E4 ', ' '.join([sensors[feature],
+                  'data, adding']),  feat_file, str(feat_data.shape)]))
+    save_df(feat_data, sensors[feature], 'E4')
+
 """
 ----------------
 Empatica Embrace
@@ -231,7 +341,7 @@ GENEActiv Original
 def geneactiv_acc(dirpath):
     """
     Function to take all GENEActiv accelerometry data from a directory and
-    format those data with Linux time-series index columns and x, y, z value
+    format those data with Linux time-series index column and x, y, z value
     columns
     
     Parameters
@@ -269,12 +379,12 @@ def geneactiv_acc(dirpath):
                     acc_data_pink = geneactiv_acc_data(acc_f)
             else:
                 with open(os.path.join(dirpath, acc), 'r') as acc_f:
-                    acc_data_pink = pd.concat([acc_data_black, 
+                    acc_data_pink = pd.concat([acc_data_pink, 
                                      geneactiv_acc_data(acc_f)])
             print(' : '.join(['Pink GENEActiv accelorometer data, adding',
                   acc, str(acc_data_pink.shape)]))
     save_df(acc_data_black, 'accelerometer', 'GENEActiv_black')
-    save_df(acc_data_black, 'accelerometer', 'GENEActiv_pink')
+    save_df(acc_data_pink, 'accelerometer', 'GENEActiv_pink')
     
 def geneactiv_acc_data(open_csv):
     """
@@ -300,6 +410,86 @@ def geneactiv_acc_data(open_csv):
     # convert from 1/8g to g
     for axis in axes:
         new_df[axis] = new_df[axis].map(lambda x: float(x)/4)
+    return(new_df)
+
+def geneactiv_1c(dirpath, feature):
+    """
+    Function to take all GENEActiv accelerometry data from a directory and
+    format those data with Linux time-series index column and feature value
+    columns
+    
+    Parameters
+    ----------
+    dirpath : string
+        path to E4 outputs
+        
+    feature : string
+        the column name in the source file for the feature we want to look at
+        
+    Returns
+    -------
+    acc_data : pandas dataframe
+        dataframe with Linux time-series index column and feature value columns
+    
+    Outputs
+    -------
+    GENEActiv_`color`.csv : csv file (via save_df() function)
+        comma-separated-values file with Linux time-series index column and 
+        feature value columns
+    """    
+    sensor = {4:'light', 6:'temperature'}
+    feat_data_black = pd.DataFrame()
+    feat_data_pink = pd.DataFrame()
+    for feat_file in os.listdir(dirpath):
+        if "Jon" in feat_file and feat_file.endswith("csv"):
+            if feat_data_black.empty:
+                with open(os.path.join(dirpath, feat_file), 'r') as fd_f:
+                    feat_data_black = geneactiv_1c_data(fd_f, feature, sensor[
+                                      feature])
+            else:
+                with open(os.path.join(dirpath, feat_file), 'r') as fd_f:
+                    feat_data_black = pd.concat([feat_data_black, 
+                                     geneactiv_1c_data(fd_f, feature, sensor[
+                                                       feature])])
+            print(' : '.join(['Black GENEActiv ', ' '.join([sensor[feature], 
+                  'data, adding']), feat_file, str(feat_data_black.shape)]))
+        elif (("Curt" in feat_file or "Arno" in feat_file) and
+              feat_file.endswith("csv")):
+            if feat_data_pink.empty:
+                with open(os.path.join(dirpath, feat_file), 'r') as fd_f:
+                    feat_data_pink = geneactiv_1c_data(fd_f, feature, sensor[
+                                     feature])
+            else:
+                with open(os.path.join(dirpath, feat_file), 'r') as fd_f:
+                    feat_data_pink = pd.concat([feat_data_pink, 
+                                     geneactiv_1c_data(fd_f, feature, sensor[
+                                                       feature])])
+            print(' : '.join(['Pink GENEActiv,', ' '.join([sensor[feature], 
+                  'data, adding']), feat_file, str(feat_data_pink.shape)]))
+    save_df(feat_data_black, sensor[feature], 'GENEActiv_black')
+    save_df(feat_data_pink, sensor[feature], 'GENEActiv_pink')
+    
+def geneactiv_1c_data(open_csv, feature, label):
+    """
+    Function to collect GENEActiv data and return dataframe with Linux time-
+    series index column and feature value columns
+    
+    Parameters
+    ----------
+    df : pandas dataframe
+        dataframe for which to organize data
+        
+    Returns
+    -------
+    new_df : pandas dataframe
+        dataframe with Linux time-series index column and feature value
+        column
+    """
+    df = drop_non_csv(open_csv, 100)
+    df[0] = df[0].map(datetimeint)
+    new_df = pd.DataFrame()
+    new_df[['Timestamp', label]] = df[[0,feature]]
+    new_df.set_index('Timestamp', inplace=True)
     return(new_df)
 
 """
@@ -476,14 +666,30 @@ def drop_non_csv(open_csv_file, drop_rows, header_row=False):
 
 def main():
     # accelerometry
+    """
     e4_acc(e4_dir)
+    """
     geneactiv_acc(geneactiv_dir)
+    """
     actigraph_acc(actigraph_dir)
     wavelet_acc(wavelet_dir)
     
     # PPG
     e4_ppg(e4_dir)
     wavelet_ppg(wavelet_dir)
+    """
+    
+    # HR
+    # actigraph_1c(actigraph_dir, 'hr')
+    # e4_1c(e4_dir, 'HR')
+    
+    # Light
+    # actigraph_1c(actigraph_dir, 'lux')
+    geneactiv_1c(geneactiv_dir, 4)
+    
+    # Temperature
+    # e4_1c(e4_dir, 'TEMP')
+    geneactiv_1c(geneactiv_dir, 6)
 
 def save_df(df, sensor, device):
     """

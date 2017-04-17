@@ -68,7 +68,7 @@ def buildperson(df, pw):
             person_device_df = device_df.loc[(device_df['Timestamp'] >= start)
                                & (device_df['Timestamp'] <= stop)].copy()
             del device_df
-            # write_csv(person_device_df, person, 'accelerometer', device)
+            write_csv(person_device_df, person, 'accelerometer', device)
             person_device_df[['Timestamp']] = person_device_df.Timestamp.map(
                                               lambda x: datetimedt(x))
             print(device, end=" ranges: x=(")
@@ -85,6 +85,7 @@ def buildperson(df, pw):
     if len(csv_df) > 0:
         csv_dfs = split_datetimes(csv_df)
         for df_to_csv in csv_dfs:
+            df_to_csv.reset_index(inplace=True)
             try:
                 d = df_to_csv.Timestamp[0].to_datetime().date()
             except:
@@ -92,7 +93,6 @@ def buildperson(df, pw):
             person_df_to_csv = df_to_csv.pivot(index="Timestamp", columns=
                                "device")
             person_df_to_csv.sortlevel(inplace=True)
-            print(person_df_to_csv)
             linechart(person_df_to_csv, pw, d)
             write_csv(person_df_to_csv, person, 'accelerometer', d=d)
 
@@ -267,19 +267,23 @@ def split_datetimes(df):
     """
     dtdf = df.copy()
     dtdf.reset_index(inplace=True)
-    start = dtdf.Timestamp[0]
-    final = len(dtdf) - 1
-    stop = min(start + timedelta(hours=24), dtdf.Timestamp[final])
-    if stop >= start + timedelta(hours=24):
+    start = min(dtdf.Timestamp)
+    final = max(dtdf.Timestamp)
+    stop = min(start + timedelta(hours=24), final)
+    if stop >= final:
         return([dtdf])
     else:
         dtdfs = []
-        while(stop < start + timedelta(hours=24)):
-            dtdfs.append(dtdf.copy().loc[(dtdf.Timestamp >= start) & (
-                         dtdf.Timestamp <= stop)])
+        while(stop < final):
+            print(' : '.join([str(start), str(stop), str(final)]))
+            dtdfs.append(dtdf.loc[(dtdf.Timestamp >= start) & (
+                         dtdf.Timestamp <= stop)].copy())
             start = stop
-            stop = min(start + timedelta(hours=24), dtdf.Timestamp[final])
-        return(dtdfs)
+            stop = min(start + timedelta(hours=24), final)
+        print(' : '.join([str(start), str(stop), str(final)]))
+        dtdfs.append(dtdf.loc[(dtdf.Timestamp >= start) & (dtdf.Timestamp <=
+                     stop)].copy())
+    return(dtdfs)
 
 def write_csv(df, person, sensor, device=None, d=None):
     """
