@@ -305,18 +305,19 @@ def e4_1c(dirpath, feature):
         comma-separated-values file with Linux time-series index column and 
         feature value columns
     """    
-    sensors = {'HR':'heartrate', 'TEMP':'temperature'}
+    sensors = {'HR':'heartrate', 'TEMP':'temperature', 'EDA':'EDA'}
     feat_data = pd.DataFrame()
     for feat_file in os.listdir(dirpath):
         if feature in feat_file and feat_file.endswith("csv"):
             if feat_data.empty:
                 feat_data = e4_timestamp(pd.read_csv(os.path.join(dirpath, 
-                            feat_file), names=axes, index_col=False))
+                            feat_file), names=[sensors[feature]], index_col=
+                            False))
                 print(' : '.join([feat_file, str(feat_data.shape)]))
             else:
                 feat_data = pd.concat([feat_data, e4_timestamp(pd.read_csv(
-                           os.path.join(dirpath, feat_file), names=axes,
-                           index_col=False))])
+                            os.path.join(dirpath, feat_file), names=[sensors[
+                            feature]], index_col=False))])
             print(' : '.join(['E4 ', ' '.join([sensors[feature],
                   'data, adding']),  feat_file, str(feat_data.shape)]))
     save_df(feat_data, sensors[feature], 'E4')
@@ -666,29 +667,34 @@ def drop_non_csv(open_csv_file, drop_rows, header_row=False):
 
 def main():
     # accelerometry
-    """
+    # unit: g
     e4_acc(e4_dir)
-    """
     geneactiv_acc(geneactiv_dir)
-    """
     actigraph_acc(actigraph_dir)
     wavelet_acc(wavelet_dir)
     
     # PPG
+    # unit: nW
     e4_ppg(e4_dir)
     wavelet_ppg(wavelet_dir)
-    """
+    
+    # EDA
+    # unit: μS
+    e4_1c(e4_dir, 'EDA')
     
     # HR
-    # actigraph_1c(actigraph_dir, 'hr')
-    # e4_1c(e4_dir, 'HR')
+    # unit: bpm
+    actigraph_1c(actigraph_dir, 'hr')
+    e4_1c(e4_dir, 'HR')
     
     # Light
-    # actigraph_1c(actigraph_dir, 'lux')
+    # unit: lx
+    actigraph_1c(actigraph_dir, 'lux')
     geneactiv_1c(geneactiv_dir, 4)
     
     # Temperature
-    # e4_1c(e4_dir, 'TEMP')
+    # unit: °C
+    e4_1c(e4_dir, 'TEMP')
     geneactiv_1c(geneactiv_dir, 6)
 
 def save_df(df, sensor, device):
