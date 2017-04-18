@@ -122,6 +122,8 @@ def plot_temperature(device):
             pass
         plot_2d(df, fp, device, 'temperature')
 
+
+
 def main():
     # assign functions to sensors
     plot_fxn = {'accelerometer':plot_acc, 'gyro':plot_acc, 'ppg':plot_ppg,

@@ -122,29 +122,40 @@ def linechart(df, pw, d=None):
     person_wrist.svg : svg file
         svg of lineplot
     """
-    start = min(df.Timestamp)
-    stop = max(df.Timestamp)
+    start = min(df.index.values)
+    stop = max(df.index.values)
     w_log = pd.read_csv(os.path.join(placement_dir, 'wearable_log.csv'),
             parse_dates={'start':['start date', 'start time'], 'stop':[
             'end date', 'end time']})
+    w_log.dropna(inplace=True)
+    w_log['start'] = pd.to_datetime(w_log.start, errors="coerce")
+    w_log['stop'] = pd.to_datetime(w_log.stop, errors="coerce")
     print("Plotting...")
     print(pw, end=" ")
     if d:
-        print(d, end=" ")
+        print(d)
         svg_out = os.path.join(organized_dir, 'accelerometer', "_".join([
                   d.isoformat(), pw[0], '.'.join([pw[1], 'svg'])]))
     else:
+        print('\n')
         svg_out = os.path.join(organized_dir, 'accelerometer', "_".join([pw[0], 
-              '.'.join([pw[1], 'svg'])]))   
+              '.'.join([pw[1], 'svg'])]))
+    png_out = ''.join([svg_out.strip('svg'), 'png'])
     fig, axes = plt.subplots(figsize=(10, 8), dpi=75, nrows=3, ncols=1,
                 sharex=True)
     i = 0
+    annotations_a = {}
+    annotations_b = {}
+    annotation_y = -2.5
+    pw_log = w_log.loc[(w_log['wearer'] == pw[0]) & (w_log['wrist'] == pw[1]) &
+             (w_log['start'] >= start) & (w_log['stop'] <= stop)].copy()
+    for row in pw_log.itertuples():
+        if row[4] not in annotations_a:
+            annotations_a[row[4]] = row[1]
+            annotations_b[row[4]] = row[2]
     for axis in ['x', 'y', 'z']:
         plot_df = df.xs(axis, level=0, axis=1)
         for device in list(plot_df.columns):
-            pw_log = w_log.loc[(w_log['wearer'] == pw[0]) & (w_log['wrist'] ==
-                     pw[1]) & (w_log['start'] >= start) & (w_log['stop'] <=
-                     stop) & (w_log['device'] == device)].copy()
             plot_line = plot_df[[device]].dropna()
             if "GENEActiv" in device:
                 label = "GENEActiv"
@@ -153,9 +164,12 @@ def linechart(df, pw, d=None):
             axes[i].plot_date(x=plot_line.index, y=plot_line, color=
                               color_key[device], alpha=0.5, label=label,
                               marker="", linestyle="solid")
-            if i == 0:
-                for row in pw_log.iterrows():
-                    annotation_line(axes[0], start, stop, row['activity'])
+            if i == 2:
+                for annotation in annotations_a:
+                    annotation_line(axes[2], annotations_a[annotation],
+                                    annotations_b[annotation], annotation,
+                                    annotation_y)
+                    annotation_y += 1
         if i == 0:
             axes[i].legend(loc='best', fancybox=True, framealpha=0.5)
         i = i + 1
@@ -166,11 +180,12 @@ def linechart(df, pw, d=None):
     else:
         plt.suptitle(''.join([pw[0], ', ', pw[1], ' wrist']))
     plt.xticks(rotation=65)
-    print("".join(["Saving ", svg_out]))
-    fig.savefig(svg_out, facecolor=facecolors[pw[1]])
-    print("Saved.")
+    for image in [svg_out, png_out]:
+        print("".join(["Saving ", image]))
+        fig.savefig(image, facecolor=facecolors[pw[1]])
+        print("Saved.")
     plt.close()
-        
+    
 def getpeople():
     """
     Function to organize timestamps by people and wrists.
