@@ -19,9 +19,9 @@ with open(os.path.join('./line_charts/device_colors.json')) as fp:
     color_key = json.load(fp)
 
 """
--------------
-Accelerometer
--------------
+-------------------------
+Accelerometer & Gyroscope
+-------------------------
 """
 
 def plot_acc(device):
@@ -35,14 +35,6 @@ def plot_acc(device):
         except:
             pass
         plot_nd(df, fp, device, 'accelerometer')
-
-"""
----------
-Gyroscope
----------
-"""
-def plot_gyro(device):
-    pass
 
 """
 -------------------
@@ -63,6 +55,7 @@ def plot_ppg(device):
             plot_2d(df, fp, device, 'photoplethysmograph')
         else:
             plot_nd(df, fp, device, 'photoplethysmograph')
+    plot_ecg(device)
 
 """
 ------------------
@@ -70,15 +63,31 @@ Electrocardiograph
 ------------------
 """
 def plot_ecg(device):
-    pass
-
+    fp = os.path.join(organized_dir, 'heartrate', '.'.join([device, 'csv']))
+    if os.path.exists(fp):
+        df = pd.read_csv(fp)
+        df.sort_values(by='Timestamp', inplace=True)
+        try:
+            df[['Timestamp']] = df.Timestamp.map(lambda x: datetimeint(str(x)))
+        except:
+            pass
+        plot_2d(df, fp, device, 'heart rate')
+        
 """
 ----------------------
 Electrodermal Activity
 ----------------------
 """
 def plot_eda(device):
-    pass
+    fp = os.path.join(organized_dir, 'EDA', '.'.join([device, 'csv']))
+    if os.path.exists(fp):
+        df = pd.read_csv(fp)
+        df.sort_values(by='Timestamp', inplace=True)
+        try:
+            df[['Timestamp']] = df.Timestamp.map(lambda x: datetimeint(str(x)))
+        except:
+            pass
+        plot_2d(df, fp, device, 'EDA')
 
 """
 -----
@@ -86,7 +95,15 @@ Light
 -----
 """
 def plot_light(device):
-    pass
+    fp = os.path.join(organized_dir, 'light', '.'.join([device, 'csv']))
+    if os.path.exists(fp):
+        df = pd.read_csv(fp)
+        df.sort_values(by='Timestamp', inplace=True)
+        try:
+            df[['Timestamp']] = df.Timestamp.map(lambda x: datetimeint(str(x)))
+        except:
+            pass
+        plot_2d(df, fp, device, 'light')
 
 """
 -----------
@@ -94,11 +111,20 @@ Temperature
 -----------
 """
 def plot_temperature(device):
-    pass
+    fp = os.path.join(organized_dir, 'temperature', '.'.join([device,
+         'csv']))
+    if os.path.exists(fp):
+        df = pd.read_csv(fp)
+        df.sort_values(by='Timestamp', inplace=True)
+        try:
+            df[['Timestamp']] = df.Timestamp.map(lambda x: datetimeint(str(x)))
+        except:
+            pass
+        plot_2d(df, fp, device, 'temperature')
 
 def main():
     # assign functions to sensors
-    plot_fxn = {'accelerometer':plot_acc, 'gyro':plot_gyro, 'ppg':plot_ppg,
+    plot_fxn = {'accelerometer':plot_acc, 'gyro':plot_acc, 'ppg':plot_ppg,
                 'ecg':plot_ecg, 'eda':plot_eda, 'light':plot_light, 'temp':
                 plot_temperature}
     
