@@ -1,118 +1,65 @@
-wearer,start date,start time,end date,end time,activity,wrist
-Jon,"Monday, 2017-04-03",8:00 PM,"Monday, 2017-04-03",8:50 PM,"emotional activity: Legion: ""Chapter 6""",left
-Jon,"Monday, 2017-04-03",8:00 PM,"Monday, 2017-04-03",8:50 PM,"emotional activity: Legion: ""Chapter 6""",right
-Jon,"Monday, 2017-04-03",10:37 PM,"Tuesday, 2017-04-04",6:40 AM,sleep,left
-Jon,"Monday, 2017-04-03",10:37 PM,"Tuesday, 2017-04-04",6:40 AM,sleep,right
-Jon,"Tuesday, 2017-04-04",7:00 AM,"Tuesday, 2017-04-04",7:20 AM,exercise: jog,left
-Jon,"Tuesday, 2017-04-04",7:00 AM,"Tuesday, 2017-04-04",7:20 AM,exercise: jog,right
-Jon,"Tuesday, 2017-04-04",7:30 AM,"Tuesday, 2017-04-04",7:40 AM,getting wet: shower,left
-Jon,"Tuesday, 2017-04-04",4:10 PM,"Tuesday, 2017-04-04",4:55 PM,charging (after),right
-Jon,"Tuesday, 2017-04-04",4:10 PM,"Tuesday, 2017-04-04",5:00 PM,charging (after),left
-Jon,"Tuesday, 2017-04-04",5:00 PM,"Tuesday, 2017-04-04",5:20 PM,charging (before),left
-Jon,"Tuesday, 2017-04-04",8:00 PM,"Tuesday, 2017-04-04",8:50 PM,"emotional activity: The Path: ""Oz""",left
-Jon,"Tuesday, 2017-04-04",8:00 PM,"Tuesday, 2017-04-04",8:50 PM,"emotional activity: The Path: ""Oz""",right
-Jon,"Tuesday, 2017-04-04",10:52 PM,"Wednesday, 2017-04-05",6:38 AM,sleep,left
-Jon,"Tuesday, 2017-04-04",10:52 PM,"Wednesday, 2017-04-05",6:38 AM,sleep,right
-Jon,"Wednesday, 2017-04-05",7:00 AM,"Wednesday, 2017-04-05",7:15 AM,exercise: jog,left
-Jon,"Wednesday, 2017-04-05",7:00 AM,"Wednesday, 2017-04-05",7:15 AM,exercise: jog,right
-Jon,"Wednesday, 2017-04-05",7:30 AM,"Wednesday, 2017-04-05",7:40 AM,getting wet: shower,left
-Jon,"Wednesday, 2017-04-05",7:30 AM,"Wednesday, 2017-04-05",7:40 AM,getting wet: shower,right
-Jon,"Wednesday, 2017-04-05",8:45 AM,"Wednesday, 2017-04-05",9:00 AM,charging (during),right
-Jon,"Tuesday, 2017-04-04",1:30 PM,"Wednesday, 2017-04-05",12:45 PM,mild food allergy,left
-Jon,"Wednesday, 2017-04-05",12:45 PM,"Wednesday, 2017-04-05",12:50 PM,charging (after),left
-Jon,"Wednesday, 2017-04-05",12:45 PM,"Wednesday, 2017-04-05",12:50 PM,charging (before),right
-Jon,"Tuesday, 2017-04-04",1:30 PM,"Wednesday, 2017-04-05",2:00 PM,mild food allergy,left
-Jon,"Tuesday, 2017-04-04",1:30 PM,"Wednesday, 2017-04-05",2:00 PM,mild food allergy,right
-Jon,"Wednesday, 2017-04-05",12:50 PM,"Wednesday, 2017-04-05",2:00 PM,mild food allergy,right
-Jon,"Wednesday, 2017-04-05",8:15 PM,"Wednesday, 2017-04-05",9:00 PM,"emotional activity: Arrow: ""Checkmate""",left
-Jon,"Wednesday, 2017-04-05",8:15 PM,"Wednesday, 2017-04-05",9:00 PM,"emotional activity: Arrow: ""Checkmate""",right
-Jon,"Wednesday, 2017-04-05",10:32 PM,"Thursday, 2017-04-06",6:28 AM,sleep,left
-Jon,"Wednesday, 2017-04-05",10:32 PM,"Thursday, 2017-04-06",6:28 AM,sleep,right
-Jon,"Thursday, 2017-04-06",6:45 AM,"Thursday, 2017-04-06",7:00 AM,exercise: jog,left
-Jon,"Thursday, 2017-04-06",6:45 AM,"Thursday, 2017-04-06",7:00 AM,exercise: jog,right
-Jon,"Thursday, 2017-04-06",7:15 AM,"Thursday, 2017-04-06",7:30 AM,getting wet: shower,left
-Jon,"Thursday, 2017-04-06",7:15 AM,"Thursday, 2017-04-06",7:30 AM,getting wet: shower,right
-Jon,"Thursday, 2017-04-06",1:35 PM,"Thursday, 2017-04-06",3:15 PM,charging (after),left
-Jon,"Thursday, 2017-04-06",1:35 PM,"Thursday, 2017-04-06",3:40 PM,charging (after),right
-Jon,"Thursday, 2017-04-06",1:35 PM,"Thursday, 2017-04-06",3:45 PM,charging (after),left
-Jon,"Thursday, 2017-04-06",3:45 PM,"Thursday, 2017-04-06",4:20 PM,charging (before),right
-Jon,"Thursday, 2017-04-06",6:00 PM,"Thursday, 2017-04-06",7:00 PM,relaxing haircut,left
-Jon,"Thursday, 2017-04-06",6:00 PM,"Thursday, 2017-04-06",7:00 PM,relaxing haircut,right
-Jon,"Thursday, 2017-04-06",8:15 PM,"Thursday, 2017-04-06",9:00 PM,"emotional activity: Chicago Med: ""Monday Mourning""",left
-Jon,"Thursday, 2017-04-06",8:15 PM,"Thursday, 2017-04-06",9:00 PM,"emotional activity: Chicago Med: ""Monday Mourning""",right
-Jon,"Thursday, 2017-04-06",10:54 PM,"Friday, 2017-04-07",6:45 AM,sleep,left
-Jon,"Thursday, 2017-04-06",10:54 PM,"Friday, 2017-04-07",6:45 AM,sleep,right
-Jon,"Friday, 2017-04-07",7:05 AM,"Friday, 2017-04-07",7:20 AM,exercise: jog,left
-Jon,"Friday, 2017-04-07",7:05 AM,"Friday, 2017-04-07",7:20 AM,exercise: jog,right
-Jon,"Friday, 2017-04-07",7:45 AM,"Friday, 2017-04-07",8:00 AM,getting wet: shower,left
-Jon,"Friday, 2017-04-07",7:45 AM,"Friday, 2017-04-07",8:00 AM,getting wet: shower,right
-Jon,"Friday, 2017-04-07",8:45 AM,"Friday, 2017-04-07",9:25 AM,charging (during),right
-Arno,"Wednesday, 2017-04-05",9:15 PM,"Thursday, 2017-04-06",3:45 PM,total time without recharging,right
-Arno,"Wednesday, 2017-04-05",10:07 PM,"Thursday, 2017-04-06",10:17 PM,"pull-ups, push-ups, plank",right
-Arno,"Wednesday, 2017-04-05",10:45 PM,"Thursday, 2017-04-06",6:20 AM,"fragmented sleep: woke up almost every hour, particularly at 12:40, 3:40, alarm at 5:15, then 6:15",right
-Arno,"Thursday, 2017-04-06",8:31 AM,"Thursday, 2017-04-06",8:50 AM,remove during shower,right
-Arno,"Thursday, 2017-04-06",9:24 AM,"Thursday, 2017-04-06",9:37 AM,"brisk walk from Columbus Circle across Central Park, with arms swinging",right
-Arno,"Thursday, 2017-04-06",9:37 AM,"Thursday, 2017-04-06",9:45 AM,"walk from Central Park to 445 Park Avenue, hands in pockets",right
-Arno,"Thursday, 2017-04-06",9:45 AM,"Thursday, 2017-04-06",5:30 PM,standing desk at work,right
-Arno,"Thursday, 2017-04-06",3:53 PM,"Friday, 2017-04-07",2:08 PM,total time without recharging,
-Arno,"Thursday, 2017-04-06",3:45 PM,"Friday, 2017-04-07",2:08 PM,total time without recharging,right
-Arno,"Thursday, 2017-04-06",4:05 PM,"Friday, 2017-04-07",2:08 PM,total time without recharging,right
-Arno,"Thursday, 2017-04-06",5:30 PM,"Thursday, 2017-04-06",10:30 PM,"walking, taxi, restaurant, subway, restaurant, taxi",right
-Arno,"Thursday, 2017-04-06",around midnight,"Friday, 2017-04-07",6:15 AM,sleep,right
-Arno,"Friday, 2017-04-07",7:00 AM,"Friday, 2017-04-07",7:07 AM,shower (removed Polar),right
-Arno,"Friday, 2017-04-07",7:20 AM,"Friday, 2017-04-07",9:12 AM,walking and subway: Wash Hts -> LE Side -> midtown,right
-Arno,"Friday, 2017-04-07",9:12 AM,"Friday, 2017-04-07",2:08 PM,standing desk at work,right
-Arno,"Friday, 2017-04-07",4:03 PM,"Saturday, 2017-04-08",,total time without recharging,left
-Arno,"Friday, 2017-04-07",4:03 PM,"Saturday, 2017-04-08",,total time without recharging,right
-Arno,"Friday, 2017-04-07",4:03 PM,"Friday, 2017-04-07",6:00 PM,standing desk at work,left
-Arno,"Friday, 2017-04-07",6:42 PM,"Friday, 2017-04-07",7:11 PM,walked from 445 Park Ave through Central Park to Columbus Circle,left
-Arno,"Friday, 2017-04-07",7:11 PM,"Friday, 2017-04-07",7:40 PM,read while standing on the subway,left
-Arno,"Friday, 2017-04-07",9:00 PM,"Friday, 2017-04-07",10:43 PM,emotional activity: watched a terrible action comedy movie,left
-Arno,"Saturday, 2017-04-08",12:19 AM,"Saturday, 2017-04-08",8:35 AM,slept,left
-Arno,"Saturday, 2017-04-08",9:24 AM,"Saturday, 2017-04-08",9:33 AM,removed E4 for shower,left
-Arno,"Saturday, 2017-04-08",10:26 AM,"Saturday, 2017-04-08",10:26 AM,emotional event: near car accident while riding in the passenger seat of a car,left
-Arno,"Saturday, 2017-04-08",10:36 AM,"Saturday, 2017-04-08",11:33 AM,emotional event: attended a friend's bat mitzvah ceremony,left
-Arno,"Saturday, 2017-04-08",3:30 PM,"Saturday, 2017-04-08",3:50 PM,threw a softball back and forth,left
-Arno,"Saturday, 2017-04-08",3:55 PM,"Saturday, 2017-04-08",4:15 PM,cooldown,left
-Arno,"Saturday, 2017-04-08",4:15 PM,"Saturday, 2017-04-08",4:30 PM,relaxed,left
-Arno,"Saturday, 2017-04-08",4:42 PM,"Saturday, 2017-04-08",5:06 PM,jogged and sprinted,left
-Arno,"Saturday, 2017-04-08",5:10 PM,"Saturday, 2017-04-08",5:20 PM,pull ups,left
-Arno,"Saturday, 2017-04-08",5:25 PM,"Saturday, 2017-04-08",5:30 PM,fast and slow pushups,left
-Arno,"Saturday, 2017-04-08",5:35 PM,"Saturday, 2017-04-08",5:50 PM,resistance training (arms),left
-Arno,"Saturday, 2017-04-08",6:15 PM,"Saturday, 2017-04-08",6:45 PM,computer work,left
-Arno,"Saturday, 2017-04-08",6:50 PM,"Saturday, 2017-04-08",11:00 PM,removed all devices for recharging (Embrace: 15%; Biostrap: 30%; E4: 100%?),left
-Arno,"Saturday, 2017-04-08",11:20 PM,"Sunday, 2017-04-09",PM,total time without recharging (started a new acquisition for the E4 in the app),left
-Arno,"Sunday, 2017-04-09",12:25 AM,"Sunday, 2017-04-09",7:15 AM,slept,left
-Arno,"Sunday, 2017-04-09",7:15 AM,"Sunday, 2017-04-09",7:45 AM,rest,left
-Arno,"Sunday, 2017-04-09",8:50 AM,"Sunday, 2017-04-09",8:50 AM,ran (flat ground),left
-Arno,"Sunday, 2017-04-09",8:58 AM,"Sunday, 2017-04-09",9:10 AM,ran stair intervals,left
-Arno,"Sunday, 2017-04-09",9:10 AM,"Sunday, 2017-04-09",9:22 AM,stretched,left
-Arno,"Sunday, 2017-04-09",9:45 AM,"Sunday, 2017-04-09",9:22 AM,removed E4 for shower,left
-Arno,"Sunday, 2017-04-09",1:00 PM,"Sunday, 2017-04-09",1:50 PM,intense tag in Central Park; the Biostrap (which has a loose snap strap) came off while running around and someone stole it,left
-Arno,"Friday, 2017-04-07",4:03 PM,"Friday, 2017-04-07",6:00 PM,standing desk at work,right
-Arno,"Friday, 2017-04-07",6:42 PM,"Friday, 2017-04-07",7:11 PM,walked from 445 Park Ave through Central Park to Columbus Circle,right
-Arno,"Friday, 2017-04-07",7:11 PM,"Friday, 2017-04-07",7:40 PM,read while standing on the subway,right
-Arno,"Friday, 2017-04-07",9:00 PM,"Friday, 2017-04-07",10:43 PM,emotional activity: watched a terrible action comedy movie,right
-Arno,"Saturday, 2017-04-08",12:19 AM,"Saturday, 2017-04-08",8:35 AM,slept,right
-Arno,"Saturday, 2017-04-08",9:24 AM,"Saturday, 2017-04-08",9:33 AM,removed E4 for shower,right
-Arno,"Saturday, 2017-04-08",10:26 AM,"Saturday, 2017-04-08",10:26 AM,emotional event: near car accident while riding in the passenger seat of a car,right
-Arno,"Saturday, 2017-04-08",10:36 AM,"Saturday, 2017-04-08",11:33 AM,emotional event: attended a friend's bat mitzvah ceremony,right
-Arno,"Saturday, 2017-04-08",3:30 PM,"Saturday, 2017-04-08",3:50 PM,threw a softball back and forth,right
-Arno,"Saturday, 2017-04-08",3:55 PM,"Saturday, 2017-04-08",4:15 PM,cooldown,right
-Arno,"Saturday, 2017-04-08",4:15 PM,"Saturday, 2017-04-08",4:30 PM,relaxed,right
-Arno,"Saturday, 2017-04-08",4:42 PM,"Saturday, 2017-04-08",5:06 PM,jogged and sprinted,right
-Arno,"Saturday, 2017-04-08",5:10 PM,"Saturday, 2017-04-08",5:20 PM,pull ups,right
-Arno,"Saturday, 2017-04-08",5:25 PM,"Saturday, 2017-04-08",5:30 PM,fast and slow pushups,right
-Arno,"Saturday, 2017-04-08",5:35 PM,"Saturday, 2017-04-08",5:50 PM,resistance training (arms),right
-Arno,"Saturday, 2017-04-08",6:15 PM,"Saturday, 2017-04-08",6:45 PM,computer work,right
-Arno,"Saturday, 2017-04-08",6:50 PM,"Saturday, 2017-04-08",11:00 PM,removed all devices for recharging (Embrace: 15%; Biostrap: 30%; E4: 100%?),right
-Arno,"Saturday, 2017-04-08",11:20 PM,"Sunday, 2017-04-09",PM,total time without recharging (started a new acquisition for the E4 in the app),right
-Arno,"Sunday, 2017-04-09",12:25 AM,"Sunday, 2017-04-09",7:15 AM,slept,right
-Arno,"Sunday, 2017-04-09",7:15 AM,"Sunday, 2017-04-09",7:45 AM,rest,right
-Arno,"Sunday, 2017-04-09",8:50 AM,"Sunday, 2017-04-09",8:50 AM,ran (flat ground),right
-Arno,"Sunday, 2017-04-09",8:58 AM,"Sunday, 2017-04-09",9:10 AM,ran stair intervals,right
-Arno,"Sunday, 2017-04-09",9:10 AM,"Sunday, 2017-04-09",9:22 AM,stretched,right
-Arno,"Sunday, 2017-04-09",9:45 AM,"Sunday, 2017-04-09",9:22 AM,removed E4 for shower,right
-Arno,"Sunday, 2017-04-09",1:00 PM,"Sunday, 2017-04-09",1:50 PM,intense tag in Central Park; the Biostrap (which has a loose snap strap) came off while running around and someone stole it,right
-Arno,"Sunday, 2017-04-09",10:08 PM,"Sunday, 2017-04-09",1:50 PM,recharge,
-Arno,"Monday, 2017-04-10",,"Sunday, 2017-04-16",,Travel in Europe,
+wearer,start date,start time,end date,end time,activity
+Jon,"Monday, 2017-04-03",8:00 PM,"Monday, 2017-04-03",8:50 PM,"emotional activity: Legion: ""Chapter 6"""
+Jon,"Monday, 2017-04-03",10:37 PM,"Tuesday, 2017-04-04",6:40 AM,sleep
+Jon,"Tuesday, 2017-04-04",7:00 AM,"Tuesday, 2017-04-04",7:20 AM,exercise: jog
+Jon,"Tuesday, 2017-04-04",7:30 AM,"Tuesday, 2017-04-04",7:40 AM,getting wet: shower
+Jon,"Tuesday, 2017-04-04",4:10 PM,"Tuesday, 2017-04-04",5:20 PM,charging (after)
+Jon,"Tuesday, 2017-04-04",8:00 PM,"Tuesday, 2017-04-04",8:50 PM,"emotional activity: The Path: ""Oz"""
+Jon,"Tuesday, 2017-04-04",10:52 PM,"Wednesday, 2017-04-05",6:38 AM,sleep
+Jon,"Wednesday, 2017-04-05",7:00 AM,"Wednesday, 2017-04-05",7:15 AM,exercise: jog
+Jon,"Wednesday, 2017-04-05",7:30 AM,"Wednesday, 2017-04-05",7:40 AM,getting wet: shower
+Jon,"Wednesday, 2017-04-05",8:45 AM,"Wednesday, 2017-04-05",9:00 AM,charging (during)
+Jon,"Tuesday, 2017-04-04",1:30 PM,"Wednesday, 2017-04-05",12:45 PM,mild food allergy
+Jon,"Wednesday, 2017-04-05",12:45 PM,"Wednesday, 2017-04-05",12:50 PM,charging (after)
+Jon,"Tuesday, 2017-04-04",1:30 PM,"Wednesday, 2017-04-05",2:00 PM,mild food allergy
+Jon,"Wednesday, 2017-04-05",8:15 PM,"Wednesday, 2017-04-05",9:00 PM,"emotional activity: Arrow: ""Checkmate"""
+Jon,"Wednesday, 2017-04-05",10:32 PM,"Thursday, 2017-04-06",6:28 AM,sleep
+Jon,"Thursday, 2017-04-06",6:45 AM,"Thursday, 2017-04-06",7:00 AM,exercise: jog
+Jon,"Thursday, 2017-04-06",7:15 AM,"Thursday, 2017-04-06",7:30 AM,getting wet: shower
+Jon,"Thursday, 2017-04-06",1:35 PM,"Thursday, 2017-04-06",4:20 PM,charging (after)
+Jon,"Thursday, 2017-04-06",6:00 PM,"Thursday, 2017-04-06",7:00 PM,relaxing haircut
+Jon,"Thursday, 2017-04-06",8:15 PM,"Thursday, 2017-04-06",9:00 PM,"emotional activity: Chicago Med: ""Monday Mourning"""
+Jon,"Thursday, 2017-04-06",10:54 PM,"Friday, 2017-04-07",6:45 AM,sleep
+Jon,"Friday, 2017-04-07",7:05 AM,"Friday, 2017-04-07",7:20 AM,exercise: jog
+Jon,"Friday, 2017-04-07",7:45 AM,"Friday, 2017-04-07",8:00 AM,getting wet: shower
+Jon,"Friday, 2017-04-07",8:45 AM,"Friday, 2017-04-07",9:25 AM,charging (during)
+Arno,"Wednesday, 2017-04-05",9:15 PM,"Thursday, 2017-04-06",3:45 PM,total time without recharging
+Arno,"Wednesday, 2017-04-05",10:07 PM,"Thursday, 2017-04-06",10:17 PM,"pull-ups, push-ups, plank"
+Arno,"Wednesday, 2017-04-05",10:45 PM,"Thursday, 2017-04-06",6:20 AM,"fragmented sleep: woke up almost every hour, particularly at 12:40, 3:40, alarm at 5:15, then 6:15"
+Arno,"Thursday, 2017-04-06",8:31 AM,"Thursday, 2017-04-06",8:50 AM,remove during shower
+Arno,"Thursday, 2017-04-06",9:24 AM,"Thursday, 2017-04-06",9:37 AM,"brisk walk from Columbus Circle across Central Park, with arms swinging"
+Arno,"Thursday, 2017-04-06",9:37 AM,"Thursday, 2017-04-06",9:45 AM,"walk from Central Park to 445 Park Avenue, hands in pockets"
+Arno,"Thursday, 2017-04-06",9:45 AM,"Thursday, 2017-04-06",5:30 PM,standing desk at work
+Arno,"Thursday, 2017-04-06",5:30 PM,"Thursday, 2017-04-06",10:30 PM,"walking, taxi, restaurant, subway, restaurant, taxi"
+Arno,"Thursday, 2017-04-06",around midnight,"Friday, 2017-04-07",6:15 AM,sleep
+Arno,"Friday, 2017-04-07",7:00 AM,"Friday, 2017-04-07",7:07 AM,shower (removed Polar)
+Arno,"Friday, 2017-04-07",7:20 AM,"Friday, 2017-04-07",9:12 AM,walking and subway: Wash Hts -> LE Side -> midtown
+Arno,"Friday, 2017-04-07",9:12 AM,"Friday, 2017-04-07",2:08 PM,standing desk at work
+Arno,"Friday, 2017-04-07",4:03 PM,"Saturday, 2017-04-08",,total time without recharging
+Arno,"Friday, 2017-04-07",4:03 PM,"Friday, 2017-04-07",6:00 PM,standing desk at work
+Arno,"Friday, 2017-04-07",6:42 PM,"Friday, 2017-04-07",7:11 PM,walked from 445 Park Ave through Central Park to Columbus Circle
+Arno,"Friday, 2017-04-07",7:11 PM,"Friday, 2017-04-07",7:40 PM,read while standing on the subway
+Arno,"Friday, 2017-04-07",9:00 PM,"Friday, 2017-04-07",10:43 PM,emotional activity: watched a terrible action comedy movie
+Arno,"Saturday, 2017-04-08",12:19 AM,"Saturday, 2017-04-08",8:35 AM,slept
+Arno,"Saturday, 2017-04-08",9:24 AM,"Saturday, 2017-04-08",9:33 AM,removed E4 for shower
+Arno,"Saturday, 2017-04-08",10:26 AM,"Saturday, 2017-04-08",10:26 AM,emotional event: near car accident while riding in the passenger seat of a car
+Arno,"Saturday, 2017-04-08",10:36 AM,"Saturday, 2017-04-08",11:33 AM,emotional event: attended a friend's bat mitzvah ceremony
+Arno,"Saturday, 2017-04-08",3:30 PM,"Saturday, 2017-04-08",3:50 PM,threw a softball back and forth
+Arno,"Saturday, 2017-04-08",3:55 PM,"Saturday, 2017-04-08",4:15 PM,cooldown
+Arno,"Saturday, 2017-04-08",4:15 PM,"Saturday, 2017-04-08",4:30 PM,relaxed
+Arno,"Saturday, 2017-04-08",4:42 PM,"Saturday, 2017-04-08",5:06 PM,jogged and sprinted
+Arno,"Saturday, 2017-04-08",5:10 PM,"Saturday, 2017-04-08",5:20 PM,pull ups
+Arno,"Saturday, 2017-04-08",5:25 PM,"Saturday, 2017-04-08",5:30 PM,fast and slow pushups
+Arno,"Saturday, 2017-04-08",5:35 PM,"Saturday, 2017-04-08",5:50 PM,resistance training (arms)
+Arno,"Saturday, 2017-04-08",6:15 PM,"Saturday, 2017-04-08",6:45 PM,computer work
+Arno,"Saturday, 2017-04-08",6:50 PM,"Saturday, 2017-04-08",11:00 PM,removed all devices for recharging (Embrace: 15%; Biostrap: 30%; E4: 100%?)
+Arno,"Saturday, 2017-04-08",11:20 PM,"Sunday, 2017-04-09",PM,total time without recharging (started a new acquisition for the E4 in the app)
+Arno,"Sunday, 2017-04-09",12:25 AM,"Sunday, 2017-04-09",7:15 AM,slept
+Arno,"Sunday, 2017-04-09",7:15 AM,"Sunday, 2017-04-09",7:45 AM,rest
+Arno,"Sunday, 2017-04-09",8:50 AM,"Sunday, 2017-04-09",8:50 AM,ran (flat ground)
+Arno,"Sunday, 2017-04-09",8:58 AM,"Sunday, 2017-04-09",9:10 AM,ran stair intervals
+Arno,"Sunday, 2017-04-09",9:10 AM,"Sunday, 2017-04-09",9:22 AM,stretched
+Arno,"Sunday, 2017-04-09",9:45 AM,"Sunday, 2017-04-09",9:22 AM,removed E4 for shower
+Arno,"Sunday, 2017-04-09",1:00 PM,"Sunday, 2017-04-09",1:50 PM,intense tag in Central Park; the Biostrap (which has a loose snap strap) came off while running around and someone stole it
+Arno,"Sunday, 2017-04-09",10:08 PM,"Sunday, 2017-04-09",1:50 PM,recharge
+Arno,"Monday, 2017-04-10",,"Sunday, 2017-04-16",,Travel in Europe

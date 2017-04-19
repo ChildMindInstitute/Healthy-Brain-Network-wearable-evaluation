@@ -48,7 +48,7 @@ def buildperson(df, pw):
     person_wrist.csv : csv file
         csv file formatted for plotting
     """
-    person, start, stop = get_startstop(df, pw)
+    person, starts, stops = get_startstop(df, pw)
     person_df = df.loc[df['person_wrist'] == pw].copy()
     person_df.reset_index(drop=True, inplace=True)
     devices = pd.unique(person_df.device)
@@ -56,33 +56,44 @@ def buildperson(df, pw):
     print(devices)
     csv_df = pd.DataFrame(columns=['device', 'Timestamp', 'x', 'y', 'z'])
     for device in devices:
-        acc_path = os.path.join(organized_dir, 'accelerometer', '.'.join([
-                   device, 'csv']))
-        if os.path.exists(acc_path):
-            device_df = pd.read_csv(acc_path)
-            device_df.sort_values(by='Timestamp', inplace=True)
-            try:
-                device_df[['Timestamp']] = device_df.Timestamp.map(lambda x:
-                                           datetimeint(str(x)))
-            except:
-                pass
-            person_device_df = device_df.loc[(device_df['Timestamp'] >= start)
-                               & (device_df['Timestamp'] <= stop)].copy()
-            del device_df
-            write_csv(person_device_df, person, 'accelerometer', device)
-            person_device_df[['Timestamp']] = person_device_df.Timestamp.map(
-                                              lambda x: datetimedt(x))
-            print(device, end=" ranges: x=(")
-            print(min(person_device_df.x), end=", ")
-            print(max(person_device_df.x), end="), y=(")
-            print(min(person_device_df.y), end=", ")
-            print(max(person_device_df.y), end="), z=(")
-            print(min(person_device_df.z), end=", ")
-            print(max(person_device_df.z), end=")\n")
-            person_device_df['device'] = device
-            person_device_df = person_device_df[['device', "Timestamp", "x",
-                               "y", "z"]]
-            csv_df = pd.concat([csv_df, person_device_df])
+        person_device_dfs = []
+        for sti, start in enumerate(starts):
+            stop = stops[sti]
+            acc_path = os.path.join(organized_dir, 'accelerometer', '.'.join([
+                       device, 'csv']))
+            if os.path.exists(acc_path):
+                device_df = pd.read_csv(acc_path)
+                device_df.sort_values(by='Timestamp', inplace=True)
+                try:
+                    device_df[['Timestamp']] = device_df.Timestamp.map(lambda
+                                               x: datetimeint(str(x)))
+                except:
+                    pass
+                person_device_df = device_df.loc[(device_df['Timestamp'] >=
+                                   start) & (device_df['Timestamp'] <= stop)
+                                   ].copy()
+                del device_df
+                person_device_df[['Timestamp'
+                                  ]] = person_device_df.Timestamp.map(lambda x:
+                                       datetimedt(x))
+                print(device, end=" ranges: x=(")
+                print(min(person_device_df.x), end=", ")
+                print(max(person_device_df.x), end="), y=(")
+                print(min(person_device_df.y), end=", ")
+                print(max(person_device_df.y), end="), z=(")
+                print(min(person_device_df.z), end=", ")
+                print(max(person_device_df.z), end=")\n")
+                person_device_df['device'] = device
+                person_device_df = person_device_df[['device', "Timestamp",
+                                   "x", "y", "z"]]
+                person_device_dfs.append(person_device_df)
+        person_device_csv_df = pd.DataFrame(columns=['device', 'Timestamp',
+                               'x', 'y', 'z'])
+        for person_device_df in person_device_dfs:
+            person_device_csv_df = pd.concat([person_device_csv_df,
+                                   person_device_df])
+        csv_df = pd.concat([csv_df, person_device_csv_df])
+        write_csv(person_device_csv_df, person, 'accelerometer', device)
     if len(csv_df) > 0:
         csv_dfs = split_datetimes(csv_df)
         for df_to_csv in csv_dfs:
@@ -146,9 +157,9 @@ def linechart(df, pw, d=None):
     i = 0
     annotations_a = {}
     annotations_b = {}
-    annotation_y = -2.5
-    pw_log = w_log.loc[(w_log['wearer'] == pw[0]) & (w_log['wrist'] == pw[1]) &
-             (w_log['start'] >= start) & (w_log['stop'] <= stop)].copy()
+    annotation_y = -2
+    pw_log = w_log.loc[(w_log['wearer'] == pw[0]) & (w_log['start'] >= start) &
+             (w_log['stop'] <= stop)].copy()
     for row in pw_log.itertuples():
         if row[4] not in annotations_a:
             annotations_a[row[4]] = row[1]
@@ -164,14 +175,14 @@ def linechart(df, pw, d=None):
             axes[i].plot_date(x=plot_line.index, y=plot_line, color=
                               color_key[device], alpha=0.5, label=label,
                               marker="", linestyle="solid")
-            if i == 2:
-                for annotation in annotations_a:
-                    annotation_line(axes[2], annotations_a[annotation],
-                                    annotations_b[annotation], annotation,
-                                    annotation_y)
-                    annotation_y += 1
         if i == 0:
             axes[i].legend(loc='best', fancybox=True, framealpha=0.5)
+        if i == 2:
+            for annotation in annotations_a:
+                annotation_line(axes[2], annotations_a[annotation],
+                                annotations_b[annotation], annotation,
+                                annotation_y)
+                annotation_y += 0.75
         i = i + 1
     if d:
         plt.suptitle(''.join(['–'.join([d.isoformat(), (d + timedelta(days=
@@ -263,19 +274,17 @@ def get_startstop(df, person):
 
     Returns
     -------
-    person_start_stop : 3-tuple (string, datetime, datetime)
-        person-wrist, overall start time, overall stop time (times in Linux
-        time format)
+    person_start_stop : 3-tuple (string, list of datetimes, list of datetimes)
+        person-wrist, start times, stop times (times in Linux time format)
     """
     starts = []
     stops = []
+    ssdt = "%Y-%m-%d %H:%M:%S"
     for i, item in enumerate(df.person_wrist):
         if item == person:
-            starts.append(df.loc[i, 'start'])
-            stops.append(df.loc[i, 'stop'])
-    ssdt = "%Y-%m-%d %H:%M:%S"
-    return(person, datetimeint(min(starts).strftime(ssdt), ssdt),
-           datetimeint(max(stops).strftime(ssdt), ssdt))
+            starts.append(datetimeint(df.loc[i, 'start'].strftime(ssdt), ssdt))
+            stops.append(datetimeint(df.loc[i, 'stop'].strftime(ssdt), ssdt))
+    return(person, starts, stops)
     
 def split_datetimes(df):
     """
@@ -311,7 +320,7 @@ def split_datetimes(df):
                      stop)].copy())
     return(dtdfs)
 
-def write_csv(df, person, sensor, device=None, d=None):
+def write_csv(df, person, sensor, device=None, d=None, normal=None):
     """
     Function to write a csv for a person-wrist for a particular sensor.
     
@@ -343,8 +352,10 @@ def write_csv(df, person, sensor, device=None, d=None):
         csv copy of dataframe stored in
         organized_dir/`sensor`/`person_name`_`wrist`_`sensor`.csv
     """
-
-    if device:
+    if normal:
+        csv_out = os.path.join(organized_dir, sensor, '.'.join(['_'.join([
+                  normal, '_'.join(person.split(' '))]), 'csv']))
+    elif device:
         if d:
             csv_out = os.path.join(organized_dir, sensor, "_".join([
                       d.isoformat(), person[0], person[1], '.'.join([device,

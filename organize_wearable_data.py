@@ -561,7 +561,8 @@ def wavelet_ppg(dirpath):
     Returns
     -------
     acc_data_returns : pandas dataframe
-        dataframe with Linux time-series index column and nanowatt value columns
+        dataframe with Linux time-series index column and nanowatt value
+        columns
     
     Outputs
     -------
