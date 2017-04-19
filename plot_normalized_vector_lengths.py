@@ -113,8 +113,11 @@ def build_plot(plot_label, plot_person, plot_devices, plot_start, plot_stop):
     """
     csv_df = pd.DataFrame(columns=['device', 'Timestamp',
              'normalized_vector_length'])
+    shifted_df = pd.DataFrame(columns=['device', 'Timestamp',
+             'normalized_vector_length'])
     for device in plot_devices:
         person_device_dfs = []
+        person_device_shifteds = []
         acc_path = os.path.join(organized_dir, 'accelerometer', '.'.join([
                    '_'.join([device, 'normalized', 'unit']), 'csv']))
         if os.path.exists(acc_path):
@@ -131,26 +134,38 @@ def build_plot(plot_label, plot_person, plot_devices, plot_start, plot_stop):
                                plot_start) & (device_df['Timestamp'] <= 
                                plot_stop)].copy()
             del device_df
-            person_device_df = baseshift_and_renormalize(person_device_df)
-            person_device_df['device'] = device
-            person_device_df = person_device_df[['device', "Timestamp",
-                                   "normalized_vector_length"]]
+            person_device_shifted = baseshift_and_renormalize(person_device_df)
+            for pddf in [person_device_df, person_device_shifted]:
+                pddf['device'] = device
+                pddf = pddf[['device', "Timestamp", "normalized_vector_length"]
+                       ]
             person_device_dfs.append(person_device_df)
+            person_device_shifteds.append(person_device_shifted)
         person_device_csv_df = pd.DataFrame(columns=['device', 'Timestamp',
+                               'normalized_vector_length'])
+        person_device_shifted_df = pd.DataFrame(columns=['device', 'Timestamp',
                                'normalized_vector_length'])
         for person_device_df in person_device_dfs:
             person_device_csv_df = pd.concat([person_device_csv_df,
                                    person_device_df])
+        for person_device_shifted in person_device_shifteds:
+            person_device_shifted_df = pd.concat([person_device_shifted_df,
+                                   person_device_shifted])
         csv_df = pd.concat([csv_df, person_device_csv_df])
+        shifted_df = pd.concat([shifted_df, person_device_shifted_df])
     if len(csv_df) > 0:
         csv_df.reset_index(inplace=True)
-        person_df_to_csv = csv_df.pivot(index="Timestamp", columns=
-                               "device")
+        person_df_to_csv = csv_df.pivot(index="Timestamp", columns="device")
         person_df_to_csv.sortlevel(inplace=True)
+        shifted_df_to_csv = shifted_df.pivot(index="Timestamp", columns=
+                            "device")
         linechart(person_df_to_csv, plot_label, plot_person)
+        linechart(shifted_df_to_csv, ' '.join([plot_label, 'baseline adjusted'
+                  ]), plot_person)
         write_csv(person_df_to_csv, plot_label, 'accelerometer', normal=
                   "normalized_vector_length")
-
+        write_csv(shifted_df_to_csv, ' '.join([plot_label, 'baseline adjusted'
+                  ]), 'accelerometer', normal="normalized_vector_length")
 
 def linechart(df, plot_label, plot_person):
     """
