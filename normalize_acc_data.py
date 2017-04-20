@@ -12,10 +12,10 @@ Actigraphy values calculated as √((x/√((max(x))² + (max(y))² + (max(z))²)
 
 @author: jon.clucas
 """
-from config import actigraph_dir, e4_dir, geneactiv_dir, organized_dir, \
+from config import actigraph_dir, e4_dir, geneactiv_dir, organized_dir,       \
                    wavelet_dir
-from organize_wearable_data import actigraph_datetimeint, datetimedt, \
-                                   datetimeint, drop_non_csv, e4_timestamp
+from organize_wearable_data import actigraph_datetimeint, datetimeint,        \
+                                   drop_non_csv, e4_timestamp
 from datetime import datetime
 from math import sqrt
 import numpy as np, os, pandas as pd

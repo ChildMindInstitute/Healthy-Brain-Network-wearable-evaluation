@@ -12,12 +12,12 @@ from annotate_range import annotation_line
 from chart_data import write_csv
 from config import organized_dir, placement_dir
 from datetime import datetime
+from matplotlib.dates import DateFormatter
 from organize_wearable_data import datetimedt, datetimeint
-import json, numpy as np, os, pandas as pd, matplotlib.pyplot as plt
+import json, numpy as np, os, pandas as pd, matplotlib.pyplot as plt, sys
 
 with open(os.path.join('./line_charts/device_colors.json')) as fp:
     color_key = json.load(fp)
-facecolors = {'left':'lightblue', 'right':'pink'}
 
 def define_plot_data():
     """
@@ -28,35 +28,42 @@ def define_plot_data():
     None
     
     Returns
+    -------
     plot_data_tuples : list of 4-tuples (string, string, list of strings,
                        datetime, datetime)
         list of tuples to plot. Each tuple is a list of plot title, devices, 
         start time, and stop time
-    """
-    plot_data_tuples = [("GENEActiv and ActiGraph on same dominant wrist", 
-                       "Arno", ["GENEActiv_pink", "Actigraph"], datetime(2017,
+    """    
+
+    plot_data_tuples = [("GENEActiv, ActiGraph and Wavelet on same dominant wr"
+                       "ist", "Arno", ["GENEActiv_pink", "Actigraph", "Wavelet"
+                       ], datetime(2017, 4, 6, 15, 45), datetime(2017, 4, 7,
+                       14, 8)), (
+                       "GENEActiv and Wavelet on same dominant wrist",
+                       "Arno", ["GENEActiv_pink", "Wavelet"], datetime(2017,
                        4, 6, 15, 45), datetime(2017, 4, 7, 14, 8)), (
-                       "GENEActiv and Wavelet on same non-dominant wrist",
-                       "Jon", ["GENEActive_black", "Wavelet"], datetime(2017,
-                       4, 3, 18), datetime(2017, 4, 4, 17)), (
-                       "GENEActiv and E4 on same non-dominant wrist", "Jon",
-                       ["GENEActiv_black", "E4"], datetime(2017, 4, 4, 17),
-                       datetime(2017, 4, 5, 13)), (
-                       "ActiGraph and Wavelet on same non-dominant wrist",
-                       "Jon", ["Actigraph", "Wavelet"], datetime(2017, 4, 5,
-                       12), datetime(2017, 4, 6, 15)), (
-                       "GENEActiv and ActiGraph on same dominant wrist, zoomed"
-                       , "Arno", ["GENEActiv_pink", "Actigraph"], datetime(
-                       2017, 4, 7, 9, 45), datetime(2017, 4, 7, 10, 15)), (
-                       "GENEActiv and Wavelet on same non-dominant wrist, zoom\
-                       ed", "Jon", ["GENEActive_black", "Wavelet"], datetime(
-                       2017, 4, 4, 9, 45), datetime(2017, 4, 4, 10, 15)), (
-                       "GENEActiv and E4 on same non-dominant wrist, zoomed",
-                       "Jon", ["GENEActiv_black", "E4"], datetime(2017, 4, 5,
-                       9, 45), datetime(2017, 4, 5, 10, 15)), (
-                       "ActiGraph and Wavelet on same non-dominant wrist, zoom\
-                       ed", "Jon", ["Actigraph", "Wavelet"], datetime(2017, 4,
-                       6, 9, 45), datetime(2017, 4, 6, 10, 15))]
+                       "GENEActiv and E4 on same dominant wrist", "Jon",
+                       ["GENEActiv_black", "E4"], datetime(2017, 4, 6, 16, 20),
+                       datetime(2017, 4, 7, 16, 3)), (
+                       "ActiGraph and Wavelet on same dominant wrist",
+                       "Arno", ["Actigraph", "Wavelet"], datetime(2017, 4, 6,
+                       15, 53), datetime(2017, 4, 7, 15)), ("GENEActiv, ActiGr"
+                       "aph and Wavelet on same dominant wrist, zoomed",
+                       "Arno", ["GENEActiv_pink", "Actigraph", "Wavelet"],
+                       datetime(2017, 4, 7, 7, 15), datetime(2017, 4, 7, 7, 45)
+                       ), (
+                       "GENEActiv and Wavelet on same dominant wrist, zoomed",
+                       "Arno", ["GENEActiv_black", "Wavelet"], datetime(2017,
+                       4, 6, 15, 53), datetime(2017, 4, 7, 15)), (
+                       "GENEActiv and E4 on same dominant wrist, zoomed",
+                       "Jon", ["GENEActiv_black", "E4"], datetime(2017, 4, 6,
+                       18, 15), datetime(2017, 4, 6, 18, 45)), (
+                       "ActiGraph and Wavelet on same dominant wrist, zoom"
+                       "ed", "Arno", ["Actigraph", "Wavelet"], datetime(2017,
+                       4, 6, 15, 53), datetime(2017, 4, 7, 15)),
+                       ("ActiGraph and Wavelet on same dominant wrist, zoom"
+                       "ed", "Arno", ["Actigraph", "Wavelet"], datetime(2017,
+                       4, 6, 15, 53), datetime(2017, 4, 7, 15))]
     return(plot_data_tuples)
 
 def main():
@@ -66,9 +73,13 @@ def main():
         plot_devices = plot_data_tuple[2]
         plot_start = plot_data_tuple[3]
         plot_stop = plot_data_tuple[4]
-        build_plot(plot_label, plot_person, plot_devices, plot_start, plot_stop
-                   )
-        
+        try:
+            build_plot(plot_label, plot_person, plot_devices, plot_start,
+                       plot_stop)
+        except:
+            e = sys.exc_info()
+            print(" ".join([plot_label, "failed: ", str(e)]))
+
 def baseshift_and_renormalize(data):
     """
     Function to shift base to 0 and max value to 1
@@ -83,10 +94,9 @@ def baseshift_and_renormalize(data):
     data : pandas dataframe
         baseshifted, renormalized dataframe
     """
-    baseline = np.median(data['normalized_vector_length'])
+    baseline = np.nanmedian(data['normalized_vector_length'])
     data['normalized_vector_length'] = data['normalized_vector_length'].map(
-                                       lambda x: max(x - baseline, 0) if x <=
-                                       baseline else x)
+                                       lambda x: max(x - baseline, 0))
     datamax = max(data['normalized_vector_length'])
     data['normalized_vector_length'] = data['normalized_vector_length'] /     \
                                        datamax
@@ -135,6 +145,7 @@ def build_plot(plot_label, plot_person, plot_devices, plot_start, plot_stop):
         acc_path = os.path.join(organized_dir, 'accelerometer', '.'.join([
                    '_'.join([device, 'normalized', 'unit']), 'csv']))
         if os.path.exists(acc_path):
+            print(" ".join(["Loading ", acc_path]))
             device_df = pd.read_csv(acc_path)
             device_df.sort_values(by='Timestamp', inplace=True)
             try:
@@ -154,7 +165,8 @@ def build_plot(plot_label, plot_person, plot_devices, plot_start, plot_stop):
                 pddf = pddf[['device', "Timestamp", "normalized_vector_length"]
                        ]
             person_device_dfs.append(person_device_df)
-            baseshift_and_renormalize(person_device_df)
+            person_device_shifted = baseshift_and_renormalize(
+                                    person_device_shifted)
             person_device_shifteds.append(person_device_shifted)
         person_device_csv_df = pd.DataFrame(columns=['device', 'Timestamp',
                                'normalized_vector_length'])
@@ -170,10 +182,12 @@ def build_plot(plot_label, plot_person, plot_devices, plot_start, plot_stop):
         shifted_df = pd.concat([shifted_df, person_device_shifted_df])
     if len(csv_df) > 0:
         csv_df.reset_index(inplace=True)
+        shifted_df.reset_index(inplace=True)
         person_df_to_csv = csv_df.pivot(index="Timestamp", columns="device")
         person_df_to_csv.sortlevel(inplace=True)
         shifted_df_to_csv = shifted_df.pivot(index="Timestamp", columns=
                             "device")
+        shifted_df_to_csv.sortlevel(inplace=True)
         linechart(person_df_to_csv, plot_label, plot_person)
         linechart(shifted_df_to_csv, ' '.join([plot_label, 'baseline adjusted'
                   ]), plot_person)
@@ -181,6 +195,23 @@ def build_plot(plot_label, plot_person, plot_devices, plot_start, plot_stop):
                   "normalized_vector_length")
         write_csv(shifted_df_to_csv, ' '.join([plot_label, 'baseline adjusted'
                   ]), 'accelerometer', normal="normalized_vector_length")
+                    
+def cross_correlate(s1, s2, filepath):
+    """
+    Function to calculate and save pairwise correlations.
+    
+    Parameters
+    ----------
+    s1, s2 : pandas series
+        series to correlate
+        
+    filepath : string
+        where to save result
+    """
+    corr = np.correlate(s1, s2)
+    print(' '.join(['Saving', str(corr), 'to', filepath]))
+    with open(filepath, 'w') as fp:
+        fp.write(str(corr))
 
 def linechart(df, plot_label, plot_person):
     """
@@ -233,25 +264,39 @@ def linechart(df, plot_label, plot_person):
                          start) & (w_log['stop'] <= stop)].copy()
     for row in plot_log.itertuples():
         if row[4] not in annotations_a:
-            annotations_a[row[4]] = row[1]
-            annotations_b[row[4]] = row[2]
+            annotations_a[row[4]] = row[1] if row[1] >= start else start
+            annotations_b[row[4]] = row[2] if row[2] <= stop else stop
     plot_df = df.xs('normalized_vector_length', level=0, axis=1)
+    print(plot_df.head())
+    esses = []
     for device in list(plot_df.columns):
         plot_line = plot_df[[device]].dropna()
+        esses.append(pd.Series(plot_line.iloc[:,0], name=device, index=
+                     plot_line.index))
         if "GENEActiv" in device:
             label = "GENEActiv"
         elif device == "Actigraph":
             label = "ActiGraph"
         else:
             label = device
-        ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[device],
-                     alpha=0.5, label=label, marker="", linestyle="solid")
+        if device == "Wavelet":
+            ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
+                         device], alpha=0.5, label=label, marker="o",
+                         linestyle="None")
+        else:
+            ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
+                         device], alpha=0.5, label=label, marker="", linestyle=
+                         "solid")
         ax.legend(loc='best', fancybox=True, framealpha=0.5)
     for annotation in annotations_a:
-        annotation_line(ax, annotations_a[annotation], annotations_b[
-                        annotation], annotation, annotation_y)
-        annotation_y += 0.08
+        try:
+            annotation_line(ax, annotations_a[annotation], annotations_b[
+                            annotation], annotation, annotation_y)
+            annotation_y += 0.08
+        except:
+            print(annotation)
     ax.set_ylim([0, 1])
+    ax.xaxis.set_major_formatter(DateFormatter('%m-%d %H:%M'))
     plt.suptitle(plot_label)
     plt.xticks(rotation=65)
     for image in [svg_out, png_out]:
@@ -259,6 +304,14 @@ def linechart(df, plot_label, plot_person):
         fig.savefig(image)
         print("Saved.")
     plt.close()
+    while len(esses) > 2:
+        for i, s in enumerate(esses):
+            if i < len(esses):
+                cross_correlate(s, esses[-1], "_".join([s.name, esses[-1].name,
+                                'correlation.csv']))
+        del esses[-1]
+    cross_correlate(esses[0], esses[1], "_".join([esses[0].name, esses[1].name,
+                    'correlation.csv']))
 
 # ============================================================================
 if __name__ == '__main__':
