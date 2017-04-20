@@ -20,9 +20,9 @@ heartrate | beats per minute (bpm) | ActiGraph (with [Polar H7](http://actigraph
 light | lux (lx) | ActiGraph, GENEActiv
 temperature | degrees Celcius (°C) | Embrace, E4, GENEActiv
 
-[![](https://mfr.osf.io/export?url=https://osf.io/bkv6s/?action=download%26direct%26mode=render&initialWidth=848&childId=mfrIframe&format=1200x1200.jpeg)](https://osf.io/bkv6s/)
+[![](line_charts/normalized_acc_GENEActiv_and_Actigraph_ba.png)](https://osf.io/bkv6s/)
 
-[![](https://mfr.osf.io/export?url=https://osf.io/yfpn9/?action=download%26direct%26mode=render&initialWidth=848&childId=mfrIframe&format=1200x1200.jpeg)](https://osf.io/yfpn9/)
+[![(line_charts/normalized_acc_GENEActiv_and_Actigraph_zba.png)](https://mfr.osf.io/export?url=https://osf.io/yfpn9/?action=download%26direct%26mode=render&initialWidth=848&childId=mfrIframe&format=1200x1200.jpeg)](https://osf.io/yfpn9/)
 
 [![](line_charts/2017-04-07_Arno_right.png)](https://osf.io/4fj9t/)
 
