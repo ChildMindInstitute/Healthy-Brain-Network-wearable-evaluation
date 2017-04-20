@@ -634,7 +634,12 @@ def datetimeint(x, dt_format='%Y-%m-%d %H:%M:%S:%f'):
     timestamp : string
         Linux timestamp as string formatted as "%Y-%m-%d %H:%M:%S.%f"
     """
-    return(datetime.strptime(x, dt_format).strftime("%Y-%m-%d %H:%M:%S.%f"))
+    try:
+        return(datetime.strptime(x, dt_format).strftime("%Y-%m-%d %H:%M:%S.%f")
+               )
+    except:
+        return(datetime.strptime(x, "%Y-%m-%d %H:%M:%S.%f").strftime(
+               "%Y-%m-%d %H:%M:%S.%f"))
 
 def drop_non_csv(open_csv_file, drop_rows, header_row=False):
     """
