@@ -16,6 +16,6 @@ def annotation_line(ax, xmin, xmax, text, y=-1.5, ytext=0, linecolor='black',
 
     if text in ['charging (after)', 'charging (before)']:
         text = 'charging'
-
+        
     ax.annotate(text, xy=(xcenter,ytext), ha='center', va='center',
                 fontsize=fontsize)

@@ -44,7 +44,19 @@ def define_plot_data():
                        datetime(2017, 4, 5, 13)), (
                        "ActiGraph and Wavelet on same non-dominant wrist",
                        "Jon", ["Actigraph", "Wavelet"], datetime(2017, 4, 5,
-                       12), datetime(2017, 4, 6, 15))]
+                       12), datetime(2017, 4, 6, 15)), (
+                       "GENEActiv and ActiGraph on same dominant wrist, zoomed"
+                       , "Arno", ["GENEActiv_pink", "Actigraph"], datetime(
+                       2017, 4, 7, 9, 45), datetime(2017, 4, 7, 10, 15)), (
+                       "GENEActiv and Wavelet on same non-dominant wrist, zoom\
+                       ed", "Jon", ["GENEActive_black", "Wavelet"], datetime(
+                       2017, 4, 4, 9, 45), datetime(2017, 4, 4, 10, 15)), (
+                       "GENEActiv and E4 on same non-dominant wrist, zoomed",
+                       "Jon", ["GENEActiv_black", "E4"], datetime(2017, 4, 5,
+                       9, 45), datetime(2017, 4, 5, 10, 15)), (
+                       "ActiGraph and Wavelet on same non-dominant wrist, zoom\
+                       ed", "Jon", ["Actigraph", "Wavelet"], datetime(2017, 4,
+                       6, 9, 45), datetime(2017, 4, 6, 10, 15))]
     return(plot_data_tuples)
 
 def main():
@@ -72,10 +84,12 @@ def baseshift_and_renormalize(data):
         baseshifted, renormalized dataframe
     """
     baseline = np.median(data['normalized_vector_length'])
-    data['normalized_vector_length'] = data['normalized_vector_lengths'].map(
+    data['normalized_vector_length'] = data['normalized_vector_length'].map(
                                        lambda x: max(x - baseline, 0) if x <=
-                                       baseline else min(x, 3 * abs(x -
-                                       baseline)))
+                                       baseline else x)
+    datamax = max(data['normalized_vector_length'])
+    data['normalized_vector_length'] = data['normalized_vector_length'] /     \
+                                       datamax
     return(data)
         
 def build_plot(plot_label, plot_person, plot_devices, plot_start, plot_stop):
@@ -133,13 +147,14 @@ def build_plot(plot_label, plot_person, plot_devices, plot_start, plot_stop):
             person_device_df = device_df.loc[(device_df['Timestamp'] >=
                                plot_start) & (device_df['Timestamp'] <= 
                                plot_stop)].copy()
+            person_device_shifted = person_device_df.copy()
             del device_df
-            person_device_shifted = baseshift_and_renormalize(person_device_df)
             for pddf in [person_device_df, person_device_shifted]:
                 pddf['device'] = device
                 pddf = pddf[['device', "Timestamp", "normalized_vector_length"]
                        ]
             person_device_dfs.append(person_device_df)
+            baseshift_and_renormalize(person_device_df)
             person_device_shifteds.append(person_device_shifted)
         person_device_csv_df = pd.DataFrame(columns=['device', 'Timestamp',
                                'normalized_vector_length'])
@@ -232,10 +247,11 @@ def linechart(df, plot_label, plot_person):
         ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[device],
                      alpha=0.5, label=label, marker="", linestyle="solid")
         ax.legend(loc='best', fancybox=True, framealpha=0.5)
-        for annotation in annotations_a:
-            annotation_line(ax, annotations_a[annotation], annotations_b[
-                            annotation], annotation, annotation_y)
-            annotation_y += 0.08
+    for annotation in annotations_a:
+        annotation_line(ax, annotations_a[annotation], annotations_b[
+                        annotation], annotation, annotation_y)
+        annotation_y += 0.08
+    ax.set_ylim([0, 1])
     plt.suptitle(plot_label)
     plt.xticks(rotation=65)
     for image in [svg_out, png_out]:
