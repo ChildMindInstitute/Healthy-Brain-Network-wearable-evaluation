@@ -53,10 +53,10 @@ def define_plot_data():
                        ), (
                        "GENEActiv and Wavelet on same dominant wrist, zoomed",
                        "Arno", ["GENEActiv_black", "Wavelet"], datetime(2017,
-                       4, 6, 15, 53), datetime(2017, 4, 7, 15)), (
-                       "GENEActiv and E4 on same dominant wrist, zoomed",
-                       "Jon", ["GENEActiv_black", "E4"], datetime(2017, 4, 6,
-                       18, 15), datetime(2017, 4, 6, 18, 45)), (
+                       4, 6, 15, 53), datetime(2017, 4, 7, 15)),
+                       ("GENEActiv and E4 on same dominant wrist, zoomed",
+                       "Jon", ["GENEActiv_black", "E4"], datetime(2017, 4, 4,
+                       18, 45), datetime(2017, 4, 4, 19, 15)), (
                        "ActiGraph and Wavelet on same dominant wrist, zoomed",
                        "Arno", ["Actigraph", "Wavelet"], datetime(2017,
                        4, 6, 15, 53), datetime(2017, 4, 7, 15)),
@@ -259,6 +259,7 @@ def linechart(df, plot_label, plot_person):
               ' ')), 'svg'])]))
     png_out = ''.join([svg_out.strip('svg'), 'png'])
     fig = plt.figure(figsize=(10, 8), dpi=75)
+    plt.rcParams['agg.path.chunksize'] = 10000
     ax = fig.add_subplot(111)
     ax.set_ylabel('unit cube normalized vector length')
     annotations_a = {}
@@ -322,6 +323,9 @@ def linechart(df, plot_label, plot_person):
                     'accelerometer',"_".join([esses[0].name, esses[1].name,
                     'correlation.csv'])))
     m = max(mads)
+    fig = plt.figure(figsize=(10, 8), dpi=75)
+    plt.rcParams['agg.path.chunksize'] = 10000
+    ax = fig.add_subplot(111)
     plot_labelc = ''.join([plot_label, ', clipped to 3 MADs'])
     svg_outc = os.path.join(organized_dir, 'accelerometer', "_".join([
               'normalized_vector_length', '.'.join(['_'.join(plot_labelc.split(
