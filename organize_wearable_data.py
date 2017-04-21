@@ -253,6 +253,7 @@ def e4_ppg(dirpath):
             print(' : '.join(['E4 photoplethysmograph data, adding',  ppg, str(
                   ppg_data.shape)]))
     save_df(ppg_data, 'photoplethysmograph', 'E4')
+
     
 def e4_timestamp(df):
     """

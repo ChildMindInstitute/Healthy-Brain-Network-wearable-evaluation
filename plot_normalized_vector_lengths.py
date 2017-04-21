@@ -13,8 +13,7 @@ from chart_data import write_csv
 from config import organized_dir, placement_dir
 from datetime import datetime
 from matplotlib.dates import DateFormatter
-from organize_wearable_data import datetimedt, datetimeint
-import json, numpy as np, os, pandas as pd, matplotlib.pyplot as plt, sys
+import json, numpy as np, os, pandas as pd, matplotlib.pyplot as plt
 
 with open(os.path.join('./line_charts/device_colors.json')) as fp:
     color_key = json.load(fp)
@@ -33,7 +32,7 @@ def define_plot_data():
                        datetime, datetime)
         list of tuples to plot. Each tuple is a list of plot title, devices, 
         start time, and stop time
-    """    
+    """
 
     plot_data_tuples = [("GENEActiv, ActiGraph and Wavelet on same dominant wr"
                        "ist", "Arno", ["GENEActiv_pink", "Actigraph", "Wavelet"
@@ -58,12 +57,21 @@ def define_plot_data():
                        "GENEActiv and E4 on same dominant wrist, zoomed",
                        "Jon", ["GENEActiv_black", "E4"], datetime(2017, 4, 6,
                        18, 15), datetime(2017, 4, 6, 18, 45)), (
-                       "ActiGraph and Wavelet on same dominant wrist, zoom"
-                       "ed", "Arno", ["Actigraph", "Wavelet"], datetime(2017,
+                       "ActiGraph and Wavelet on same dominant wrist, zoomed",
+                       "Arno", ["Actigraph", "Wavelet"], datetime(2017,
                        4, 6, 15, 53), datetime(2017, 4, 7, 15)),
                        ("ActiGraph and Wavelet on same dominant wrist, zoom"
                        "ed", "Arno", ["Actigraph", "Wavelet"], datetime(2017,
-                       4, 6, 15, 53), datetime(2017, 4, 7, 15))]
+                       4, 6, 15, 53), datetime(2017, 4, 7, 15)),
+                       (("E4 and Wavelet on same dominant wrist, zoomed"),
+                       "Arno", ["E4", "Wavelet"], datetime(2017, 4, 9, 7),
+                       datetime(2017, 4, 9, 9, 45)),
+                       ("GENEActiv and E4 on same dominant wrist", "Jon",
+                       ["GENEActiv_black", "E4"], datetime(2017, 4, 4, 17, 20),
+                       datetime(2017, 4, 5, 15, 15)), (
+                       "GENEActiv and E4 on same dominant wrist, zoomed",
+                       "Jon", ["GENEActiv_black", "E4"], datetime(2017, 4, 5,
+                       6, 45), datetime(2017, 4, 5, 7, 15))]
     return(plot_data_tuples)
 
 def main():
@@ -73,12 +81,14 @@ def main():
         plot_devices = plot_data_tuple[2]
         plot_start = plot_data_tuple[3]
         plot_stop = plot_data_tuple[4]
-        try:
-            build_plot(plot_label, plot_person, plot_devices, plot_start,
+        # try:
+        build_plot(plot_label, plot_person, plot_devices, plot_start,
                        plot_stop)
+        """
         except:
             e = sys.exc_info()
             print(" ".join([plot_label, "failed: ", str(e)]))
+        """
 
 def baseshift_and_renormalize(data):
     """
@@ -146,15 +156,10 @@ def build_plot(plot_label, plot_person, plot_devices, plot_start, plot_stop):
                    '_'.join([device, 'normalized', 'unit']), 'csv']))
         if os.path.exists(acc_path):
             print(" ".join(["Loading ", acc_path]))
-            device_df = pd.read_csv(acc_path)
+            device_df = pd.read_csv(acc_path, parse_dates=['Timestamp'],
+                        infer_datetime_format=True)
             device_df.sort_values(by='Timestamp', inplace=True)
-            try:
-                device_df[['Timestamp']] = device_df.Timestamp.map(lambda x:
-                                           datetimedt(datetimeint(str(x),
-                                           '%Y-%m-%d %H:%M:%S.%f')))
-            except:
-                device_df[['Timestamp']] = device_df.Timestamp.map(lambda x:
-                                           datetimedt(datetimeint(str(x))))
+            device_df.dropna(inplace=True)
             person_device_df = device_df.loc[(device_df['Timestamp'] >=
                                plot_start) & (device_df['Timestamp'] <= 
                                plot_stop)].copy()
@@ -210,8 +215,7 @@ def cross_correlate(s1, s2, filepath):
     """
     corr = np.correlate(s1, s2)
     print(' '.join(['Saving', str(corr), 'to', filepath]))
-    with open(filepath, 'w') as fp:
-        fp.write(str(corr))
+    np.savetxt(filepath, corr, delimiter=',')
 
 def linechart(df, plot_label, plot_person):
     """
@@ -304,14 +308,58 @@ def linechart(df, plot_label, plot_person):
         fig.savefig(image)
         print("Saved.")
     plt.close()
+    mads = []
+    for s in esses:
+        mads.append(np.nanmedian(abs(s - np.nanmedian(s))))
     while len(esses) > 2:
         for i, s in enumerate(esses):
             if i < len(esses):
-                cross_correlate(s, esses[-1], "_".join([s.name, esses[-1].name,
-                                'correlation.csv']))
+                cross_correlate(s, esses[-1], os.path.join(organized_dir,
+                                'accelerometer',"_".join([s.name, esses[-1
+                                ].name, 'correlation.csv'])))
         del esses[-1]
-    cross_correlate(esses[0], esses[1], "_".join([esses[0].name, esses[1].name,
-                    'correlation.csv']))
+    cross_correlate(esses[0], esses[1], os.path.join(organized_dir,
+                    'accelerometer',"_".join([esses[0].name, esses[1].name,
+                    'correlation.csv'])))
+    m = max(mads)
+    plot_labelc = ''.join([plot_label, ', clipped to 3 MADs'])
+    svg_outc = os.path.join(organized_dir, 'accelerometer', "_".join([
+              'normalized_vector_length', '.'.join(['_'.join(plot_labelc.split(
+              ' ')), 'svg'])]))
+    png_outc = ''.join([svg_out.strip('svg'), 'png'])
+    for device in list(plot_df.columns):
+        plot_line = plot_df[[device]].dropna()
+        if "GENEActiv" in device:
+            label = "GENEActiv"
+        elif device == "Actigraph":
+            label = "ActiGraph"
+        else:
+            label = device
+        if device == "Wavelet":
+            ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
+                         device], alpha=0.5, label=label, marker="o",
+                         linestyle="None")
+        else:
+            ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
+                         device], alpha=0.5, label=label, marker="", linestyle=
+                         "solid")
+        ax.legend(loc='best', fancybox=True, framealpha=0.5)
+    for annotation in annotations_a:
+        try:
+            annotation_line(ax, annotations_a[annotation], annotations_b[
+                            annotation], annotation, annotation_y)
+            annotation_y += 0.08
+        except:
+            print(annotation)
+    ax.set_ylim([0, 3 * m])
+    ax.xaxis.set_major_formatter(DateFormatter('%m-%d %H:%M'))
+    plt.suptitle(plot_labelc)
+    plt.xticks(rotation=65)
+    for image in [svg_outc, png_outc]:
+        print("".join(["Saving ", image]))
+        fig.savefig(image)
+        print("Saved.")
+    plt.close()
 
 # ============================================================================
 if __name__ == '__main__':
