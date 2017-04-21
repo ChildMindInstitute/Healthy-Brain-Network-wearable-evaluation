@@ -13,9 +13,8 @@ from annotate_range import annotation_line
 from chart_data import write_csv
 from config import organized_dir, placement_dir
 from datetime import datetime
-from organize_wearable_data import datetimedt, datetimeint
 from plot_normalized_vector_lengths import cross_correlate
-import os, pandas as pd, matplotlib.pyplot as plt, sys
+import numpy as np, os, pandas as pd, matplotlib.pyplot as plt, sys
 
 column_dict = {'nW':'E4 combined red and green', 'infrared':'Wavelet infrared',
                'red':'Wavelet red'}
@@ -99,7 +98,7 @@ def build_plot(plot_label, plot_person, plot_devices, plot_start, plot_stop):
         if os.path.exists(ppg_path):
             print(" ".join(["Loading", ppg_path]))
             device_df = pd.read_csv(ppg_path, parse_dates=['Timestamp'],
-                        infer_datetime_format=True)
+                        infer_datetime_format=True, low_memory=False)
             device_df.sort_values(by='Timestamp', inplace=True)
             device_df.dropna(inplace=True)
             person_device_df = device_df.loc[(device_df['Timestamp'] >= 
@@ -108,8 +107,6 @@ def build_plot(plot_label, plot_person, plot_devices, plot_start, plot_stop):
             del device_df
             write_csv(person_device_df, plot_person, 'photoplethysmograph',
                       device)
-            person_device_df[['Timestamp']] = person_device_df.Timestamp.map(
-                                              lambda x: datetimedt(x))
             if csv_df.empty:
                 csv_df = person_device_df.copy()
             else:
@@ -136,7 +133,10 @@ def demean(s):
     ds : pandas series
         series recentered on 0
     """
+    s.apply(lambda x: pd.to_numeric(x))
+    s.dropna(inplace=True)
     nonzero = s.iloc[s.nonzero()[0]]
+    print(nonzero)
     return(nonzero - nonzero.mean())
 
 def normalize(s):
@@ -153,6 +153,7 @@ def normalize(s):
     ns : pandas series
         series with new minimum -1 and new maximum +1
     """
+    print(s)
     absmax = max(max(s), abs(min(s)))
     return(s/absmax)
 
@@ -198,6 +199,7 @@ def linechart(df, plot_label, plot_person):
               ' ')), 'svg'])]))
     png_out = ''.join([svg_out.strip('svg'), 'png'])
     fig = plt.figure(figsize=(10, 8), dpi=75)
+    plt.rcParams['agg.path.chunksize'] = 10000
     ax = fig.add_subplot(111)
     ax.set_ylabel('unit cube normalized vector length')
     annotations_a = {}
@@ -212,16 +214,16 @@ def linechart(df, plot_label, plot_person):
     esses = []
     for light in list(df.columns):
         if light == "nW":
-            plot_line = normalize(df[[light]].dropna())
+            plot_line = normalize(df.loc[:, light].dropna())
             ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
                          light], alpha=0.5, label=column_dict[light], marker=
                          "", linestyle="solid")
         else:
-            plot_line = normalize(demean(df[[light]].dropna()))
+            plot_line = normalize(demean(df.loc[:, light].dropna()))
             ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
                          light], alpha=0.5, label=column_dict[light], marker=
                          "o", linestyle="None")
-        esses.append(pd.Series(plot_line.iloc[:,0], name=light, index=
+        esses.append(pd.Series(plot_line, name=light, index=
                      plot_line.index))
     ax.legend(loc='best', fancybox=True, framealpha=0.5)
     for annotation in annotations_a:
