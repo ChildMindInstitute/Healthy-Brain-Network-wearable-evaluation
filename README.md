@@ -31,7 +31,7 @@ Data and visualizations at [Open Science Framework](https://osf.io/dg869/).
 # TODO:
 * [ ] Compare sensors
   * [x] accelerometer
-  * [ ] photoplethysmograph (started [here](https://github.com/ChildMindInstitute/HBN-wearable-analysis/blob/master/plot_normalized_ppgs.py) and [here](https://github.com/ChildMindInstitute/HBN-wearable-analysis/blob/master/chart_data_ppg.py)
+  * [ ] photoplethysmograph (started [here](https://github.com/ChildMindInstitute/HBN-wearable-analysis/blob/master/plot_normalized_ppgs.py) and [here](https://github.com/ChildMindInstitute/HBN-wearable-analysis/blob/master/chart_data_ppg.py))
   * [ ] EDA
   * [ ] heartrate
   * [ ] light
