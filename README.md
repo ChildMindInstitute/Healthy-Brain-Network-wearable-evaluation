@@ -27,3 +27,16 @@ temperature | degrees Celcius (°C) | Embrace, E4, GENEActiv
 [![](line_charts/2017-04-07_Arno_right.png)](https://osf.io/4fj9t/)
 
 Data and visualizations at [Open Science Framework](https://osf.io/dg869/).
+
+# TODO:
+* [ ] Compare sensors
+  * [x] accelerometer
+  * [ ] photoplethysmograph (started [here](https://github.com/ChildMindInstitute/HBN-wearable-analysis/blob/master/plot_normalized_ppgs.py) and [here](https://github.com/ChildMindInstitute/HBN-wearable-analysis/blob/master/chart_data_ppg.py)
+  * [ ] EDA
+  * [ ] heartrate
+  * [ ] light
+  * [ ] temperature
+* [ ] collect comments from manufacturers
+  * [x] reach out with questions
+  * [ ] collect responses
+* [ ] formally write up findings
