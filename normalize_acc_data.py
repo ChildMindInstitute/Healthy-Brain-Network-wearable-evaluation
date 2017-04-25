@@ -29,7 +29,7 @@ Actigraph wGT3X-BT with Polar H7
 """
 def actigraph_acc(dirpath):
     """
-    Function to take all Actigraph accelerometry data from a directory and
+    Function to take all Actigraph accelerometry 1 Hz data from a directory and
     format those data with Linux time-series index columns and x, y, z value
     columns
     
@@ -51,45 +51,26 @@ def actigraph_acc(dirpath):
     """    
     acc_data = pd.DataFrame
     for acc in os.listdir(dirpath):
-        if acc.endswith("1sec.csv"):
+        if acc.endswith("RAW.csv"):
+            acc_path = os.path.join(dirpath, acc)
             if acc_data.empty:
-                with open(os.path.join(dirpath, acc), 'r') as acc_f:
-                    acc_data = actigraph_acc_data(acc_f)
+                acc_data = pd.read_csv(acc_path, skiprows=10, header=0,
+                           parse_dates=['Timestamp'], infer_datetime_format=True)
             else:
-                with open(os.path.join(dirpath, acc), 'r') as acc_f:
-                    acc_data = pd.concat([acc_data, actigraph_acc_data(acc_f)])
+                acc_data = pd.concat([acc_data, pd.read_csv(acc_path, skiprows=
+                           10, header=0, parse_dates=['Timestamp'],
+                           infer_datetime_format=True)])
             print(' : '.join(['Actigraph accelorometer data, adding', acc, str(
                   acc_data.shape)]))
+    acc_data[['Timestamp', 'x', 'y', 'z']] = acc_data[['Timestamp',
+                                             'Accelerometer X',
+                                             'Accelerometer Y',
+                                             'Accelerometer Z']]
     for column in list(acc_data.columns):
         print(column, end=": ")
         print(max(acc_data[column]))
     acc_data = normalize(acc_data, 1024)
     save_df(acc_data, 'accelerometer', 'Actigraph')
-    
-def actigraph_acc_data(open_csv):
-    """
-    Function to collect Actigraph data and return dataframe with Linux time-
-    series index column and x, y, z value columns
-    
-    Parameters
-    ----------
-    df : pandas dataframe
-        dataframe for which to organize data
-        
-    Returns
-    -------
-    new_df : pandas dataframe
-        dataframe with Linux time-series index column and accelerometer value
-        columns
-    """
-    
-    df = drop_non_csv(open_csv, 10, True)
-    df['timestamp'] = df['timestamp'].map(actigraph_datetimeint)
-    new_df = pd.DataFrame()
-    new_df[['Timestamp', 'x', 'y', 'z']] = df[['timestamp', 'axis1', 'axis2',
-                                           'axis3']]
-    new_df.set_index('Timestamp', inplace=True)
-    return(new_df)
 
 """
 -----------
@@ -276,10 +257,10 @@ def wavelet_acc(dirpath):
 def main():
     # accelerometry
     # unit: normalized vector length (/1)
-    e4_acc(e4_dir)
-    geneactiv_acc(geneactiv_dir)
+    # e4_acc(e4_dir)
+    # geneactiv_acc(geneactiv_dir)
     actigraph_acc(actigraph_dir)
-    wavelet_acc(wavelet_dir)
+    # wavelet_acc(wavelet_dir)
     
 def normalize(df, scale):
     """
