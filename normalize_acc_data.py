@@ -55,7 +55,8 @@ def actigraph_acc(dirpath):
             acc_path = os.path.join(dirpath, acc)
             if acc_data.empty:
                 acc_data = pd.read_csv(acc_path, skiprows=10, header=0,
-                           parse_dates=['Timestamp'], infer_datetime_format=True)
+                           parse_dates=['Timestamp'], infer_datetime_format=
+                           True)
             else:
                 acc_data = pd.concat([acc_data, pd.read_csv(acc_path, skiprows=
                            10, header=0, parse_dates=['Timestamp'],
@@ -66,6 +67,7 @@ def actigraph_acc(dirpath):
                                              'Accelerometer X',
                                              'Accelerometer Y',
                                              'Accelerometer Z']]
+    acc_data.set_index('Timestamp', inplace=True)
     for column in list(acc_data.columns):
         print(column, end=": ")
         print(max(acc_data[column]))
