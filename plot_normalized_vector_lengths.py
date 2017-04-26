@@ -32,12 +32,9 @@ def define_plot_data():
                        datetime, datetime)
         list of tuples to plot. Each tuple is a list of plot title, devices, 
         start time, and stop time
-    """
 
-    plot_data_tuples = [("GENEActiv, ActiGraph and Wavelet on same dominant wr"
-                       "ist", "Arno", ["GENEActiv_pink", "Actigraph", "Wavelet"
-                       ], datetime(2017, 4, 6, 15, 45), datetime(2017, 4, 7,
-                       14, 8)), (
+
+    plot_data_tuples = [(
                        "GENEActiv and Wavelet on same dominant wrist",
                        "Arno", ["GENEActiv_pink", "Wavelet"], datetime(2017,
                        4, 6, 15, 45), datetime(2017, 4, 7, 14, 8)), (
@@ -46,11 +43,7 @@ def define_plot_data():
                        datetime(2017, 4, 7, 16, 3)), (
                        "ActiGraph and Wavelet on same dominant wrist",
                        "Arno", ["Actigraph", "Wavelet"], datetime(2017, 4, 6,
-                       15, 53), datetime(2017, 4, 7, 15)), ("GENEActiv, ActiGr"
-                       "aph and Wavelet on same dominant wrist, zoomed",
-                       "Arno", ["GENEActiv_pink", "Actigraph", "Wavelet"],
-                       datetime(2017, 4, 7, 7, 15), datetime(2017, 4, 7, 7, 45)
-                       ), (
+                       15, 53), datetime(2017, 4, 7, 15)), (
                        "GENEActiv and Wavelet on same dominant wrist, zoomed",
                        "Arno", ["GENEActiv_black", "Wavelet"], datetime(2017,
                        4, 6, 15, 53), datetime(2017, 4, 7, 15)),
@@ -71,7 +64,22 @@ def define_plot_data():
                        datetime(2017, 4, 5, 15, 15)), (
                        "GENEActiv and E4 on same dominant wrist, zoomed",
                        "Jon", ["GENEActiv_black", "E4"], datetime(2017, 4, 5,
-                       6, 45), datetime(2017, 4, 5, 7, 15))]
+                       6, 45), datetime(2017, 4, 5, 7, 15)), (
+                       "GENEActiv and Wavelet on same dominant wrist",
+                       "Arno", ["GENEActiv_pink", "Wavelet"], datetime(2017,
+                       4, 6, 15, 45), datetime(2017, 4, 7, 14, 8)), ()
+                       "GENEActiv and Wavelet on same dominant wrist, zoomed",
+                       "Arno", ["GENEActiv_pink", "Wavelet"], datetime(2017,
+                       4, 6, 15, 53), datetime(2017, 4, 7, 15))]
+    """
+    plot_data_tuples = [("GENEActiv, ActiGraph and Wavelet on same dominant wr"
+                       "ist", "Arno", ["GENEActiv_pink", "Actigraph", "Wavelet"
+                       ], datetime(2017, 4, 6, 15, 45), datetime(2017, 4, 7,
+                       14, 8)), ("GENEActiv, ActiGr"
+                       "aph and Wavelet on same dominant wrist, zoomed",
+                       "Arno", ["GENEActiv_pink", "Actigraph", "Wavelet"],
+                       datetime(2017, 4, 7, 7, 15), datetime(2017, 4, 7, 7, 45)
+                       )]
     return(plot_data_tuples)
 
 def main():
