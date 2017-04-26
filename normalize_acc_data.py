@@ -49,7 +49,7 @@ def actigraph_acc(dirpath):
         comma-separated-values file with Linux time-series index column and x,
         y, z accelerometer value columns
     """    
-    acc_data = pd.DataFrame
+    acc_data = pd.DataFrame()
     for acc in os.listdir(dirpath):
         if acc.endswith("RAW.csv"):
             acc_path = os.path.join(dirpath, acc)
@@ -63,16 +63,17 @@ def actigraph_acc(dirpath):
                            infer_datetime_format=True)])
             print(' : '.join(['Actigraph accelorometer data, adding', acc, str(
                   acc_data.shape)]))
-    acc_data[['Timestamp', 'x', 'y', 'z']] = acc_data[['Timestamp',
+    acc_data_new = pd.DataFrame()
+    acc_data_new[['Timestamp', 'x', 'y', 'z']] = acc_data[['Timestamp',
                                              'Accelerometer X',
                                              'Accelerometer Y',
                                              'Accelerometer Z']]
-    acc_data.set_index('Timestamp', inplace=True)
-    for column in list(acc_data.columns):
+    acc_data_new.set_index('Timestamp', inplace=True)
+    for column in list(acc_data_new.columns):
         print(column, end=": ")
-        print(max(acc_data[column]))
-    acc_data = normalize(acc_data, 1024)
-    save_df(acc_data, 'accelerometer', 'Actigraph')
+        print(max(acc_data_new[column]))
+    acc_data_new = normalize(acc_data_new, 1024)
+    save_df(acc_data_new, 'accelerometer', 'Actigraph')
 
 """
 -----------
