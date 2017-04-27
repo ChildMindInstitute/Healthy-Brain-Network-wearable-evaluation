@@ -520,27 +520,26 @@ def wavelet_acc(dirpath):
         comma-separated-values file with Linux time-series index column and x,
         y, z accelerometer value columns
     """    
-    csv_path = os.path.join(dirpath, 'CSV')
+    csv_path = os.path.join(os.path.dirname(dirpath), 'accel')
     acc_data = pd.DataFrame()
     for acc in os.listdir(csv_path):
         if acc.endswith("csv"):
             if acc_data.empty:
                 acc_data = pd.read_csv(os.path.join(csv_path, acc),
-                           header=0, skip_blank_lines=True, comment="C")
+                           header=0, skip_blank_lines=True, comment="C",
+                           parse_dates=['timestamp'], infer_datetime_format=
+                           True)
                 print(' : '.join([acc, str(acc_data.shape)]))
             else:
                 acc_data = pd.concat([acc_data, pd.read_csv(os.path.join(
                            csv_path, acc), header=0, skip_blank_lines=True,
-                           comment="C")])
+                           comment="C", parse_dates=['timestamp'],
+                           infer_datetime_format=True)])
             print(' : '.join(['Wavelet accelorometer data, adding',  acc, str(
                       acc_data.shape)]))
-    acc_data['timestamp'] = acc_data['timestamp'].map(lambda x:
-                            datetime.fromtimestamp(int(x)/1000).strftime(
-                            "%Y-%m-%d %H:%M:%S.%f"), na_action='ignore')
     acc_data_returns = pd.DataFrame()
     acc_data_returns[['Timestamp', 'x', 'y', 'z']] = acc_data[['timestamp',
-                                                     ' accel.X', ' accel.Y',
-                                                     ' accel.Z']]
+                                                     'x', 'y', 'z']]
     acc_data_returns.set_index('Timestamp', inplace=True)
     # convert from 1/64g to g
     for axis in axes:
