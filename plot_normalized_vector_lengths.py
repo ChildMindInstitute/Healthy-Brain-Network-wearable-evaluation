@@ -32,24 +32,15 @@ def define_plot_data():
                        datetime, datetime)
         list of tuples to plot. Each tuple is a list of plot title, devices, 
         start time, and stop time
-
+    """
 
     plot_data_tuples = [(
                        "GENEActiv and Wavelet on same dominant wrist",
                        "Arno", ["GENEActiv_pink", "Wavelet"], datetime(2017,
                        4, 6, 15, 45), datetime(2017, 4, 7, 14, 8)), (
-                       "GENEActiv and E4 on same dominant wrist", "Jon",
-                       ["GENEActiv_black", "E4"], datetime(2017, 4, 6, 16, 20),
-                       datetime(2017, 4, 7, 16, 3)), (
                        "ActiGraph and Wavelet on same dominant wrist",
                        "Arno", ["Actigraph", "Wavelet"], datetime(2017, 4, 6,
                        15, 53), datetime(2017, 4, 7, 15)), (
-                       "GENEActiv and Wavelet on same dominant wrist, zoomed",
-                       "Arno", ["GENEActiv_black", "Wavelet"], datetime(2017,
-                       4, 6, 15, 53), datetime(2017, 4, 7, 15)),
-                       ("GENEActiv and E4 on same dominant wrist, zoomed",
-                       "Jon", ["GENEActiv_black", "E4"], datetime(2017, 4, 4,
-                       18, 45), datetime(2017, 4, 4, 19, 15)), (
                        "ActiGraph and Wavelet on same dominant wrist, zoomed",
                        "Arno", ["Actigraph", "Wavelet"], datetime(2017,
                        4, 6, 15, 53), datetime(2017, 4, 7, 15)),
@@ -58,21 +49,14 @@ def define_plot_data():
                        4, 6, 15, 53), datetime(2017, 4, 7, 15)),
                        (("E4 and Wavelet on same dominant wrist, zoomed"),
                        "Arno", ["E4", "Wavelet"], datetime(2017, 4, 9, 7),
-                       datetime(2017, 4, 9, 9, 45)),
-                       ("GENEActiv and E4 on same dominant wrist", "Jon",
-                       ["GENEActiv_black", "E4"], datetime(2017, 4, 4, 17, 20),
-                       datetime(2017, 4, 5, 15, 15)), (
-                       "GENEActiv and E4 on same dominant wrist, zoomed",
-                       "Jon", ["GENEActiv_black", "E4"], datetime(2017, 4, 5,
-                       6, 45), datetime(2017, 4, 5, 7, 15)), (
+                       datetime(2017, 4, 9, 9, 45)), (
                        "GENEActiv and Wavelet on same dominant wrist",
                        "Arno", ["GENEActiv_pink", "Wavelet"], datetime(2017,
-                       4, 6, 15, 45), datetime(2017, 4, 7, 14, 8)), ()
+                       4, 6, 15, 45), datetime(2017, 4, 7, 14, 8)), (
                        "GENEActiv and Wavelet on same dominant wrist, zoomed",
                        "Arno", ["GENEActiv_pink", "Wavelet"], datetime(2017,
-                       4, 6, 15, 53), datetime(2017, 4, 7, 15))]
-    """
-    plot_data_tuples = [("GENEActiv, ActiGraph and Wavelet on same dominant wr"
+                       4, 6, 15, 53), datetime(2017, 4, 7, 15)),
+                       ("GENEActiv, ActiGraph and Wavelet on same dominant wr"
                        "ist", "Arno", ["GENEActiv_pink", "Actigraph", "Wavelet"
                        ], datetime(2017, 4, 6, 15, 45), datetime(2017, 4, 7,
                        14, 8)), ("GENEActiv, ActiGr"
@@ -292,12 +276,14 @@ def linechart(df, plot_label, plot_person):
             label = "ActiGraph"
         else:
             label = device
+        """
         if device == "Wavelet":
             ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
                          device], alpha=0.5, label=label, marker="o",
                          linestyle="None")
         else:
-            ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
+        """
+        ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
                          device], alpha=0.5, label=label, marker="", linestyle=
                          "solid")
         ax.legend(loc='best', fancybox=True, framealpha=0.5)
@@ -347,12 +333,14 @@ def linechart(df, plot_label, plot_person):
             label = "ActiGraph"
         else:
             label = device
+        """
         if device == "Wavelet":
             ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
                          device], alpha=0.5, label=label, marker="o",
                          linestyle="None")
         else:
-            ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
+        """
+        ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
                          device], alpha=0.5, label=label, marker="", linestyle=
                          "solid")
         ax.legend(loc='best', fancybox=True, framealpha=0.5)

@@ -18,4 +18,4 @@ def annotation_line(ax, xmin, xmax, text, y=-1.5, ytext=0, linecolor='black',
         text = 'charging'
         
     ax.annotate(text, xy=(xcenter,ytext), ha='center', va='center',
-                fontsize=fontsize)
+                fontsize=fontsize, clip_on=True)
