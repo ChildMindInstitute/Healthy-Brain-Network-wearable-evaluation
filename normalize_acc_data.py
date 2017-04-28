@@ -27,9 +27,9 @@ axes = ['x', 'y', 'z']
 Actigraph wGT3X-BT with Polar H7
 --------------------------------
 """
-def actigraph_acc(dirpath):
+def actigraph_acc(dirpath, outpath=None):
     """
-    Function to take all Actigraph accelerometry 1 Hz data from a directory and
+    Function to take all Actigraph accelerometry data from a directory and
     format those data with Linux time-series index columns and x, y, z value
     columns
     
@@ -63,17 +63,20 @@ def actigraph_acc(dirpath):
                            infer_datetime_format=True)])
             print(' : '.join(['Actigraph accelorometer data, adding', acc, str(
                   acc_data.shape)]))
-    acc_data_new = pd.DataFrame()
+    acc_data_new = pd.DataFrame({'Timestamp': [], 'x': [], 'y': [], 'z': []})
     acc_data_new[['Timestamp', 'x', 'y', 'z']] = acc_data[['Timestamp',
-                                             'Accelerometer X',
-                                             'Accelerometer Y',
-                                             'Accelerometer Z']]
+                                                 'Accelerometer X',
+                                                 'Accelerometer Y',
+                                                 'Accelerometer Z']]
     acc_data_new.set_index('Timestamp', inplace=True)
     for column in list(acc_data_new.columns):
         print(column, end=": ")
         print(max(acc_data_new[column]))
     acc_data_new = normalize(acc_data_new, 1024)
-    save_df(acc_data_new, 'accelerometer', 'Actigraph')
+    if outpath:
+        save_df(acc_data_new, 'accelerometer', 'Actigraph', outpath)
+    else:
+        save_df(acc_data_new, 'accelerometer', 'Actigraph')
 
 """
 -----------
@@ -133,7 +136,7 @@ Fitbit Blaze
 GENEActiv Original
 ------------------
 """
-def geneactiv_acc(dirpath):
+def geneactiv_acc(dirpath, outpath=None):
     """
     Function to take all GENEActiv accelerometry data from a directory and
     format those data with Linux time-series index column and x, y, z value
@@ -157,6 +160,7 @@ def geneactiv_acc(dirpath):
     """    
     acc_data_black = pd.DataFrame()
     acc_data_pink = pd.DataFrame()
+    acc_data = pd.DataFrame()
     for acc in os.listdir(dirpath):
         if "Jon" in acc and acc.endswith("csv"):
             if acc_data_black.empty:
@@ -178,10 +182,33 @@ def geneactiv_acc(dirpath):
                                      geneactiv_acc_data(acc_f)])
             print(' : '.join(['Pink GENEActiv accelorometer data, adding',
                   acc, str(acc_data_pink.shape)]))
-    for acc_data in [acc_data_black, acc_data_pink]:
-        acc_data = normalize(acc_data, 8)
-    save_df(acc_data_black, 'accelerometer', 'GENEActiv_black')
-    save_df(acc_data_pink, 'accelerometer', 'GENEActiv_pink')
+        elif acc.endswith("csv"):
+            if acc_data.empty:
+                with open(os.path.join(dirpath, acc), 'r') as acc_f:
+                    acc_data = geneactiv_acc_data(acc_f)
+            else:
+                with open(os.path.join(dirpath, acc), 'r') as acc_f:
+                    acc_data = pd.concat([acc_data_pink, 
+                                     geneactiv_acc_data(acc_f)])
+            print(' : '.join(['GENEActiv accelorometer data, adding',
+                  acc, str(acc_data.shape)]))
+    for acc_data_f in [acc_data_black, acc_data_pink, acc_data]:
+        if(not acc_data_f.empty):
+            acc_data_f = normalize(acc_data, 8)
+    if outpath:
+        if len(acc_data_black > 0):
+            save_df(acc_data_black, 'accelerometer', 'GENEActiv_black', outpath)
+        if len(acc_data_pink > 0):
+            save_df(acc_data_pink, 'accelerometer', 'GENEActiv_pink', outpath)
+        if len(acc_data > 0):
+            save_df(acc_data, 'accelerometer', 'GENEActiv', outpath)
+    else:
+        if len(acc_data_black > 0):
+            save_df(acc_data_black, 'accelerometer', 'GENEActiv_black')
+        if len(acc_data_pink > 0):
+            save_df(acc_data_pink, 'accelerometer', 'GENEActiv_pink')
+        if len(acc_data > 0):
+            save_df(acc_data, 'accelerometer', 'GENEActiv')
     
 def geneactiv_acc_data(open_csv):
     """
@@ -291,10 +318,10 @@ def normalize(df, scale):
                                      unit) ** 2 + (df['z'] / unit) ** 2)
     return(df)
 
-def save_df(df, sensor, device):
+def save_df(df, sensor, device, organized_dir_out=organized_dir):
     """
     Function to save formatted dataframe to csv in organized_dir (defined in
-    config.py).
+    config.py) or to specified dir.
     
     Parameters
     ----------
@@ -319,7 +346,7 @@ def save_df(df, sensor, device):
     df : pandas dataframe
         unmodified dataframe
     """
-    out_dir = os.path.join(organized_dir, sensor)
+    out_dir = os.path.join(organized_dir_out, sensor)
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
     print(''.join(['Saving formatted ', sensor, ' data from ', device]))

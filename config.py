@@ -21,6 +21,7 @@ devices = ['Actigraph', 'E4', 'Embrace', 'GENEActiv_black', 'GENEActiv_pink',
 
 organized_dir = os.path.abspath('./organized')
 placement_dir = os.path.join(organized_dir, 'device_placement')
+short_dir = os.path.abspath('/Users/jon.clucas/wearables/quicktest')
 
 sensor_dictionary = {'Actigraph':['accelerometer', 'ecg', 'light'],
                     'Embrace':['accelerometer', 'gyro', 'eda', 'temp'],
