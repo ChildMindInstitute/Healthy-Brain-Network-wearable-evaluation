@@ -457,8 +457,6 @@ def fetch_check_data(data_file, url, hashes, cache_directory='', append='',
     import os
     import shutil
 
-    from mindboggle.mio.fetch_data import fetch_data, fetch_hash
-
     # ------------------------------------------------------------------------
     # Set temporary cache directory if not specified:
     # ------------------------------------------------------------------------
