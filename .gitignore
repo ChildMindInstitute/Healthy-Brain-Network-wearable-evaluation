@@ -4,6 +4,8 @@ mindboggle.*.box
 mindboggle.egg-info
 vtk_cpp_tools/bin
 .vagrant/
+.ipynb_checkpoints/
+sample_data
 
 build
 CMakeCache.txt
