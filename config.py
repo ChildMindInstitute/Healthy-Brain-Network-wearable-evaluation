@@ -28,10 +28,6 @@ sensor_dictionary = {'Actigraph':['accelerometer', 'ecg', 'light'],
                     'E4':['accelerometer', 'ppg', 'eda', 'temp'],
                     'Wavelet':['accelerometer', 'gyro', 'ppg'],
                     'GENEActiv':['accelerometer', 'light', 'temp']}
-                    
-def cache_hashes():
-    hashes = {}
-    return(hashes)
    
 def test_urls(): 
     urls = {}
@@ -44,3 +40,6 @@ def test_urls():
     urls['Wavelet_ppg'] = 'https://osf.io/c5b9z/?action=download&version=1'
     return(urls)
     
+cmi_colors = ["#0067a0", "#919d9d", "#00c1d5", "#b5bd00", "#a31c3f", "#ea234b",
+              "#eeae30", "#f2cd32", "#4db789", "#90d9b9", "#404341", "#e4e4e4",
+              "#090e3c", "#242a6a", "#97e2ef", "#f9e28a", "#d3da5f"]
