@@ -28,3 +28,19 @@ sensor_dictionary = {'Actigraph':['accelerometer', 'ecg', 'light'],
                     'E4':['accelerometer', 'ppg', 'eda', 'temp'],
                     'Wavelet':['accelerometer', 'gyro', 'ppg'],
                     'GENEActiv':['accelerometer', 'light', 'temp']}
+                    
+def cache_hashes():
+    hashes = {}
+    return(hashes)
+   
+def test_urls(): 
+    urls = {}
+    urls['A_acc_quicktest'] = 'https://osf.io/h3aem/?action=download&version=1'
+    urls['G1_acc_quicktest'] = ('https://osf.io/j5rcu/?action=download&version'
+                               '=1')
+    urls['G2_acc_quicktest'] = ('https://osf.io/yxgzt/?action=download&version'
+                               '=1')
+    urls['e4_ppg'] = 'https://osf.io/v3ad6/?action=download&version=2'
+    urls['Wavelet_ppg'] = 'https://osf.io/c5b9z/?action=download&version=1'
+    return(urls)
+    
