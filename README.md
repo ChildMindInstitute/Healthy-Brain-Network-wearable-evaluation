@@ -20,22 +20,29 @@ heartrate | beats per minute (bpm) | ActiGraph (with [Polar H7](http://actigraph
 light | lux (lx) | ActiGraph, GENEActiv
 temperature | degrees Celcius (°C) | Embrace, E4, GENEActiv
 
-[![](line_charts/normalized_acc_GENEActiv_and_Actigraph_ba.png)](https://osf.io/bkv6s/)
-
-[![](line_charts/normalized_acc_GENEActiv_and_Actigraph_zba.png)](https://osf.io/yfpn9/)
-
-[![](line_charts/2017-04-07_Arno_right.png)](https://osf.io/4fj9t/)
-
 Data and visualizations at [Open Science Framework](https://osf.io/dg869/).
 
 # TODO:
 * [ ] Compare sensors
-  * [x] accelerometer
-  * [ ] photoplethysmograph (started [here](https://github.com/ChildMindInstitute/HBN-wearable-analysis/blob/master/plot_normalized_ppgs.py) and [here](https://github.com/ChildMindInstitute/HBN-wearable-analysis/blob/master/chart_data_ppg.py))
+  * [ ] accelerometer
+    * [ ] ActiGraph vs E4
+    * [ ] ActiGraph vs Embrace
+    * [x] [ActiGraph vs GENEActiv](https://github.com/ChildMindInstitute/HBN-wearable-analysis/blob/master/short_test.ipynb)
+    * [ ] ActiGraph vs Wavelet
+  * [ ] photoplethysmograph
+    * [ ] E4 vs Wavelet (started [here](https://github.com/ChildMindInstitute/HBN-wearable-analysis/blob/master/plot_normalized_ppgs.py) and [here](https://github.com/ChildMindInstitute/HBN-wearable-analysis/blob/master/chart_data_ppg.py))
   * [ ] EDA
+    * [ ] E4 vs Embrace
   * [ ] heartrate
+    * [ ] ActiGraph with Polar vs E4
+    * [ ] ActiGraph with Polar vs Wavelet
+    * [ ] E4 vs Wavelet
   * [ ] light
+    * [ ] ActiGraph vs GENEActiv
   * [ ] temperature
+    * [ ] E4 vs Embrace
+    * [ ] E4 vs GENEActiv
+    * [ ] Embrace vs GENEActiv
 * [ ] collect comments from manufacturers
   * [x] reach out with questions
   * [ ] collect responses
