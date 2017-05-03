@@ -25,13 +25,37 @@ def main():
     people_w = pd.unique(people_df.person_wrist)
     for pw in people_w:
         buildperson(people_df, pw)
+
+def bland_altman_plot(data1, data2, *args, **kwargs):
+    """
+    Function to build a Bland-Altman plot.
     
+    Parameters
+    ----------
+    data1, data2 : pandas dataframes
+        dataframes to compare
+        
+    *args, **kwargs : various types
+        additional arguments for plotting
+    """
+    data1     = np.asarray(data1)
+    data2     = np.asarray(data2)
+    mean      = np.mean([data1, data2], axis=0)
+    diff      = data1 - data2                   # Difference between data1 and data2
+    md        = np.mean(diff)                   # Mean of the difference
+    sd        = np.std(diff, axis=0)            # Standard deviation of the difference
+
+    plt.scatter(mean, diff, *args, **kwargs)
+    plt.axhline(md,           color='gray', linestyle='--')
+    plt.axhline(md + 1.96*sd, color='gray', linestyle='--')
+    plt.axhline(md - 1.96*sd, color='gray', linestyle='--')
+        
 def buildperson(df, pw):
     """
     Function to build plottable csv file for each available person-wrist-device
     
-    Paramters
-    ---------
+    Parameters
+    ----------
     df : pandas dataframe
         dataframe with columns ["person_wrist", "device", "start", "stop"]
         detailing which device was worn by whom when
@@ -105,10 +129,108 @@ def buildperson(df, pw):
             person_df_to_csv = df_to_csv.pivot(index="Timestamp", columns=
                                "device")
             person_df_to_csv.sortlevel(inplace=True)
-            linechart(person_df_to_csv, pw, d)
+            linechart_pw(person_df_to_csv, pw, d)
             write_csv(person_df_to_csv, person, 'accelerometer', d=d)
 
-def linechart(df, pw, d=None):
+def linechart(df, plot_label, line=True, full=False):
+    """
+    Function to build a linechart and export a PNG and an SVG of the image.
+    
+    Parameters
+    ----------
+    df : pandas dataframe
+        dataframe to plot
+        
+    plot_label : string
+        plot title
+        
+    line : boolean
+        True for lineplot, False for scatterplot
+        
+    full : boolean
+        True for ylim=[0, 1], False for ylim=[0, 3×max(mad)
+        
+    Returns
+    -------
+    plotted : boolean
+        True if data plotted, False otherwise
+    
+    Outputs
+    -------
+    inline plot
+    """
+    try:
+        start = min(df.index.values)
+    except:
+        print("End of data.")
+        return False
+    stop = max(df.index.values)
+    print("Plotting...")
+    print(plot_label)
+    fig = plt.figure(figsize=(10, 8), dpi=75)
+    plt.rcParams['agg.path.chunksize'] = 10000
+    ax = fig.add_subplot(111)
+    ax.set_ylabel('unit cube normalized vector length')
+    annotations_a = {}
+    annotations_b = {}
+    annotation_y = 0.04
+    mad_values = []
+    for i, device in enumerate(list(df.columns)):
+        if device.startswith('normalized'):
+            d2 = device[25:]
+        else:
+            d2 = device
+        plot_line = df[[device]].dropna()
+        mp = mad(plot_line)
+        if mp > 0:
+            print(mp)
+            mad_values.append(mp)
+        else:
+            mp = plot_line.std()[0]
+            if mp > 0:
+                print(mp)
+                mad_values.append(mp)
+            else:
+                print(max(plot_line[[device]]))
+                mad_values.append(max(plot_line[[device]]))
+        if "GENEActiv" in device:
+            label = "GENEActiv"
+        elif device == "Actigraph":
+            label = "ActiGraph"
+        else:
+            label = d2
+        """
+        if device == "Wavelet":
+            ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
+                         device], alpha=0.5, label=label, marker="o",
+                         linestyle="None")
+        else:
+        """
+        if line:
+            ax.plot_date(x=plot_line.index, y=plot_line, alpha=0.5, label=label, marker="", linestyle=
+                             "solid")
+        else:
+            ax.plot_date(x=plot_line.index, y=plot_line, alpha=0.5, label=label, marker="o", linestyle=
+                             "None")
+        ax.legend(loc='best', fancybox=True, framealpha=0.5)
+    try:
+        ylim = max(mad_values)
+    except:
+        ylim = 0
+    if full or ylim == 0:
+        ax.set_ylim([0, 1])
+    else:
+        try:
+            ax.set_ylim([0, 3 * ylim])
+        except:
+            ax.set_ylim([0, 1])
+    ax.xaxis.set_major_formatter(DateFormatter('%H:%M:%S'))
+    plt.suptitle(plot_label)
+    plt.xticks(rotation=65)
+    plt.show()
+    return True
+            
+def linechart_pw(df, pw, d=None):
     """
     Function to build a linechart of the given (person, wrist) and export an
     SVG of the image.
@@ -285,7 +407,7 @@ def get_startstop(df, person):
             starts.append(datetimeint(df.loc[i, 'start'].strftime(ssdt), ssdt))
             stops.append(datetimeint(df.loc[i, 'stop'].strftime(ssdt), ssdt))
     return(person, starts, stops)
-    
+
 def split_datetimes(df):
     """
     Function to split datetimes into dates and times.
