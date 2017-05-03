@@ -11,9 +11,13 @@ Created on Mon Apr 10 17:25:39 2017
 @author: jon.clucas
 """
 from annotate_range import annotation_line
-from config import devices, organized_dir, placement_dir
+from astropy.stats import median_absolute_deviation as mad
+from config import devices, organized_dir, placement_dir, test_urls
 from datetime import datetime, timedelta
+from matplotlib.dates import DateFormatter
 from organize_wearable_data import datetimedt, datetimeint
+from plot_normalized_vector_lengths import baseshift_and_renormalize
+from utilities.fetch_data import fetch_check_data, fetch_data, fetch_hash
 import json, numpy as np, os, pandas as pd, matplotlib.pyplot as plt
 
 with open(os.path.join('./line_charts/device_colors.json')) as fp:
@@ -132,7 +136,7 @@ def buildperson(df, pw):
             linechart_pw(person_df_to_csv, pw, d)
             write_csv(person_df_to_csv, person, 'accelerometer', d=d)
             
-def df_devices(devices, sensor, start, stop):
+def df_devices(devices, sensor, start, stop, acc_hashes={}):
     """
     Function to calculate rolling correlations between two sensor data streams.
     
@@ -150,6 +154,9 @@ def df_devices(devices, sensor, start, stop):
     stop : datetime
         end of time to compare
         
+    acc_hashes : dictionary
+        dictionary of cached datafile hashes
+        
     Returns
     -------
     df : pandas dataframe
@@ -163,10 +170,11 @@ def df_devices(devices, sensor, start, stop):
             try:
                 fetch_check_data(acc_sub, test_urls()[acc_sub], acc_hashes, cache_directory='./sample_data',
                                  append='.csv', verbose=True)
-            except OSError:
+            except:
                 acc_hashes[acc_sub] = fetch_hash(fetch_data(test_urls()[acc_sub], os.path.join('./sample_data',
                                       acc_sub), '.csv'))
-        s.append(pd.read_csv(os.path.join('./sample_data', ''.join([acc_sub, suffix])),
+        s.append(pd.read_csv(fetch_check_data(acc_sub, test_urls()[acc_sub], acc_hashes,
+                 cache_directory='./sample_data', append='.csv', verbose=True),
                  usecols=['Timestamp', 'normalized_vector_length'],
                  parse_dates=['Timestamp'], infer_datetime_format=True))
         s[i] = s[i].loc[(s[i]['Timestamp'] >= start) & (s[i]['Timestamp'] <= stop)].copy()

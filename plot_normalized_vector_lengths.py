@@ -9,7 +9,6 @@ another.
 @author: jon.clucas
 """
 from annotate_range import annotation_line
-from chart_data import write_csv
 from config import organized_dir, placement_dir
 from datetime import datetime
 from matplotlib.dates import DateFormatter
