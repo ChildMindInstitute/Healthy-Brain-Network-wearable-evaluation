@@ -36,7 +36,7 @@ def test_urls():
                                '=1')
     urls['G2_acc_quicktest'] = ('https://osf.io/yxgzt/?action=download&version'
                                '=1')
-    urls['e4_ppg'] = 'https://osf.io/v3ad6/?action=download&version=2'
+    urls['E4_ppg'] = 'https://osf.io/v3ad6/?action=download&version=2'
     urls['Wavelet_ppg'] = 'https://osf.io/c5b9z/?action=download&version=1'
     return(urls)
     
