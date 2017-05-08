@@ -16,7 +16,7 @@ from organize_wearable_data import datetimedt, datetimeint
 import os, pandas as pd, matplotlib.pyplot as plt
 
 color_key = {'Wavelet red':'red', 'Wavelet infrared':'black',
-             'E4 PPG (amplified ×1,000)':'green', 'Wavelet infrared filtered':
+             'E4':'green', 'Wavelet infrared filtered':
              'grey', 'Wavelet red filtered': 'pink'}
 facecolors = {'left':'lightblue', 'right':'pink'}
 
@@ -88,7 +88,7 @@ def buildperson(df, pw):
             linechart(person_df_to_csv, pw, d)
             write_csv(person_df_to_csv, person, 'photoplethysmograph', d=d)
         
-def linechart(df, pw, d=None):
+def linechart(df, pw=None, d=None):
     """
     Function to build a linechart of the given (person, wrist) and export an
     SVG of the image.
@@ -112,6 +112,8 @@ def linechart(df, pw, d=None):
     -------
     person_wrist.svg : svg file
         svg of lineplot
+        
+    inline plot
     """
     for filtered in ['red_filtered', 'infrared_filtered']:
         df = df.drop(filtered, axis=1, errors='ignore')
@@ -120,20 +122,16 @@ def linechart(df, pw, d=None):
     sensors = ['photoplethysmograph']
     for sensor in sensors:
         print("Plotting...")
-        print(pw, end=" ")
+        if pw:
+            print(pw, end=" ")
         if d:
             print(d, end=" ")
-            svg_out = os.path.join(organized_dir, sensor, "_".join([
-                      d.isoformat(), pw[0], '.'.join([pw[1], 'svg'])]))
-        else:
-            svg_out = os.path.join(organized_dir, sensor, "_".join([pw[0], 
-                  '.'.join([pw[1], 'svg'])]))   
         fig = plt.figure(figsize=(10, 8), dpi=75)
         ax = fig.add_subplot(111)
         ax.set_ylabel('nW')
         for light in list(df.columns):
             if light == "nW":
-                label = "E4 PPG (amplified ×1,000)"
+                label = "E4"
             else:
                 label = " ".join(["Wavelet", ' '.join(light.split('_'))])
             plot_line = df[[light]].dropna()
@@ -141,15 +139,17 @@ def linechart(df, pw, d=None):
                          label], alpha=0.5, label=label, marker="", linestyle=
                          "solid")
         ax.legend(loc='best', fancybox=True, framealpha=0.5)
-        if d:
-            plt.suptitle(''.join([d.isoformat(), ' ', pw[0], ', ', pw[1],
-                         ' wrist']), fontweight='bold')
+        if pw:
+            if d:
+                plt.suptitle(''.join([d.isoformat(), ' ', pw[0], ', ', pw[1],
+                             ' wrist']), fontweight='bold')
+            else:
+                plt.suptitle(''.join([pw[0], ', ', pw[1], ' wrist']), fontweight=
+                             'bold')
         else:
-            plt.suptitle(''.join([pw[0], ', ', pw[1], ' wrist']), fontweight=
-                         'bold')
+            plt.suptitle(sensor, fontweight='bold')
         plt.xticks(rotation=65)
-        print("".join(["Saving ", svg_out]))
-        fig.savefig(svg_out, facecolor=facecolors[pw[1]])
+        plt.show()
         plt.close()
 
 # ============================================================================

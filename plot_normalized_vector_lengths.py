@@ -359,6 +359,29 @@ def linechart(df, plot_label, plot_person):
         fig.savefig(image)
         print("Saved.")
     plt.close()
+    
+def demean_and_normalize(data):
+    """
+    Function to shift base to 0 and max absolute value to 1
+    
+    Parameters
+    ----------
+    data : pandas dataframe
+        dataframe to demean and renormalize
+        
+    Returns
+    -------
+    data : pandas dataframe
+        baseshifted, renormalized dataframe
+    """
+    for column in list(data.columns):
+        data[column] = data[column].astype('float', errors='ignore')
+        baseline = np.nanmean(data[column])
+        data[column] = data[column].map(
+                       lambda x: x - baseline)
+        datamax = max(abs(data[column]))
+        data[column] = data[column] / datamax
+    return(data)
 
 # ============================================================================
 if __name__ == '__main__':
