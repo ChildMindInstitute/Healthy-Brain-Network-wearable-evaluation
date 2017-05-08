@@ -168,18 +168,20 @@ def df_devices(devices, sensor, start, stop, hashes={}):
     for i, device in enumerate(devices):
         if sensor == 'acc':
             d.append(device[i][1])
+            print(d)
             acc_sub = '_'.join([device[0], 'acc', 'quicktest'])
+            print(acc_sub)
             if not acc_sub in hashes:
                 try:
-                    fetch_check_data(acc_sub, test_urls()[acc_sub], hashes, cache_directory='./sample_data',
+                    fetch_check_data(acc_sub, test_urls()[acc_sub], hashes, cache_directory='sample_data',
                                      append='.csv', verbose=True)
                 except:
                     hashes[acc_sub] = fetch_hash(fetch_data(test_urls()[acc_sub], os.path.join('./sample_data',
                                           acc_sub), '.csv'))
             s.append(pd.read_csv(fetch_check_data(acc_sub, test_urls()[acc_sub], hashes,
-                     cache_directory='./sample_data', append='.csv', verbose=True),
+                     cache_directory='sample_data', append='.csv', verbose=True),
                      usecols=['Timestamp', 'normalized_vector_length'],
-                     parse_dates=['Timestamp'], infer_datetime_format=True))
+                     parse_dates=['Timestamp'], infer_datetime_format=True, low_memory=False))
             s[i] = s[i].loc[(s[i]['Timestamp'] >= start) & (s[i]['Timestamp'] <= stop)].copy()
             s[i] = baseshift_and_renormalize(s[i])
             if device[1] == 'ActiGraph':
@@ -187,24 +189,30 @@ def df_devices(devices, sensor, start, stop, hashes={}):
                             =1000))
             s[i].set_index('Timestamp', inplace=True)
         elif sensor == 'ppg':
-            d.append(device[i])
+            d.append(device)
             ppg = '_'.join([device, sensor])
             if not ppg in hashes:
                 try:
-                    fetch_check_data(device, test_urls()[ppg], hashes, cache_directory='./sample_data', append='.csv',
+                    fetch_check_data(device, test_urls()[ppg], hashes, cache_directory='sample_data', append='.csv',
                                      verbose=True)
                 except:
                     hashes[ppg] = fetch_hash(fetch_data(test_urls()[ppg], os.path.join('./sample_data', ppg), '.csv'))
             s.append(pd.read_csv(fetch_check_data(ppg, test_urls()[ppg], hashes,
-                     cache_directory='./sample_data', append='.csv', verbose=True), parse_dates=['Timestamp'],
-                     infer_datetime_format=True))
+                     cache_directory='sample_data', append='.csv', verbose=True), parse_dates=['Timestamp'],
+                     infer_datetime_format=True, low_memory=False))
             s[i] = s[i].loc[(s[i]['Timestamp'] >= start) & (s[i]['Timestamp'] <= stop)].copy()
-            s[i] = baseshift_and_renormalize(s[i])
             s[i].set_index('Timestamp', inplace=True)
-        df = s[0].merge(s[1], left_index=True, right_index=True, suffixes=(''.join([
-             '_', d[0]]), ''.join(['_', d[1]])))
-        for i in range(2, len(s), 1):
-            df = df.merge(s[i], left_index=True, right_index=True, suffixes=('', ''.join(['_', d[i]])))
+        print(s)
+        if i > 0:
+            if len(s) > 0:
+                df = s[0].merge(s[1], how='outer', left_index=True, right_index=True, suffixes=(''.join([
+                     '_', d[0]]), ''.join(['_', d[1]])))
+                for i in range(2, len(s), 1):
+                    df = df.merge(s[i], how='outer', left_index=True, right_index=True, suffixes=('', ''.join(['_', d[i]])))
+        else:
+            df = s[i]
+        del s[:]
+        s.append(df)
     return(df)
 
 def linechart(df, plot_label, line=True, full=False):

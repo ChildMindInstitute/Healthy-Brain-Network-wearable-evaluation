@@ -36,8 +36,26 @@ def test_urls():
                                '=1')
     urls['G2_acc_quicktest'] = ('https://osf.io/yxgzt/?action=download&version'
                                '=1')
+    
+    urls['Actigraph_acc'] = ('https://osf.io/aqj9g/?action=download&version'
+                            '=2')
+    urls['E4_acc'] = ('https://osf.io/asfn5/?action=download&version'
+                     '=1')
+    urls['GENEActiv_black_acc'] = ('https://osf.io/r64e2/?action=download&version'
+                                  '=1')
+    urls['GENEActiv_pink_acc'] = ('https://osf.io/7kdv3/?action=download&version'
+                                  '=1')
+    urls['Wavlet_acc'] = ('https://osf.io/b5gm4/?action=download&version'
+                         '=1')
+    
+    urls['Actigraph_hr'] = ('https://osf.io/cde76/?action=download&version'
+                           '=1')
+    urls['E4_hr'] = ('https://osf.io/be2p8/?action=download&version'
+                    '=1')
+    
     urls['E4_ppg'] = 'https://osf.io/v3ad6/?action=download&version=2'
     urls['Wavelet_ppg'] = 'https://osf.io/c5b9z/?action=download&version=1'
+    
     return(urls)
     
 cmi_colors = ["#0067a0", "#919d9d", "#00c1d5", "#b5bd00", "#a31c3f", "#ea234b",
