@@ -379,7 +379,7 @@ def demean_and_normalize(data):
         baseline = np.nanmean(data[column])
         data[column] = data[column].map(
                        lambda x: x - baseline)
-        datamax = max(abs(data[column]))
+        datamax = np.nanmax(abs(data[column]))
         data[column] = data[column] / datamax
     return(data)
 

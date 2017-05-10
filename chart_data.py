@@ -166,10 +166,13 @@ def df_devices(devices, sensor, start, stop, hashes={}):
     s = []
     d = []
     for i, device in enumerate(devices):
-        if sensor == 'acc':
-            d.append(device[i][1])
-            print(d)
-            acc_sub = '_'.join([device[0], 'acc', 'quicktest'])
+        if sensor.startswith('acc'):
+            if sensor == 'acccelerometer quicktest':
+                d.append(device[i][1])
+                acc_sub = '_'.join([device[0], 'acc', 'quicktest'])
+            else:
+                d.append(device)
+                acc_sub = '_'.join([device, 'acc'])
             print(acc_sub)
             if not acc_sub in hashes:
                 try:
@@ -181,13 +184,12 @@ def df_devices(devices, sensor, start, stop, hashes={}):
             s.append(pd.read_csv(fetch_check_data(acc_sub, test_urls()[acc_sub], hashes,
                      cache_directory='sample_data', append='.csv', verbose=True),
                      usecols=['Timestamp', 'normalized_vector_length'],
-                     parse_dates=['Timestamp'], infer_datetime_format=True, low_memory=False))
-            s[i] = s[i].loc[(s[i]['Timestamp'] >= start) & (s[i]['Timestamp'] <= stop)].copy()
+                     parse_dates=['Timestamp'], infer_datetime_format=True, index_col=0,
+                     dtype='float'))
+            s[i] = s[i].loc[(s[i].index >= start) & (s[i].index <= stop)].copy()
             s[i] = baseshift_and_renormalize(s[i])
             if device[1] == 'ActiGraph':
-                s[i][['Timestamp']] = s[i].Timestamp.apply(lambda x: x - timedelta(microseconds
-                            =1000))
-            s[i].set_index('Timestamp', inplace=True)
+                s[i].index = s[i].index.apply(lambda x: x - timedelta(microseconds=1000))
         elif sensor == 'ppg':
             d.append(device)
             ppg = '_'.join([device, sensor])
@@ -199,12 +201,11 @@ def df_devices(devices, sensor, start, stop, hashes={}):
                     hashes[ppg] = fetch_hash(fetch_data(test_urls()[ppg], os.path.join('./sample_data', ppg), '.csv'))
             s.append(pd.read_csv(fetch_check_data(ppg, test_urls()[ppg], hashes,
                      cache_directory='sample_data', append='.csv', verbose=True), parse_dates=['Timestamp'],
-                     infer_datetime_format=True, low_memory=False))
-            s[i] = s[i].loc[(s[i]['Timestamp'] >= start) & (s[i]['Timestamp'] <= stop)].copy()
-            s[i].set_index('Timestamp', inplace=True)
-        print(s)
+                     infer_datetime_format=True, index_col=0, dtype='float'))
+            s[i] = s[i].loc[(s[i].index >= start) & (s[i].index <= stop)].copy()
         if i > 0:
             if len(s) > 0:
+                s[1].reindex(s[0].index, method='nearest')
                 df = s[0].merge(s[1], how='outer', left_index=True, right_index=True, suffixes=(''.join([
                      '_', d[0]]), ''.join(['_', d[1]])))
                 for i in range(2, len(s), 1):
@@ -602,10 +603,10 @@ def xcorr(x,y):
   """
   N=len(x)
   M=len(y)
-  meany=np.mean(y)
-  stdy=np.std(np.asarray(y))
+  meany=np.nanmean(y)
+  stdy=np.nanstd(np.asarray(y))
   tmp=rolling_window(x,M)
-  c=np.sum((y-meany)*(tmp-np.reshape(np.mean(tmp,-1),(N-M+1,1))),-1)/(M*np.std(tmp,-1)*stdy)
+  c=np.nansum((y-meany)*(tmp-np.reshape(np.nanmean(tmp,-1),(N-M+1,1))),-1)/(M*np.nanstd(tmp,-1)*stdy)
 
   return c
 
