@@ -167,8 +167,8 @@ def df_devices(devices, sensor, start, stop, hashes={}):
     d = []
     for i, device in enumerate(devices):
         if sensor.startswith('acc'):
-            if sensor == 'acccelerometer quicktest':
-                d.append(device[i][1])
+            if sensor == 'accelerometer quicktest':
+                d.append(device[1])
                 acc_sub = '_'.join([device[0], 'acc', 'quicktest'])
             else:
                 d.append(device)
@@ -210,10 +210,8 @@ def df_devices(devices, sensor, start, stop, hashes={}):
                      '_', d[0]]), ''.join(['_', d[1]])))
                 for i in range(2, len(s), 1):
                     df = df.merge(s[i], how='outer', left_index=True, right_index=True, suffixes=('', ''.join(['_', d[i]])))
-        else:
-            df = s[i]
-        del s[:]
-        s.append(df)
+            del s[:]
+            s.append(df)
     return(df)
 
 def linechart(df, plot_label, line=True, full=False):
