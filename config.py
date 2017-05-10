@@ -37,7 +37,7 @@ def test_urls():
     urls['G2_acc_quicktest'] = ('https://osf.io/yxgzt/?action=download&version'
                                '=1')
     
-    urls['Actigraph_acc'] = ('https://osf.io/aqj9g/?action=download&version'
+    urls['ActiGraph_acc'] = ('https://osf.io/aqj9g/?action=download&version'
                             '=2')
     urls['E4_acc'] = ('https://osf.io/asfn5/?action=download&version'
                      '=1')
@@ -48,7 +48,7 @@ def test_urls():
     urls['Wavlet_acc'] = ('https://osf.io/b5gm4/?action=download&version'
                          '=1')
     
-    urls['Actigraph_hr'] = ('https://osf.io/cde76/?action=download&version'
+    urls['ActiGraph_hr'] = ('https://osf.io/cde76/?action=download&version'
                            '=1')
     urls['E4_hr'] = ('https://osf.io/be2p8/?action=download&version'
                     '=1')

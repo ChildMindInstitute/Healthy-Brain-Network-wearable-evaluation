@@ -88,7 +88,7 @@ def buildperson(df, pw):
             linechart(person_df_to_csv, pw, d)
             write_csv(person_df_to_csv, person, 'photoplethysmograph', d=d)
         
-def linechart(df, pw=None, d=None):
+def linechart(df, pw=None, d=None, line=True, full=False):
     """
     Function to build a linechart of the given (person, wrist) and export an
     SVG of the image.
@@ -117,8 +117,6 @@ def linechart(df, pw=None, d=None):
     """
     for filtered in ['red_filtered', 'infrared_filtered']:
         df = df.drop(filtered, axis=1, errors='ignore')
-    if 'nW' in list(df.columns):
-        df['nW'] = df['nW'].map(lambda x: x * 1000)
     sensors = ['photoplethysmograph']
     for sensor in sensors:
         print("Plotting...")
@@ -135,9 +133,14 @@ def linechart(df, pw=None, d=None):
             else:
                 label = " ".join(["Wavelet", ' '.join(light.split('_'))])
             plot_line = df[[light]].dropna()
-            ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
-                         label], alpha=0.5, label=label, marker="", linestyle=
-                         "solid")
+            if line:
+                ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
+                             label], alpha=0.5, label=label, marker="", linestyle=
+                             "solid")
+            else:
+                ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
+                             label], alpha=0.25 , label=label, marker="o", linestyle=
+                             "None")
         ax.legend(loc='best', fancybox=True, framealpha=0.5)
         if pw:
             if d:
