@@ -201,18 +201,22 @@ def e4_acc(dirpath):
         y, z accelerometer value columns
     """    
     acc_data = pd.DataFrame()
-    for acc in os.listdir(dirpath):
-        if "ACC" in acc and acc.endswith("csv"):
-            if acc_data.empty:
-                acc_data = e4_timestamp(pd.read_csv(os.path.join(dirpath, acc),
-                           names=axes, index_col=False))
-                print(' : '.join([acc, str(acc_data.shape)]))
-            else:
-                acc_data = pd.concat([acc_data, e4_timestamp(pd.read_csv(
-                           os.path.join(dirpath, acc), names=axes,
-                           index_col=False))])
-            print(' : '.join(['E4 accelorometer data, adding',  acc, str(
-                  acc_data.shape)]))
+    for d in os.listdir(dirpath):
+        d = os.path.join(dirpath, d)
+        if os.path.isdir(d):
+            for acc in os.listdir(d):
+                if "ACC" in acc and acc.endswith("csv"):
+                    if acc_data.empty:
+                        acc_data = e4_timestamp(pd.read_csv(os.path.join(
+                                   dirpath, d, acc),
+                                   names=axes, index_col=False))
+                        print(' : '.join([acc, str(acc_data.shape)]))
+                    else:
+                        acc_data = pd.concat([acc_data, e4_timestamp(
+                                   pd.read_csv(os.path.join(dirpath, d, acc),
+                                   names=axes, index_col=False))])
+                    print(' : '.join(['E4 accelorometer data, adding',  acc, str(
+                          acc_data.shape)]))
     # convert from 1/64g to g
     for axis in axes:
         acc_data[axis] = acc_data[axis].map(lambda x: float(x)/64)
@@ -240,18 +244,23 @@ def e4_ppg(dirpath):
         nanowatt value column
     """
     ppg_data = pd.DataFrame()
-    for ppg in os.listdir(dirpath):
-        if "BVP" in ppg and ppg.endswith("csv"):
-            if ppg_data.empty:
-                ppg_data = e4_timestamp(pd.read_csv(os.path.join(dirpath, ppg),
-                           names=['nW'], index_col=False))
-                print(' : '.join([ppg, str(ppg_data.shape)]))
-            else:
-                ppg_data = pd.concat([ppg_data, e4_timestamp(pd.read_csv(
-                           os.path.join(dirpath, ppg), names=['nW'],
-                           index_col=False))])
-            print(' : '.join(['E4 photoplethysmograph data, adding',  ppg, str(
-                  ppg_data.shape)]))
+    for d in os.listdir(dirpath):
+        d = os.path.join(dirpath, d)
+        if os.path.isdir(d):
+            for ppg in os.listdir(d):
+                if "BVP" in ppg and ppg.endswith("csv"):
+                    if ppg_data.empty:
+                        ppg_data = e4_timestamp(pd.read_csv(os.path.join(
+                                   dirpath, d, ppg), names=['nW'], index_col=
+                                   False))
+                        print(' : '.join([ppg, str(ppg_data.shape)]))
+                    else:
+                        ppg_data = pd.concat([ppg_data, e4_timestamp(
+                                   pd.read_csv(
+                                   os.path.join(dirpath, d, ppg), names=['nW'],
+                                   index_col=False))])
+                    print(' : '.join(['E4 photoplethysmograph data, adding',
+                          ppg, str(ppg_data.shape)]))
     save_df(ppg_data, 'photoplethysmograph', 'E4')
 
     
@@ -271,8 +280,8 @@ def e4_timestamp(df):
         dataframe with Linux time-series index column and sensor-specific value
         columns
     """
-    start_time = int(df.iloc[0,0])
-    sample_rate = int(df.iloc[1,0])
+    start_time = float(df.iloc[0,0])
+    sample_rate = 60/float(df.iloc[1,0])
     new_df = df[2:].copy()
     new_index = np.arange(start_time, len(new_df)*sample_rate+start_time,
                 sample_rate)
@@ -308,19 +317,23 @@ def e4_1c(dirpath, feature):
     """    
     sensors = {'HR':'heartrate', 'TEMP':'temperature', 'EDA':'EDA'}
     feat_data = pd.DataFrame()
-    for feat_file in os.listdir(dirpath):
-        if feature in feat_file and feat_file.endswith("csv"):
-            if feat_data.empty:
-                feat_data = e4_timestamp(pd.read_csv(os.path.join(dirpath, 
-                            feat_file), names=[sensors[feature]], index_col=
-                            False))
-                print(' : '.join([feat_file, str(feat_data.shape)]))
-            else:
-                feat_data = pd.concat([feat_data, e4_timestamp(pd.read_csv(
-                            os.path.join(dirpath, feat_file), names=[sensors[
-                            feature]], index_col=False))])
-            print(' : '.join(['E4 ', ' '.join([sensors[feature],
-                  'data, adding']),  feat_file, str(feat_data.shape)]))
+    for d in os.listdir(dirpath):
+        d = os.path.join(dirpath, d)
+        if os.path.isdir(d):
+            for feat_file in os.listdir(d):
+                if feature in feat_file and feat_file.endswith("csv"):
+                    if feat_data.empty:
+                        feat_data = e4_timestamp(pd.read_csv(os.path.join(
+                                    dirpath, d, feat_file), names=[sensors[
+                                    feature]], index_col=False))
+                        print(' : '.join([feat_file, str(feat_data.shape)]))
+                    else:
+                        feat_data = pd.concat([feat_data, e4_timestamp(
+                                    pd.read_csv(os.path.join(dirpath, d,
+                                    feat_file), names=[sensors[feature]],
+                                    index_col=False))])
+                    print(' : '.join(['E4 ', ' '.join([sensors[feature],
+                          'data, adding']),  feat_file, str(feat_data.shape)]))
     save_df(feat_data, sensors[feature], 'E4')
 
 """
@@ -674,34 +687,34 @@ def drop_non_csv(open_csv_file, drop_rows, header_row=False):
 def main():
     # accelerometry
     # unit: g
-    e4_acc(e4_dir)
-    geneactiv_acc(geneactiv_dir)
-    actigraph_acc(actigraph_dir)
-    wavelet_acc(wavelet_dir)
+    # e4_acc(e4_dir)
+    # geneactiv_acc(geneactiv_dir)
+    # actigraph_acc(actigraph_dir)
+    # wavelet_acc(wavelet_dir)
     
     # PPG
     # unit: nW
     e4_ppg(e4_dir)
-    wavelet_ppg(wavelet_dir)
+    # wavelet_ppg(wavelet_dir)
     
     # EDA
     # unit: μS
-    e4_1c(e4_dir, 'EDA')
+    # e4_1c(e4_dir, 'EDA')
     
     # HR
     # unit: bpm
-    actigraph_1c(actigraph_dir, 'hr')
-    e4_1c(e4_dir, 'HR')
+    # actigraph_1c(actigraph_dir, 'hr')
+    # e4_1c(e4_dir, 'HR')
     
     # Light
     # unit: lx
-    actigraph_1c(actigraph_dir, 'lux')
-    geneactiv_1c(geneactiv_dir, 4)
+    # actigraph_1c(actigraph_dir, 'lux')
+    # geneactiv_1c(geneactiv_dir, 4)
     
     # Temperature
     # unit: °C
-    e4_1c(e4_dir, 'TEMP')
-    geneactiv_1c(geneactiv_dir, 6)
+    # e4_1c(e4_dir, 'TEMP')
+    # geneactiv_1c(geneactiv_dir, 6)
 
 def save_df(df, sensor, device):
     """
