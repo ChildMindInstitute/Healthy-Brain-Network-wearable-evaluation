@@ -186,10 +186,17 @@ def df_devices(devices, sensor, start, stop, hashes={}):
                      usecols=['Timestamp', 'normalized_vector_length'],
                      parse_dates=['Timestamp'], infer_datetime_format=True, index_col=0,
                      dtype='float'))
-            s[i] = s[i].loc[(s[i].index >= start) & (s[i].index <= stop)].copy()
-            s[i] = baseshift_and_renormalize(s[i])
+            try:
+                s[i] = s[i].loc[(s[i].index >= start) & (s[i].index <= stop)].copy()
+                s[i] = baseshift_and_renormalize(s[i])
+            except:
+                s[0] = s[0].loc[(s[0].index >= start) & (s[0].index <= stop)].copy()
+                s[0] = baseshift_and_renormalize(s[i])
             if device[1] == 'ActiGraph':
-                s[i].index = s[i].index.apply(lambda x: x - timedelta(microseconds=1000))
+                try:
+                    s[i].reindex(s[i + 1].index, method='nearest')
+                except:
+                    s[i].reindex(s[i - 1].index, method='nearest')
         elif sensor == 'ppg':
             d.append(device)
             ppg = '_'.join([device, sensor])
