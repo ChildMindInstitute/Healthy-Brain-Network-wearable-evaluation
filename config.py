@@ -40,7 +40,7 @@ def test_urls():
     urls['ActiGraph_acc'] = ('https://osf.io/aqj9g/?action=download&version'
                             '=2')
     urls['E4_acc'] = ('https://osf.io/asfn5/?action=download&version'
-                     '=1')
+                     '=2')
     urls['GENEActiv_black_acc'] = ('https://osf.io/r64e2/?action=download&version'
                                   '=1')
     urls['GENEActiv_pink_acc'] = ('https://osf.io/7kdv3/?action=download&version'

@@ -281,7 +281,7 @@ def e4_timestamp(df):
         columns
     """
     start_time = float(df.iloc[0,0])
-    sample_rate = 60/float(df.iloc[1,0])
+    sample_rate = 1/float(df.iloc[1,0])
     new_df = df[2:].copy()
     new_index = np.arange(start_time, len(new_df)*sample_rate+start_time,
                 sample_rate)
@@ -687,34 +687,34 @@ def drop_non_csv(open_csv_file, drop_rows, header_row=False):
 def main():
     # accelerometry
     # unit: g
-    # e4_acc(e4_dir)
-    # geneactiv_acc(geneactiv_dir)
-    # actigraph_acc(actigraph_dir)
-    # wavelet_acc(wavelet_dir)
+    e4_acc(e4_dir)
+    geneactiv_acc(geneactiv_dir)
+    actigraph_acc(actigraph_dir)
+    wavelet_acc(wavelet_dir)
     
     # PPG
     # unit: nW
     e4_ppg(e4_dir)
-    # wavelet_ppg(wavelet_dir)
+    wavelet_ppg(wavelet_dir)
     
     # EDA
     # unit: μS
-    # e4_1c(e4_dir, 'EDA')
+    e4_1c(e4_dir, 'EDA')
     
     # HR
     # unit: bpm
-    # actigraph_1c(actigraph_dir, 'hr')
-    # e4_1c(e4_dir, 'HR')
+    actigraph_1c(actigraph_dir, 'hr')
+    e4_1c(e4_dir, 'HR')
     
     # Light
     # unit: lx
-    # actigraph_1c(actigraph_dir, 'lux')
-    # geneactiv_1c(geneactiv_dir, 4)
+    actigraph_1c(actigraph_dir, 'lux')
+    geneactiv_1c(geneactiv_dir, 4)
     
     # Temperature
     # unit: °C
-    # e4_1c(e4_dir, 'TEMP')
-    # geneactiv_1c(geneactiv_dir, 6)
+    e4_1c(e4_dir, 'TEMP')
+    geneactiv_1c(geneactiv_dir, 6)
 
 def save_df(df, sensor, device):
     """

@@ -105,15 +105,18 @@ def e4_acc(dirpath):
     """    
     acc_data = pd.DataFrame()
     for acc in os.listdir(dirpath):
-        if "ACC" in acc and acc.endswith("csv"):
+        if "E4" in acc and acc.endswith("csv"):
             if acc_data.empty:
                 acc_data = e4_timestamp(pd.read_csv(os.path.join(dirpath, acc),
-                           names=axes, index_col=False))
+                           header=0, parse_dates=['Timestamp'],
+                           infer_datetime_format=True, index_col=0,
+                           dtype='float'))
                 print(' : '.join([acc, str(acc_data.shape)]))
             else:
                 acc_data = pd.concat([acc_data, e4_timestamp(pd.read_csv(
-                           os.path.join(dirpath, acc), names=axes,
-                           index_col=False))])
+                           os.path.join(dirpath, acc), header=0,
+                           parse_dates=['Timestamp'], infer_datetime_format=
+                           True, index_col=0, dtype='float'))])
             print(' : '.join(['E4 accelorometer data, adding',  acc, str(
                   acc_data.shape)]))
     acc_data = normalize(acc_data, 128)
@@ -286,11 +289,12 @@ def wavelet_acc(dirpath):
 
 def main():
     # accelerometry
+    acc_dir = os.path.join(organized_dir, 'accelerometer')
     # unit: normalized vector length (/1)
-    # e4_acc(e4_dir)
-    # geneactiv_acc(geneactiv_dir)
-    actigraph_acc(actigraph_dir)
-    # wavelet_acc(wavelet_dir)
+    e4_acc(acc_dir)
+    # geneactiv_acc(acc_dir)
+    # actigraph_acc(acc_dir)
+    # wavelet_acc(acc_dir)
     
 def normalize(df, scale):
     """
