@@ -289,12 +289,12 @@ def wavelet_acc(dirpath):
 
 def main():
     # accelerometry
-    acc_dir = os.path.join(organized_dir, 'accelerometer')
+    # acc_dir = os.path.join(organized_dir, 'accelerometer')
     # unit: normalized vector length (/1)
-    e4_acc(acc_dir)
-    # geneactiv_acc(acc_dir)
-    # actigraph_acc(acc_dir)
-    # wavelet_acc(acc_dir)
+    e4_acc(e4_dir)
+    geneactiv_acc(geneactiv_dir)
+    actigraph_acc(actigraph_dir)
+    wavelet_acc(wavelet_dir)
     
 def normalize(df, scale):
     """
