@@ -688,14 +688,14 @@ def main():
     # accelerometry
     # unit: g
     e4_acc(e4_dir)
-    # geneactiv_acc(geneactiv_dir)
-    # actigraph_acc(actigraph_dir)
-    # wavelet_acc(wavelet_dir)
+    geneactiv_acc(geneactiv_dir)
+    actigraph_acc(actigraph_dir)
+    wavelet_acc(wavelet_dir)
     
     # PPG
     # unit: nW
-    # e4_ppg(e4_dir)
-    # wavelet_ppg(wavelet_dir)
+    e4_ppg(e4_dir)
+    wavelet_ppg(wavelet_dir)
     
     # EDA
     # unit: μS
@@ -703,18 +703,18 @@ def main():
     
     # HR
     # unit: bpm
-    # actigraph_1c(actigraph_dir, 'hr')
+    actigraph_1c(actigraph_dir, 'hr')
     e4_1c(e4_dir, 'HR')
     
     # Light
     # unit: lx
-    #actigraph_1c(actigraph_dir, 'lux')
-    #geneactiv_1c(geneactiv_dir, 4)
+    actigraph_1c(actigraph_dir, 'lux')
+    geneactiv_1c(geneactiv_dir, 4)
     
     # Temperature
     # unit: °C
     e4_1c(e4_dir, 'TEMP')
-    # geneactiv_1c(geneactiv_dir, 6)
+    geneactiv_1c(geneactiv_dir, 6)
 
 def save_df(df, sensor, device):
     """
