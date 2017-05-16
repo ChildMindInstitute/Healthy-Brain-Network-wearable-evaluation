@@ -12,8 +12,7 @@ Actigraphy values calculated as √((x/√((max(x))² + (max(y))² + (max(z))²)
 
 @author: jon.clucas
 """
-from config import actigraph_dir, e4_dir, geneactiv_dir, organized_dir,       \
-                   wavelet_dir
+from config import organized_dir
 from organize_wearable_data import actigraph_datetimeint, datetimeint,        \
                                    drop_non_csv, e4_timestamp
 from datetime import datetime
@@ -289,12 +288,12 @@ def wavelet_acc(dirpath):
 
 def main():
     # accelerometry
-    # acc_dir = os.path.join(organized_dir, 'accelerometer')
+    acc_dir = os.path.join(organized_dir, 'accelerometer')
     # unit: normalized vector length (/1)
-    e4_acc(e4_dir)
-    geneactiv_acc(geneactiv_dir)
-    actigraph_acc(actigraph_dir)
-    wavelet_acc(wavelet_dir)
+    e4_acc(acc_dir)
+    geneactiv_acc(acc_dir)
+    actigraph_acc(acc_dir)
+    wavelet_acc(acc_dir)
     
 def normalize(df, scale):
     """
