@@ -141,7 +141,7 @@ def linechart(df, pw=None, d=None, line=True, full=False):
                 ax.plot_date(x=plot_line.index, y=plot_line, color=color_key[
                              label], alpha=0.25 , label=label, marker="o", linestyle=
                              "None")
-        ax.legend(loc='best', fancybox=True, framealpha=0.5)
+            ax.legend(loc='best', fancybox=True, framealpha=0.5)
         if pw:
             if d:
                 plt.suptitle(''.join([d.isoformat(), ' ', pw[0], ', ', pw[1],

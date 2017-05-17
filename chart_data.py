@@ -165,8 +165,10 @@ def df_devices(devices, sensor, start, stop, hashes={}):
     suffix = '.csv'
     s = []
     df = pd.DataFrame()
+    sub = ''
     for i, device in enumerate(devices):
         if sensor.startswith('acc'):
+            sub = 'normalized_vector_length'
             acc_sub = '_'.join([device, 'acc'])
             if not acc_sub in hashes:
                 try:
@@ -184,26 +186,32 @@ def df_devices(devices, sensor, start, stop, hashes={}):
             if device[1] == 'ActiGraph':
                 s[i].index = pd.Series(s[i].index).apply(lambda x: x - timedelta(microseconds=1000))
         elif sensor == 'ppg':
-            d.append(device)
             ppg = '_'.join([device, sensor])
             if not ppg in hashes:
                 try:
-                    fetch_check_data(device, test_urls()[ppg], hashes,
-                                     cache_directory='sample_data', append='.csv',
+                    fetch_check_data(device, test_urls()[ppg], hashes, cache_directory='sample_data', append='.csv',
                                      verbose=True)
                 except:
-                    hashes[ppg] = fetch_hash(fetch_data(test_urls()[ppg], os.path.join(
-                                  './sample_data', ppg), '.csv'))
-            s.append(pd.read_csv(fetch_check_data(ppg, test_urls()[ppg], hashes,
-                     cache_directory='sample_data', append='.csv', verbose=True), usecols=[0, 1],
-                     parse_dates=['Timestamp'], infer_datetime_format=True, index_col=0, dtype='float'))
+                    hashes[ppg] = fetch_hash(fetch_data(test_urls()[ppg], os.path.join('./sample_data', ppg), '.csv'))
+            if "Wavelet" in ppg:
+                s.append(pd.read_csv(fetch_check_data(ppg, test_urls()[ppg], hashes,
+                         cache_directory='sample_data', append='.csv', verbose=True), parse_dates=['Timestamp'],
+                         infer_datetime_format=True, low_memory=False, na_values=[0, '0']))
+            else:
+                s.append(pd.read_csv(fetch_check_data(ppg, test_urls()[ppg], hashes,
+                         cache_directory='sample_data', append='.csv', verbose=True), parse_dates=['Timestamp'],
+                         infer_datetime_format=True, low_memory=False))
+            s[i].set_index('Timestamp', inplace=True)
+            s[i] = s[i][(s[i] != 0).all(1)]
+            sub = list(s[i].columns)[0]
         s[i] = s[i].loc[(s[i].index >= start) & (s[i].index <= stop)].copy()
-        s[i] = baseshift_and_renormalize(s[i])
-    df = s[0].merge(s[1], how='outer', left_index=True, right_index=True,
-         suffixes=(''.join(['_', d[0]]), ''.join(['_', d[1]])))
-    for i in range(2, len(s), 1):
-        df = df.merge(s[i], how='outer', left_index=True, right_index=True,
-             suffixes=('', ''.join(['_', d[i]])))
+    if len(s) > 1:
+        df = s[0].merge(s[1], how='outer', left_index=True, right_index=True,
+             suffixes=(''.join(['_', devices[0]]), ''.join(['_', devices[1]])))
+        for i in range(2, len(s), 1):
+            df = df.merge(s[i], how='outer', left_index=True, right_index=True,
+                 suffixes=('', ''.join(['_', devices[i]])))
+    df = df.apply(pd.to_numeric, errors='coerce')
     return(df)
 
 def df_devices_qt(devices, sensor, start, stop, acc_hashes={}):
