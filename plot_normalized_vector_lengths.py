@@ -81,7 +81,7 @@ def main():
             print(" ".join([plot_label, "failed: ", str(e)]))
         """
 
-def baseshift_and_renormalize(data):
+def baseshift_and_renormalize(data, sub='normalized_vector_length'):
     """
     Function to shift base to 0 and max value to 1
     
@@ -90,17 +90,19 @@ def baseshift_and_renormalize(data):
     data : pandas dataframe
         dataframe to baseshift and renormalize
         
+    sub : string
+        name of column to normalize
+        
     Returns
     -------
     data : pandas dataframe
         baseshifted, renormalized dataframe
     """
-    baseline = np.nanmedian(data['normalized_vector_length'])
-    data['normalized_vector_length'] = data['normalized_vector_length'].map(
+    baseline = np.nanmedian(data[sub])
+    data[sub] = data[sub].map(
                                        lambda x: max(x - baseline, 0))
-    datamax = max(data['normalized_vector_length'])
-    data['normalized_vector_length'] = data['normalized_vector_length'] /     \
-                                       datamax
+    datamax = max(data[sub])
+    data[sub] = data[sub] / datamax
     return(data)
         
 def build_plot(plot_label, plot_person, plot_devices, plot_start, plot_stop):
