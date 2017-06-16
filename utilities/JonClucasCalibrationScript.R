@@ -4,11 +4,11 @@
 #' 
 #### Install and load libraries ####
 
-install.packages("GGIR")
+# install.packages("GGIR")
 
 library(GGIR)
 library(GENEAread)
-library(GENEAclassify)
+# library(GENEAclassify)
 
 #### Calibrating files ####
 # Run the following lines to create new directories containing the recalibrated files.
@@ -45,7 +45,7 @@ ReCalibrate = function(datadir ,outputdir,...){
   # If the outputdirectory is not specified create a defaulft
   if (missing(outputdir)) {
     outputfolder = paste(datadir,".Calibrated",sep="")
-    dir.create(file.path(outputfolder))
+  #  dir.create(file.path(outputfolder))
   }
   
   for (i in 1:length(fnames)){
@@ -114,6 +114,8 @@ ReCalibrate = function(datadir ,outputdir,...){
 
 # Change the data Directory to the location of your GENEActiv .bin files. 
 # Please note that nothing else should be in the folder apart from the .bin files.
-DataDirectory = "e:/raw data samples/"
+DataDirectory = "../raw"
 ReCalibrate(DataDirectory)
+
+
 
