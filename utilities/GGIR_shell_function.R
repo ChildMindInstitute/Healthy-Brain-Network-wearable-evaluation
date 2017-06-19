@@ -2,8 +2,8 @@ library(GGIR)
 g.shell.GGIR(#=======================================
              # INPUT NEEDED:
              mode=c(1,2,3,4,5),
-             datadir="C:/mystudy/mydata",
-             outputdir="D:/myresults",
+             datadir="../raw",
+             outputdir="../myresults",
              f0=1, f1=2,
              #-------------------------------
              # Part 1:
