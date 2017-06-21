@@ -38,7 +38,7 @@ g.shell.GGIR(#=======================================
              excludefirstlast = TRUE,
              includenightcrit = 16,
              def.noc.sleep = c(),
-             loglocation= "C:/mydata/sleeplog.csv",
+             # loglocation= "../mydata/sleeplog.csv",
              outliers.only = TRUE,
              criterror = 4,
              relyonsleeplog = FALSE,

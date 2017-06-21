@@ -36,7 +36,10 @@ def test_urls():
                                '=1')
     urls['G2_acc_quicktest'] = ('https://osf.io/yxgzt/?action=download&version'
                                '=1')
-    
+    urls['G1_recalibrated_acc_quicktest'] = ('https://osf.io/z2gey/?action='
+                                             'download&version=2')
+    urls['G2_recalibrated_acc_quicktest'] = ('https://osf.io/haf7r/?action='
+                                             'download&version=2')
     urls['ActiGraph_acc'] = ('https://osf.io/aqj9g/?action=download&version'
                             '=2')
     urls['E4_acc'] = ('https://osf.io/asfn5/?action=download&version'
