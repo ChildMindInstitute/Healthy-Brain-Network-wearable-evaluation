@@ -28,23 +28,23 @@ def actigraph_acc(dirpath):
     Function to take all Actigraph accelerometry data from a directory and
     format those data with Linux time-series index columns and x, y, z value
     columns
-    
+
     Parameters
     ----------
     dirpath : string
         path to E4 outputs
-        
+
     Returns
     -------
     acc_data : pandas dataframe
         dataframe with Linux time-series index column and x, y, z value columns
-    
+
     Outputs
     -------
     Actigraph.csv : csv file (via save_df() function)
         comma-separated-values file with Linux time-series index column and x,
         y, z accelerometer value columns
-    """    
+    """
     acc_data = pd.DataFrame
     for acc in os.listdir(dirpath):
         if acc.endswith("1sec.csv"):
@@ -57,24 +57,24 @@ def actigraph_acc(dirpath):
             print(' : '.join(['Actigraph accelorometer data, adding', acc, str(
                   acc_data.shape)]))
     save_df(acc_data, 'accelerometer', 'Actigraph')
-    
+
 def actigraph_acc_data(open_csv):
     """
     Function to collect Actigraph data and return dataframe with Linux time-
     series index column and x, y, z value columns
-    
+
     Parameters
     ----------
     df : pandas dataframe
         dataframe for which to organize data
-        
+
     Returns
     -------
     new_df : pandas dataframe
         dataframe with Linux time-series index column and accelerometer value
         columns
     """
-    
+
     df = drop_non_csv(open_csv, 10, True)
     df['timestamp'] = df['timestamp'].map(actigraph_datetimeint)
     new_df = pd.DataFrame()
@@ -90,12 +90,12 @@ def actigraph_datetimeint(x):
     """
     Function to pass dt_format parameter to datetimeint(x, dt_format) for
     Actigraph data
-    
+
     Parameters
     ----------
     x : string
         timestamp data from Actigraph
-        
+
     Returns
     -------
     timestamp : string
@@ -109,17 +109,17 @@ def actigraph_1c(dirpath, feature):
     Function to take all Actigraph accelerometry data from a directory and
     format those data with Linux time-series index columns and x, y, z value
     columns
-    
+
     Parameters
     ----------
     dirpath : string
         path to E4 outputs
-        
+
     Returns
     -------
     acc_data : pandas dataframe
         dataframe with Linux time-series index column and x, y, z value columns
-    
+
     Outputs
     -------
     Actigraph.csv : csv file (via save_df() function)
@@ -146,27 +146,27 @@ def actigraph_1c(dirpath, feature):
             print(' : '.join([' '.join(['Actigraph', sensors[feature] ,
                   'data, adding']), acc, str(acc_data.shape)]))
     save_df(acc_data, sensors[feature], 'Actigraph')
-    
+
 def actigraph_1c_data(open_csv, feature):
     """
     Function to collect Actigraph data and return dataframe with Linux time-
     series index column and feature value columns
-    
+
     Parameters
     ----------
     df : pandas dataframe
         dataframe for which to organize data
-        
+
     feature : string
         the column name in the source file for the feature we want to look at
-        
+
     Returns
     -------
     new_df : pandas dataframe
         dataframe with Linux time-series index column and feature value
         columns
     """
-    
+
     df = drop_non_csv(open_csv, 10, True)
     df['timestamp'] = df['timestamp'].map(actigraph_datetimeint)
     new_df = pd.DataFrame()
@@ -183,23 +183,23 @@ def e4_acc(dirpath):
     """
     Function to take all e4 accelerometry data from a directory and format
     those data with Linux time-series index column and x, y, z value columns
-    
+
     Parameters
     ----------
     dirpath : string
         path to E4 outputs
-        
+
     Returns
     -------
     acc_data : pandas dataframe
         dataframe with Linux time-series index column and x, y, z value columns
-    
+
     Outputs
     -------
     E4.csv : csv file (via save_df() function)
         comma-separated-values file with Linux time-series index column and x,
         y, z accelerometer value columns
-    """    
+    """
     acc_data = pd.DataFrame()
     for d in os.listdir(dirpath):
         d = os.path.join(dirpath, d)
@@ -221,26 +221,26 @@ def e4_acc(dirpath):
     for axis in axes:
         acc_data[axis] = acc_data[axis].map(lambda x: float(x)/64)
     save_df(acc_data, 'accelerometer', 'E4')
-    
+
 def e4_ppg(dirpath):
     """
     Function to take all e4 PPG data from a directory and format those data
     with Linux time-series index columns and nanowatt value columns
-    
+
     Parameters
     ----------
     dirpath : string
         path to E4 outputs
-        
+
     Returns
     -------
     ppg_data : pandas dataframe
         dataframe with Linux time-series index column and nanowatt value column
-    
+
     Outputs
     -------
     E4.csv : csv file (via save_df() function)
-        comma-separated-values file with Linux time-series index column and 
+        comma-separated-values file with Linux time-series index column and
         nanowatt value column
     """
     ppg_data = pd.DataFrame()
@@ -263,17 +263,17 @@ def e4_ppg(dirpath):
                           ppg, str(ppg_data.shape)]))
     save_df(ppg_data, 'photoplethysmograph', 'E4')
 
-    
+
 def e4_timestamp(df):
     """
     Function to move the timestamp data from its own rows to an index column
     for E4 accelerometry data
-    
+
     Parameters
     ----------
     df : pandas dataframe
         dataframe for which to organize timestamps
-        
+
     Returns
     -------
     new_df : pandas dataframe
@@ -295,26 +295,26 @@ def e4_1c(dirpath, feature):
     """
     Function to take all e4 accelerometry data from a directory and format
     those data with Linux time-series index column and feature value column
-    
+
     Parameters
     ----------
     dirpath : string
         path to E4 outputs
-        
+
     feature : string
         the column name in the source file for the feature we want to look at
-        
+
     Returns
     -------
     acc_data : pandas dataframe
         dataframe with Linux time-series index column and feature value column
-    
+
     Outputs
     -------
     E4.csv : csv file (via save_df() function)
-        comma-separated-values file with Linux time-series index column and 
+        comma-separated-values file with Linux time-series index column and
         feature value columns
-    """    
+    """
     sensors = {'HR':'heartrate', 'TEMP':'temperature', 'EDA':'EDA'}
     feat_data = pd.DataFrame()
     for d in os.listdir(dirpath):
@@ -358,23 +358,23 @@ def geneactiv_acc(dirpath):
     Function to take all GENEActiv accelerometry data from a directory and
     format those data with Linux time-series index column and x, y, z value
     columns
-    
+
     Parameters
     ----------
     dirpath : string
         path to E4 outputs
-        
+
     Returns
     -------
     acc_data : pandas dataframe
         dataframe with Linux time-series index column and x, y, z value columns
-    
+
     Outputs
     -------
     GENEActiv_`color`.csv : csv file (via save_df() function)
         comma-separated-values file with Linux time-series index column and x,
         y, z accelerometer value columns
-    """    
+    """
     acc_data_black = pd.DataFrame()
     acc_data_pink = pd.DataFrame()
     for acc in os.listdir(dirpath):
@@ -384,7 +384,7 @@ def geneactiv_acc(dirpath):
                     acc_data_black = geneactiv_acc_data(acc_f)
             else:
                 with open(os.path.join(dirpath, acc), 'r') as acc_f:
-                    acc_data_black = pd.concat([acc_data_black, 
+                    acc_data_black = pd.concat([acc_data_black,
                                      geneactiv_acc_data(acc_f)])
             print(' : '.join(['Black GENEActiv accelorometer data, adding',
                   acc, str(acc_data_black.shape)]))
@@ -394,23 +394,23 @@ def geneactiv_acc(dirpath):
                     acc_data_pink = geneactiv_acc_data(acc_f)
             else:
                 with open(os.path.join(dirpath, acc), 'r') as acc_f:
-                    acc_data_pink = pd.concat([acc_data_pink, 
+                    acc_data_pink = pd.concat([acc_data_pink,
                                      geneactiv_acc_data(acc_f)])
             print(' : '.join(['Pink GENEActiv accelorometer data, adding',
                   acc, str(acc_data_pink.shape)]))
     save_df(acc_data_black, 'accelerometer', 'GENEActiv_black')
     save_df(acc_data_pink, 'accelerometer', 'GENEActiv_pink')
-    
+
 def geneactiv_acc_data(open_csv):
     """
     Function to collect GENEActiv data and return dataframe with Linux time-
     series index column and x, y, z value columns
-    
+
     Parameters
     ----------
     df : pandas dataframe
         dataframe for which to organize data
-        
+
     Returns
     -------
     new_df : pandas dataframe
@@ -432,26 +432,26 @@ def geneactiv_1c(dirpath, feature):
     Function to take all GENEActiv accelerometry data from a directory and
     format those data with Linux time-series index column and feature value
     columns
-    
+
     Parameters
     ----------
     dirpath : string
         path to E4 outputs
-        
+
     feature : string
         the column name in the source file for the feature we want to look at
-        
+
     Returns
     -------
     acc_data : pandas dataframe
         dataframe with Linux time-series index column and feature value columns
-    
+
     Outputs
     -------
     GENEActiv_`color`.csv : csv file (via save_df() function)
-        comma-separated-values file with Linux time-series index column and 
+        comma-separated-values file with Linux time-series index column and
         feature value columns
-    """    
+    """
     sensor = {4:'light', 6:'temperature'}
     feat_data_black = pd.DataFrame()
     feat_data_pink = pd.DataFrame()
@@ -463,10 +463,10 @@ def geneactiv_1c(dirpath, feature):
                                       feature])
             else:
                 with open(os.path.join(dirpath, feat_file), 'r') as fd_f:
-                    feat_data_black = pd.concat([feat_data_black, 
+                    feat_data_black = pd.concat([feat_data_black,
                                      geneactiv_1c_data(fd_f, feature, sensor[
                                                        feature])])
-            print(' : '.join(['Black GENEActiv ', ' '.join([sensor[feature], 
+            print(' : '.join(['Black GENEActiv ', ' '.join([sensor[feature],
                   'data, adding']), feat_file, str(feat_data_black.shape)]))
         elif (("Curt" in feat_file or "Arno" in feat_file) and
               feat_file.endswith("csv")):
@@ -476,24 +476,24 @@ def geneactiv_1c(dirpath, feature):
                                      feature])
             else:
                 with open(os.path.join(dirpath, feat_file), 'r') as fd_f:
-                    feat_data_pink = pd.concat([feat_data_pink, 
+                    feat_data_pink = pd.concat([feat_data_pink,
                                      geneactiv_1c_data(fd_f, feature, sensor[
                                                        feature])])
-            print(' : '.join(['Pink GENEActiv,', ' '.join([sensor[feature], 
+            print(' : '.join(['Pink GENEActiv,', ' '.join([sensor[feature],
                   'data, adding']), feat_file, str(feat_data_pink.shape)]))
     save_df(feat_data_black, sensor[feature], 'GENEActiv_black')
     save_df(feat_data_pink, sensor[feature], 'GENEActiv_pink')
-    
+
 def geneactiv_1c_data(open_csv, feature, label):
     """
     Function to collect GENEActiv data and return dataframe with Linux time-
     series index column and feature value columns
-    
+
     Parameters
     ----------
     df : pandas dataframe
         dataframe for which to organize data
-        
+
     Returns
     -------
     new_df : pandas dataframe
@@ -516,23 +516,23 @@ def wavelet_acc(dirpath):
     """
     Function to take all Wavelet accelerometry data from a directory and format
     those data with Linux time-series index columns and x, y, z value columns
-    
+
     Parameters
     ----------
     dirpath : string
         path to Wavelet outputs
-        
+
     Returns
     -------
     acc_data_returns : pandas dataframe
         dataframe with Linux time-series index column and x, y, z value columns
-    
+
     Outputs
     -------
     Wavelet.csv : csv file (via save_df() function)
         comma-separated-values file with Linux time-series index column and x,
         y, z accelerometer value columns
-    """    
+    """
     csv_path = os.path.join(os.path.dirname(dirpath), 'accel')
     acc_data = pd.DataFrame()
     for acc in os.listdir(csv_path):
@@ -559,30 +559,30 @@ def wavelet_acc(dirpath):
         acc_data_returns[axis] = acc_data_returns[axis].map(lambda x: float(x)/
                                  64)
     save_df(acc_data_returns, 'accelerometer', 'Wavelet')
-    
+
 def wavelet_ppg(dirpath):
     """
     Function to take all Wavelet photoplethysmograph data from a directory and
     format those data with Linux time-series index columns and nanowatt value
     columns
-    
+
     Parameters
     ----------
     dirpath : string
         path to Wavelet outputs
-        
+
     Returns
     -------
     acc_data_returns : pandas dataframe
         dataframe with Linux time-series index column and nanowatt value
         columns
-    
+
     Outputs
     -------
     Wavelet.csv : csv file (via save_df() function)
-        comma-separated-values file with Linux time-series index column and 
+        comma-separated-values file with Linux time-series index column and
         nanowatt PPG value columns
-    """    
+    """
     csv_path = os.path.join(dirpath, 'CSV')
     ppg_data = pd.DataFrame()
     for ppg in os.listdir(csv_path):
@@ -614,14 +614,14 @@ general functions
 """
 def datetimedt(x):
     """
-    Function to turn a datetime string in format "%Y-%m-%d %H:%M:%S.%f" 
+    Function to turn a datetime string in format "%Y-%m-%d %H:%M:%S.%f"
     into a datetime object
-    
+
     Parameter
     ---------
     x : string
         datetime string in format "%Y-%m-%d %H:%M:%S.%f"
-        
+
     Returns
     -------
     timestamp : datetime
@@ -633,15 +633,15 @@ def datetimeint(x, dt_format='%Y-%m-%d %H:%M:%S:%f'):
     """
     Function to turn a datetime string into an datetime formatted as
     "%Y-%m-%d %H:%M:%S.%f"
-    
+
     Parameters
     ----------
     x : string
        datetime string
-       
+
     dt_format : string
        datetime format (default='%Y-%m-%d %H:%M:%S:%f')
-       
+
     Returns
     -------
     timestamp : string
@@ -658,18 +658,18 @@ def drop_non_csv(open_csv_file, drop_rows, header_row=False):
     """
     Function to read a csv file into a pandas dataframe dropping a specified
     number of rows first.
-    
+
     Parameters
     ----------
     open_csv_file : open csv file
         an open csv file
-        
+
     drop_rows : int
         number of rows to drop
-        
+
     header_row : boolean
         Does csv contain a header after dropped rows? (default=False)
-        
+
     Returns
     -------
     df : pandas dataframe
@@ -687,58 +687,58 @@ def drop_non_csv(open_csv_file, drop_rows, header_row=False):
 def main():
     # accelerometry
     # unit: g
-    e4_acc(e4_dir)
-    geneactiv_acc(geneactiv_dir)
-    actigraph_acc(actigraph_dir)
-    wavelet_acc(wavelet_dir)
-    
+    #e4_acc(e4_dir)
+    geneactiv_acc("/Users/jon.clucas/HBN-wearable-analysis/raw.Calibrated")
+    #actigraph_acc(actigraph_dir)
+    #wavelet_acc(wavelet_dir)
+
     # PPG
     # unit: nW
-    e4_ppg(e4_dir)
-    wavelet_ppg(wavelet_dir)
-    
+    #e4_ppg(e4_dir)
+    #wavelet_ppg(wavelet_dir)
+
     # EDA
     # unit: μS
-    e4_1c(e4_dir, 'EDA')
-    
+    #e4_1c(e4_dir, 'EDA')
+
     # HR
     # unit: bpm
-    actigraph_1c(actigraph_dir, 'hr')
-    e4_1c(e4_dir, 'HR')
-    
+    #actigraph_1c(actigraph_dir, 'hr')
+    #e4_1c(e4_dir, 'HR')
+
     # Light
     # unit: lx
-    actigraph_1c(actigraph_dir, 'lux')
-    geneactiv_1c(geneactiv_dir, 4)
-    
+    #actigraph_1c(actigraph_dir, 'lux')
+    #geneactiv_1c(geneactiv_dir, 4)
+
     # Temperature
     # unit: °C
-    e4_1c(e4_dir, 'TEMP')
-    geneactiv_1c(geneactiv_dir, 6)
+    #e4_1c(e4_dir, 'TEMP')
+    #geneactiv_1c(geneactiv_dir, 6)
 
 def save_df(df, sensor, device):
     """
     Function to save formatted dataframe to csv in organized_dir (defined in
     config.py).
-    
+
     Parameters
     ----------
     df : pandas dataframe
         dataframe to save
-        
+
     sensor : string
         sensor for which dataframe holds data
-    
+
     device : string
         device data is from
-        
+
     Outputs
     -------
     csv file
         comma-separated-values file with Linux time-series index column and
         sensor-specific value columns, stored in `organized_dir`/`sensor`/
         `device`.csv
-    
+
     Returns
     -------
     df : pandas dataframe
