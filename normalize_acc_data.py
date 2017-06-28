@@ -31,23 +31,23 @@ def actigraph_acc(dirpath, outpath=None):
     Function to take all Actigraph accelerometry data from a directory and
     format those data with Linux time-series index columns and x, y, z value
     columns
-    
+
     Parameters
     ----------
     dirpath : string
         path to E4 outputs
-        
+
     Returns
     -------
     acc_data : pandas dataframe
         dataframe with Linux time-series index column and x, y, z value columns
-    
+
     Outputs
     -------
     Actigraph.csv : csv file (via save_df() function)
         comma-separated-values file with Linux time-series index column and x,
         y, z accelerometer value columns
-    """    
+    """
     acc_data = pd.DataFrame()
     for acc in os.listdir(dirpath):
         if acc.endswith("RAW.csv"):
@@ -86,22 +86,22 @@ def e4_acc(dirpath):
     """
     Function to take all e4 accelerometry data from a directory and format
     those data with Linux time-series index column and x, y, z value columns
-    
+
     Parameters
     ----------
     dirpath : string
         path to E4 outputs
-        
+
     Returns
     -------
     None
-    
+
     Outputs
     -------
     E4_normalized_unit.csv : csv file (via save_df() function)
         comma-separated-values file with Linux time-series index column and x,
         y, z, normalized_vector_length accelerometer value columns
-    """    
+    """
     acc_data = pd.DataFrame()
     for acc in os.listdir(dirpath):
         if "E4" in acc and acc.endswith("csv"):
@@ -143,44 +143,44 @@ def geneactiv_acc(dirpath, outpath=None):
     Function to take all GENEActiv accelerometry data from a directory and
     format those data with Linux time-series index column and x, y, z value
     columns
-    
+
     Parameters
     ----------
     dirpath : string
         path to E4 outputs
-        
+
     Returns
     -------
     acc_data : pandas dataframe
         dataframe with Linux time-series index column and x, y, z value columns
-    
+
     Outputs
     -------
     GENEActiv_`color`.csv : csv file (via save_df() function)
         comma-separated-values file with Linux time-series index column and x,
         y, z accelerometer value columns
-    """    
+    """
     acc_data_black = pd.DataFrame()
     acc_data_pink = pd.DataFrame()
     acc_data = pd.DataFrame()
     for acc in os.listdir(dirpath):
-        if "Jon" in acc and acc.endswith("csv"):
+        if "black" in acc and acc.endswith("csv"):
             if acc_data_black.empty:
                 with open(os.path.join(dirpath, acc), 'r') as acc_f:
                     acc_data_black = geneactiv_acc_data(acc_f)
             else:
                 with open(os.path.join(dirpath, acc), 'r') as acc_f:
-                    acc_data_black = pd.concat([acc_data_black, 
+                    acc_data_black = pd.concat([acc_data_black,
                                      geneactiv_acc_data(acc_f)])
             print(' : '.join(['Black GENEActiv accelorometer data, adding',
                   acc, str(acc_data_black.shape)]))
-        elif (("Curt" in acc or "Arno" in acc) and acc.endswith("csv")):
+        elif (("pink" in acc or "Arno" in acc) and acc.endswith("csv")):
             if acc_data_pink.empty:
                 with open(os.path.join(dirpath, acc), 'r') as acc_f:
                     acc_data_pink = geneactiv_acc_data(acc_f)
             else:
                 with open(os.path.join(dirpath, acc), 'r') as acc_f:
-                    acc_data_pink = pd.concat([acc_data_pink, 
+                    acc_data_pink = pd.concat([acc_data_pink,
                                      geneactiv_acc_data(acc_f)])
             print(' : '.join(['Pink GENEActiv accelorometer data, adding',
                   acc, str(acc_data_pink.shape)]))
@@ -190,13 +190,13 @@ def geneactiv_acc(dirpath, outpath=None):
                     acc_data = geneactiv_acc_data(acc_f)
             else:
                 with open(os.path.join(dirpath, acc), 'r') as acc_f:
-                    acc_data = pd.concat([acc_data_pink, 
+                    acc_data = pd.concat([acc_data_pink,
                                      geneactiv_acc_data(acc_f)])
             print(' : '.join(['GENEActiv accelorometer data, adding',
                   acc, str(acc_data.shape)]))
-    for acc_data_f in [acc_data_black, acc_data_pink, acc_data]:
+    for acc_data_f in [acc_data_black, acc_data_pink]:
         if(not acc_data_f.empty):
-            acc_data_f = normalize(acc_data, 8)
+            acc_data_f = normalize(acc_data_f, 8)
     if outpath:
         if len(acc_data_black > 0):
             save_df(acc_data_black, 'accelerometer', 'GENEActiv_black', outpath)
@@ -211,17 +211,17 @@ def geneactiv_acc(dirpath, outpath=None):
             save_df(acc_data_pink, 'accelerometer', 'GENEActiv_pink')
         if len(acc_data > 0):
             save_df(acc_data, 'accelerometer', 'GENEActiv')
-    
+
 def geneactiv_acc_data(open_csv):
     """
     Function to collect GENEActiv data and return dataframe with Linux time-
     series index column and x, y, z value columns
-    
+
     Parameters
     ----------
     df : pandas dataframe
         dataframe for which to organize data
-        
+
     Returns
     -------
     new_df : pandas dataframe
@@ -244,23 +244,23 @@ def wavelet_acc(dirpath):
     """
     Function to take all Wavelet accelerometry data from a directory and format
     those data with Linux time-series index columns and x, y, z value columns
-    
+
     Parameters
     ----------
     dirpath : string
         path to Wavelet outputs
-        
+
     Returns
     -------
     acc_data_returns : pandas dataframe
         dataframe with Linux time-series index column and x, y, z value columns
-    
+
     Outputs
     -------
     Wavelet.csv : csv file (via save_df() function)
         comma-separated-values file with Linux time-series index column and x,
         y, z accelerometer value columns
-    """    
+    """
     csv_path = os.path.join(dirpath, 'CSV')
     acc_data = pd.DataFrame()
     for acc in os.listdir(csv_path):
@@ -290,25 +290,25 @@ def main():
     # accelerometry
     acc_dir = os.path.join(organized_dir, 'accelerometer')
     # unit: normalized vector length (/1)
-    e4_acc(acc_dir)
+    #e4_acc(acc_dir)
     geneactiv_acc(acc_dir)
-    actigraph_acc(acc_dir)
-    wavelet_acc(acc_dir)
-    
+    #actigraph_acc(acc_dir)
+    #wavelet_acc(acc_dir)
+
 def normalize(df, scale):
     """
     function to calculate vector length normalized to a unit cube (i.e., √((x/√
     ((max(x))² + (max(y))² + (max(z))²))² + (y/√((max(x))² + (max(y))² + (max(z
     ))²))² + (z/√((max(x))² + (max(y))² + (max(z))²))²))
-    
+
     Parameters
     ----------
     df : pandas dataframe
         dataframe with ['x', 'y', 'z'] columns to normalize
-    
+
     scale : numeric
         maximum possible absolute value of dataframe's current scale
-        
+
     Returns
     -------
     df : pandas dataframe
@@ -325,25 +325,25 @@ def save_df(df, sensor, device, organized_dir_out=organized_dir):
     """
     Function to save formatted dataframe to csv in organized_dir (defined in
     config.py) or to specified dir.
-    
+
     Parameters
     ----------
     df : pandas dataframe
         dataframe to save
-        
+
     sensor : string
         sensor for which dataframe holds data
-    
+
     device : string
         device data is from
-        
+
     Outputs
     -------
     csv file
         comma-separated-values file with Linux time-series index column and
         sensor-specific value columns, stored in `organized_dir`/`sensor`/
         `device`.csv
-    
+
     Returns
     -------
     df : pandas dataframe
