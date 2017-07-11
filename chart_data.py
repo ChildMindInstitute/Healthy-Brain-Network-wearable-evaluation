@@ -10,8 +10,10 @@ Created on Mon Apr 10 17:25:39 2017
 
 @author: jon.clucas
 """
+from utilities.analysis_2 import *
 from astropy.stats import median_absolute_deviation as mad
 from datetime import datetime, timedelta
+from utilities.fetch_data import fetch_check_data
 import json, numpy as np, os, pandas as pd
 import matplotlib.pyplot as plt
 
