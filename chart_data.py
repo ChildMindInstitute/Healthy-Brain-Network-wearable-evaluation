@@ -122,10 +122,10 @@ def hvplot(device_data, device_names):
     for i, path in enumerate(device_data):
         for column in list(path.columns):
             if not column == 'Timestamp':
-                data.append(hv.scatter(path, kdims=['Timestamp'], vdims=[column
+                data.append(hv.Scatter(path, kdims=['Timestamp'], vdims=[column
                             ]))
     layout = hv.Layout(data).cols(1)
-    layout
+    return(layout)
     
 
 def linechart(df, plot_label, line=True, full=False):
@@ -224,8 +224,8 @@ def plplot(device_data, device_names):
     
     Parameters
     ----------
-    device_data: pandas dataframe
-        only including colemns 'Timestamp' and data to plot
+    device_data: list of pandas dataframes
+        only including columns 'Timestamp' and data to plot
     
     device_names: list
         ordered list of names, one per dataframe
@@ -236,7 +236,7 @@ def plplot(device_data, device_names):
             if not column == 'Timestamp':
                 data.append(Scatter(x=path[column], y=path['Timestamp'], name=
                             ': '.join([device_names[i], column])))
-    iplot(data)
+    return(iplot(data))
                 
             
 def xcorr(x,y):
