@@ -259,8 +259,8 @@ def xcorr(x,y):
     meany = np.nanmean(y)
     stdy = np.nanstd(np.asarray(y))
     tmp = rolling_window(x,M)
-    c = np.nansum((y-meany)*(tmp-np.reshape(np.nanmean(tmp,-1),(N-M+1,1))),-1)/
-        (M*np.nanstd(tmp,-1)*stdy)
+    c = np.nansum((y-meany)*(tmp-np.reshape(np.nanmean(tmp,-1),(N-M+1,1))),-1
+        )/(M*np.nanstd(tmp,-1)*stdy)
     return(c)
 
 # ============================================================================
