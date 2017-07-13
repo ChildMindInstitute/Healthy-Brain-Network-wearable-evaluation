@@ -123,7 +123,7 @@ def hvplot(device_data, device_names):
         for column in list(path.columns):
             if not column == 'Timestamp':
                 data.append(hv.scatter(path, kdims=['Timestamp'], vdims=[column
-                            ])
+                            ]))
     layout = hv.Layout(data).cols(1)
     layout
     
