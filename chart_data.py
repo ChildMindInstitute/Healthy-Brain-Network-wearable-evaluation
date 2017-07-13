@@ -234,7 +234,7 @@ def plplot(device_data, device_names):
     for i, path in enumerate(device_data):
         for column in list(path.columns):
             if not column == 'Timestamp':
-                data.append(Scatter(x=path[column], y=path['Timestamp'], name=
+                data.append(Scatter(x=path['Timestamp'], y=path[column], name=
                             ': '.join([device_names[i], column])))
     return(data)
                 
