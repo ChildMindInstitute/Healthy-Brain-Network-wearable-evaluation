@@ -16,6 +16,12 @@ from datetime import datetime, timedelta
 from utilities.fetch_data import fetch_check_data
 import json, numpy as np, os, pandas as pd
 import matplotlib.pyplot as plt
+from plotly.offline import download_plotlyjs, init_notebook_mode, iplot
+from plotly.graph_objs import *
+init_notebook_mode()
+import holoviews as hv
+hv.extension('bokeh')
+
 
 def bland_altman_plot(data1, data2, *args, **kwargs):
     """
@@ -97,6 +103,30 @@ def df_devices_qt(devices, sensor, start, stop, acc_hashes={}):
     for i in range(2, len(s), 1):
         df = df.merge(s[i], left_index=True, right_index=True, suffixes=('', ''.join(['_', devices[i][1]])))
     return(df)
+
+
+def hvplot(device_data, device_names):
+    """
+    Function to build a plotly line plot from device data from one or more
+    devices.
+    
+    Parameters
+    ----------
+    device_data: pandas dataframe
+        only including colemns 'Timestamp' and data to plot
+    
+    device_names: list
+        ordered list of names, one per dataframe
+    """
+    data = list()
+    for i, path in enumerate(device_data):
+        for column in list(path.columns):
+            if not column == 'Timestamp':
+                data.append(hv.scatter(path, kdims=['Timestamp'], vdims=[column
+                            ])
+    layout = hv.Layout(data).cols(1)
+    layout
+    
 
 def linechart(df, plot_label, line=True, full=False):
     """
@@ -185,31 +215,53 @@ def linechart(df, plot_label, line=True, full=False):
     plt.xticks(rotation=65)
     plt.show()
     return True
-            
+
+
+def plplot(device_data, device_names):
+    """
+    Function to build a plotly line plot from device data from one or more
+    devices.
+    
+    Parameters
+    ----------
+    device_data: pandas dataframe
+        only including colemns 'Timestamp' and data to plot
+    
+    device_names: list
+        ordered list of names, one per dataframe
+    """
+    data = list()
+    for i, path in enumerate(device_data):
+        for column in list(path.columns):
+            if not column == 'Timestamp':
+                data.append(Scatter(x=path[column], y=path['Timestamp'], name=
+                            ': '.join([device_names[i], column])))
+    iplot(data)
+                
             
 def xcorr(x,y):
-  """
-  c=xcor(x,y)
-  Fast implementation to compute the normalized cross correlation where x and y
-  are 1D numpy arrays
-  x is the timeseries
-  y is the template time series
-  returns a numpy 1D array of correlation coefficients, c"
+    """
+    c=xcor(x,y)
+    Fast implementation to compute the normalized cross correlation where x and
+    y are 1D numpy arrays
+    x is the timeseries
+    y is the template time series
+    returns a numpy 1D array of correlation coefficients, c"
   
-  The standard deviation algorithm in numpy is the biggest slow down in this
-  method.  
-  The issue has been identified hopefully they make improvements.
+    The standard deviation algorithm in numpy is the biggest slow down in this
+    method.  
+    The issue has been identified hopefully they make improvements.
 
-  http://wichita.ogs.ou.edu/documents/python/xcor.py
-  """
-  N = len(x)
-  M = len(y)
-  meany = np.nanmean(y)
-  stdy = np.nanstd(np.asarray(y))
-  tmp = rolling_window(x,M)
-  c = np.nansum((y-meany)*(tmp-np.reshape(np.nanmean(tmp,-1),(N-M+1,1))),-1)/(
-      M*np.nanstd(tmp,-1)*stdy)
-  return(c)
+    http://wichita.ogs.ou.edu/documents/python/xcor.py
+    """
+    N = len(x)
+    M = len(y)
+    meany = np.nanmean(y)
+    stdy = np.nanstd(np.asarray(y))
+    tmp = rolling_window(x,M)
+    c = np.nansum((y-meany)*(tmp-np.reshape(np.nanmean(tmp,-1),(N-M+1,1))),-1)/
+        (M*np.nanstd(tmp,-1)*stdy)
+    return(c)
 
 # ============================================================================
 if __name__ == '__main__':
