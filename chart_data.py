@@ -236,7 +236,7 @@ def plplot(device_data, device_names):
             if not column == 'Timestamp':
                 data.append(Scatter(x=path[column], y=path['Timestamp'], name=
                             ': '.join([device_names[i], column])))
-    return(iplot(data))
+    return(data)
                 
             
 def xcorr(x,y):
