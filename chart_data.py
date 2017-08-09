@@ -10,10 +10,10 @@ Created on Mon Apr 10 17:25:39 2017
 
 @author: jon.clucas
 """
-from utilities.analysis_2 import *
+# from utilities.analysis_2 import *
 from astropy.stats import median_absolute_deviation as mad
 from datetime import datetime, timedelta
-from utilities.fetch_data import fetch_check_data
+from utilities.fetch_data import fetch_check_data, fetch_hash
 import json, numpy as np, os, pandas as pd
 import matplotlib.pyplot as plt
 from plotly.offline import download_plotlyjs, init_notebook_mode, iplot
@@ -79,13 +79,11 @@ def df_devices_qt(devices, sensor, start, stop, acc_hashes={}):
         acc_sub = '_'.join([device[0], 'acc', 'quicktest'])
         if not acc_sub in acc_hashes:
             try:
-                fetch_check_data(acc_sub, test_urls()[acc_sub], acc_hashes,
+                fetch_check_data(acc_sub, config.rawurls[acc_sub], acc_hashes,
                                  cache_directory='./sample_data',
                                  append='.csv', verbose=True)
             except:
-                acc_hashes[acc_sub] = fetch_hash(fetch_data(test_urls()[
-                                      acc_sub], os.path.join('./sample_data',
-                                      acc_sub), '.csv'))
+                fetch_data.fetch_data(config.rawurls['sensor']['device'])
         s.append(pd.read_csv(fetch_check_data(acc_sub, test_urls()[acc_sub],
                  acc_hashes, cache_directory='./sample_data', append='.csv',
                  verbose=True), usecols=['Timestamp',
