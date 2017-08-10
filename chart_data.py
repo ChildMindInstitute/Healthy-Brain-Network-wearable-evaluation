@@ -17,6 +17,7 @@ from datetime import datetime, timedelta
 from utilities.fetch_data import fetch_check_data, fetch_data, fetch_hash
 from utilities.normalize_acc_data import normalize as norm
 import json, numpy as np, os, pandas as pd
+from matplotlib.dates import DateFormatter
 import matplotlib.pyplot as plt
 from plotly.offline import download_plotlyjs, init_notebook_mode, iplot
 from plotly.graph_objs import *

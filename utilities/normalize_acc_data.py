@@ -47,7 +47,10 @@ def normalize(df, scale=None):
     if not scale:
         scale = max([max(df[ax].max(), abs(df[ax].min())) for ax in cols])        
     unit = np.float64(sqrt(3*(scale**2)))
-    df['Timestamp'] = df['Timestamp'].map(parser.parse, 'ignore')
+    try:
+        df['Timestamp'] = df['Timestamp'].map(parser.parse, 'ignore')
+    except:
+        pass
     df['normalized_vector_length'] = np.sqrt((df['x'] / unit) ** 2 + (df['y'] /
                                      unit) ** 2 + (df['z'] / unit) ** 2)
     return(df)

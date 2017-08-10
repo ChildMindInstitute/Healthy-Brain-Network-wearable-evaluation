@@ -44,10 +44,18 @@ rawurls = {'accelerometer': {'ActiGraph wGT3X-BT':
                              'https://osf.io/hync2/?action=download&version=1',
                            'GENEActiv Original (pink)':
                             'https://osf.io/vhd8w/?action=download&version=1'},
-           'raw_accelerometer': {'GENEActiv Original (black)':
+           'raw_accelerometer': {'ActiGraph wGT3X-BT':
+                             'https://osf.io/va9kc/?action=download&version=1',
+                                 'GENEActiv Original (black)':
                              'https://osf.io/y5cz7/?action=download&version=1',
                                  'GENEActiv Original (pink)':
-                            'https://osf.io/q4bwx/?action=download&version=1'}}
+                            'https://osf.io/q4bwx/?action=download&version=1'},
+          'accelerometer quicktest': {'ActiGraph wGT3X-BT':
+                             'https://osf.io/h3aem/?action=download&version=1',
+                             'GENEActiv Original (black)':
+                             'https://osf.io/j5rcu/?action=download&version=1',
+                             'GENEActiv Original (pink)':
+                            'https://osf.io/yxgzt/?action=download&version=1'}}
 
 
 def raw_urls(sensors=None):

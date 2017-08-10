@@ -1,8 +1,9 @@
 library(GGIR)
+setwd(dirname(parent.frame(2)$ofile))
 g.shell.GGIR(#=======================================
              # INPUT NEEDED:
              mode=c(1,2,3,4,5),
-             datadir="../raw",
+             datadir="../raw.Calbrated",
              outputdir="../myresults",
              f0=1, f1=2,
              #-------------------------------
