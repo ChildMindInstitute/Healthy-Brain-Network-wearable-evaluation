@@ -12,8 +12,10 @@ Created on Mon Apr 10 17:25:39 2017
 """
 # from utilities.analysis_2 import *
 from astropy.stats import median_absolute_deviation as mad
+from config import config
 from datetime import datetime, timedelta
-from utilities.fetch_data import fetch_check_data, fetch_hash
+from utilities.fetch_data import fetch_check_data, fetch_data, fetch_hash
+from utilities.normalize_acc_data import normalize as norm
 import json, numpy as np, os, pandas as pd
 import matplotlib.pyplot as plt
 from plotly.offline import download_plotlyjs, init_notebook_mode, iplot
@@ -76,23 +78,13 @@ def df_devices_qt(devices, sensor, start, stop, acc_hashes={}):
     suffix = '.csv'
     s = []
     for i, device in enumerate(devices):
-        acc_sub = '_'.join([device[0], 'acc', 'quicktest'])
-        if not acc_sub in acc_hashes:
-            try:
-                fetch_check_data(acc_sub, config.rawurls[acc_sub], acc_hashes,
-                                 cache_directory='./sample_data',
-                                 append='.csv', verbose=True)
-            except:
-                fetch_data.fetch_data(config.rawurls['sensor']['device'])
-        s.append(pd.read_csv(fetch_check_data(acc_sub, test_urls()[acc_sub],
-                 acc_hashes, cache_directory='./sample_data', append='.csv',
-                 verbose=True), usecols=['Timestamp',
-                 'normalized_vector_length'], parse_dates=['Timestamp'],
-                 infer_datetime_format=True))
+        s.append(pd.read_csv(fetch_data(config.rawurls[
+                 sensor][device[1]]),
+                 parse_dates=['Timestamp'], infer_datetime_format=True))
         s[i] = s[i].loc[(s[i]['Timestamp'] >= start) & (s[i]['Timestamp'] <=
                stop)].copy()
-        s[i] = baseshift_and_renormalize(s[i])
-        if device[1] == 'ActiGraph':
+        s[i] = norm(s[i])
+        if device[1] == 'ActiGraph wGT3X-BT':
             s[i][['Timestamp']] = s[i].Timestamp.apply(lambda x: x - 
                                   timedelta(microseconds=1000))
         s[i].set_index('Timestamp', inplace=True)
