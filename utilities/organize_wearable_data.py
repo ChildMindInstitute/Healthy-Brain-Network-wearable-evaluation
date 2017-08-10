@@ -11,11 +11,8 @@ Created on Fri Apr 7 17:27:05 2017
 
 @author: jon.clucas
 """
-from config import actigraph_dir, e4_dir, geneactiv_dir, organized_dir, \
-                   wavelet_dir
-from datetime import datetime
+from datetime import datetime, timedelta
 import numpy as np, os, pandas as pd
-
 axes = ['x', 'y', 'z']
 
 """
@@ -378,7 +375,7 @@ def geneactiv_acc(dirpath):
     acc_data_black = pd.DataFrame()
     acc_data_pink = pd.DataFrame()
     for acc in os.listdir(dirpath):
-        if "Jon" in acc and acc.endswith("csv"):
+        if ("Jon" in acc or "black" in acc) and acc.endswith("csv"):
             if acc_data_black.empty:
                 with open(os.path.join(dirpath, acc), 'r') as acc_f:
                     acc_data_black = geneactiv_acc_data(acc_f)
@@ -388,7 +385,7 @@ def geneactiv_acc(dirpath):
                                      geneactiv_acc_data(acc_f)])
             print(' : '.join(['Black GENEActiv accelorometer data, adding',
                   acc, str(acc_data_black.shape)]))
-        elif (("Curt" in acc or "Arno" in acc) and acc.endswith("csv")):
+        elif (("Curt" in acc or "Arno" in acc or "pink" in acc) and acc.endswith("csv")):
             if acc_data_pink.empty:
                 with open(os.path.join(dirpath, acc), 'r') as acc_f:
                     acc_data_pink = geneactiv_acc_data(acc_f)
@@ -456,7 +453,7 @@ def geneactiv_1c(dirpath, feature):
     feat_data_black = pd.DataFrame()
     feat_data_pink = pd.DataFrame()
     for feat_file in os.listdir(dirpath):
-        if "Jon" in feat_file and feat_file.endswith("csv"):
+        if ("Jon" in feat_file or "black" in feat_file) and feat_file.endswith("csv"):
             if feat_data_black.empty:
                 with open(os.path.join(dirpath, feat_file), 'r') as fd_f:
                     feat_data_black = geneactiv_1c_data(fd_f, feature, sensor[
@@ -468,7 +465,7 @@ def geneactiv_1c(dirpath, feature):
                                                        feature])])
             print(' : '.join(['Black GENEActiv ', ' '.join([sensor[feature],
                   'data, adding']), feat_file, str(feat_data_black.shape)]))
-        elif (("Curt" in feat_file or "Arno" in feat_file) and
+        elif (("Curt" in feat_file or "Arno" in feat_file or "pink" in feat_file) and
               feat_file.endswith("csv")):
             if feat_data_pink.empty:
                 with open(os.path.join(dirpath, feat_file), 'r') as fd_f:
@@ -648,11 +645,16 @@ def datetimeint(x, dt_format='%Y-%m-%d %H:%M:%S:%f'):
         Linux timestamp as string formatted as "%Y-%m-%d %H:%M:%S.%f"
     """
     try:
-        return(datetime.strptime(x, dt_format).strftime("%Y-%m-%d %H:%M:%S.%f")
-               )
+        # recalibrated from R, this block will unconfuse GMT/EST
+        return((datetime.fromtimestamp(float(x)) + timedelta(
+               hours=4)).strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
     except:
-        return(datetime.strptime(x, "%Y-%m-%d %H:%M:%S.%f").strftime(
+        try:
+            return(datetime.strptime(x, dt_format).strftime(
                "%Y-%m-%d %H:%M:%S.%f"))
+        except:
+            return(datetime.strptime(x, "%Y-%m-%d %H:%M:%S.%f").strftime(
+                   "%Y-%m-%d %H:%M:%S.%f"))
 
 def drop_non_csv(open_csv_file, drop_rows, header_row=False):
     """
@@ -685,10 +687,11 @@ def drop_non_csv(open_csv_file, drop_rows, header_row=False):
     return(df)
 
 def main():
+    pass
     # accelerometry
     # unit: g
     #e4_acc(e4_dir)
-    geneactiv_acc("/Users/jon.clucas/HBN-wearable-analysis/raw.Calibrated")
+    #geneactiv_acc("/Users/jon.clucas/HBN-wearable-analysis/raw.Calibrated")
     #actigraph_acc(actigraph_dir)
     #wavelet_acc(wavelet_dir)
 
@@ -744,6 +747,10 @@ def save_df(df, sensor, device):
     df : pandas dataframe
         unmodified dataframe
     """
+    organized_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir,
+                "organized"))
+    if not os.path.exists(organized_dir):
+        os.makedirs(organized_dir)
     out_dir = os.path.join(organized_dir, sensor)
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
@@ -754,4 +761,4 @@ def save_df(df, sensor, device):
 
 # ============================================================================
 if __name__ == '__main__':
-    main()
+    pass

@@ -13,7 +13,7 @@ Actigraphy values calculated as √((x/√((max(x))² + (max(y))² + (max(z))²)
 @author: jon.clucas
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil import parser
 from math import sqrt
 import numpy as np, os, pandas as pd

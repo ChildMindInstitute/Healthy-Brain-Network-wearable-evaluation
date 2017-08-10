@@ -7,6 +7,7 @@ vtk_cpp_tools/bin
 .ipynb_checkpoints/
 sample_data
 raw*
+organized
 build
 CMakeCache.txt
 CMakeFiles
