@@ -6,7 +6,7 @@ vtk_cpp_tools/bin
 .vagrant/
 .ipynb_checkpoints/
 sample_data
-
+raw*
 build
 CMakeCache.txt
 CMakeFiles
