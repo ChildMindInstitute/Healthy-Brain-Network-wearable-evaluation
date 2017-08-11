@@ -24,6 +24,8 @@ from plotly.graph_objs import *
 init_notebook_mode()
 import holoviews as hv
 hv.extension('bokeh')
+with open(os.path.join('./config/device_colors.json')) as fp:
+    color_key = json.load(fp)
 
 
 def bland_altman_plot(data1, data2, *args, **kwargs):
@@ -177,18 +179,20 @@ def linechart(df, plot_label, line=True, full=False):
             else:
                 print(max(plot_line[[device]]))
                 mad_values.append(max(plot_line[[device]]))
-        if "GENEActiv" in device:
-            label = "GENEActiv"
-        elif device == "Actigraph":
-            label = "ActiGraph"
-        else:
-            label = d2
+        label = d2
+        for c in color_key:
+            if c in d2 or d2 in c:
+                cmap = color_key[c]
+            else:
+                cmap = "#000000"
         if line:
             ax.plot_date(x=plot_line.index, y=plot_line, alpha=0.5,
-                         label=label, marker="", linestyle="solid")
+                         label=label, marker="", linestyle="solid",
+                         color=cmap)
         else:
             ax.plot_date(x=plot_line.index, y=plot_line, alpha=0.5,
-                         label=label, marker="o", linestyle="None")
+                         label=label, marker="o", linestyle="None",
+                         color=cmap)
         ax.legend(loc='best', fancybox=True, framealpha=0.5)
     try:
         ylim = max(mad_values)
