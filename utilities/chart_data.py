@@ -26,7 +26,8 @@ import holoviews as hv
 hv.extension('bokeh')
 with open(os.path.join('./config/device_colors.json')) as fp:
     color_key = json.load(fp)
-
+with open(os.path.join('./config/CMI_colors/Color_palette.json')) as fp:
+    color_palette = json.load(fp)
 
 def bland_altman_plot(data1, data2, *args, **kwargs):
     """
@@ -161,6 +162,8 @@ def linechart(df, plot_label, line=True, full=False):
     ax = fig.add_subplot(111)
     ax.set_ylabel('unit cube normalized vector length')
     mad_values = []
+    ci = (0, 0)
+    cls = list(color_palette.keys())
     for i, device in enumerate(list(df.columns)):
         if device.startswith('normalized'):
             d2 = device[25:]
@@ -184,7 +187,12 @@ def linechart(df, plot_label, line=True, full=False):
             if c in d2 or d2 in c:
                 cmap = color_key[c]
             else:
-                cmap = "#000000"
+                cmap = color_palette[cls[ci[0]]][ci[1]]
+                if ci[1] < len(color_palette[cls[ci[0]]]):
+                    ci[1] = ci[1] + 1
+                else:
+                    ci[0] = ci[0] + 1 if ci[0] < len(color_palette.keys()) else 0
+                    ci[1] = 0
         if line:
             ax.plot_date(x=plot_line.index, y=plot_line, alpha=0.5,
                          label=label, marker="", linestyle="solid",
