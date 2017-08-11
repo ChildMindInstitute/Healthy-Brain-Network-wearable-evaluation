@@ -8,10 +8,11 @@ with open(os.path.abspath(os.path.join(__file__, os.pardir,
 def CMI_color_palette():
 
     color_list = list()
-    for palette in ["Primary", "Secondary", "Tertiary"]:
+    palettes = list(color_key.keys())
+    for palette in palettes:
         color_key[palette].reverse()
     while(len(color_key)):
-        for palette in ["Primary", "Secondary", "Tertiary"]:
+        for palette in palettes:
             if(palette in color_key):
                 color_list.append(color_key[palette].pop())
                 if(not len(color_key[palette])):
