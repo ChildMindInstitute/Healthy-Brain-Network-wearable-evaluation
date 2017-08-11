@@ -4,11 +4,15 @@ Functions for fetching data from a URL or from third party software.
 
 Authors:
     - Arno Klein, 2013-2016  (arno@mindboggle.info)  http://binarybottle.com
+    — Jon Clucas, 2017
 
 Copyright 2016,  Mindboggle team (http://mindboggle.info), Apache v2.0 License
+&© 2017, Child Mind Institute, Apache v2.0 License
 
 """
-
+from config import config
+from datetime import timedelta
+import pandas as pd
 
 def cache_hashes():
     """
@@ -48,6 +52,57 @@ def cache_hashes():
     # hashes['depth_curv_border_nonborder_parameters.pkl'] = 'a943a0f46c2c2b3bfdfdf5a64176c6c3'
 
     return hashes
+
+
+def df_devices(devices, sensor, start=None, stop=None):
+    """
+    Function to build a pandas dataframe from a set of csv files
+    with urls stored in config/config.py.
+    
+    Parameters
+    ----------
+    devices : list of strings
+        each string is the name of one of the two devices to compare
+        
+    sensor : string
+        the sensor to compare
+        
+    start : datetime, optional
+        beginning of time to compare
+        
+    stop : datetime, optional
+        end of time to compare
+        
+    Returns
+    -------
+    df : pandas dataframe
+        merged dataframe with a column per device
+    """
+    suffix = '.csv'
+    s = []
+    for i, device in enumerate(devices):
+        device_suffix = device.replace(" ", "_")
+        d = pd.read_csv(fetch_data(config.rawurls[
+            sensor][device]), parse_dates=['Timestamp'],
+            infer_datetime_format=True)
+        start = min(d['Timestamp']) if not start else start
+        stop = max(d['Timestamp']) if not stop else stop
+        d = d.loc[(d['Timestamp'] >= start) & (d['Timestamp'] <=
+               stop)].copy()
+        if device == 'ActiGraph wGT3X-BT':
+            d[['Timestamp']] = d.Timestamp.apply(lambda x: x - 
+                                  timedelta(microseconds=1000))
+        d.set_index('Timestamp', inplace=True)
+        for c in d.columns:
+            d.rename(columns={c: "_".join([c, device_suffix])}, inplace=True)
+        s.append(d)
+        
+    df = s[0].merge(s[1], left_index=True, right_index=True, suffixes=(''.join(
+         ['_', devices[0]]), ''.join(['_', devices[1]])))
+    for i in range(2, len(s), 1):
+        df = df.merge(s[i], left_index=True, right_index=True, suffixes=('',
+             ''.join(['_', devices[i][1]])))
+    return(df)
 
 
 def test_urls():
