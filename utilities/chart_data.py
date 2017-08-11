@@ -162,7 +162,7 @@ def linechart(df, plot_label, line=True, full=False):
     ax = fig.add_subplot(111)
     ax.set_ylabel('unit cube normalized vector length')
     mad_values = []
-    ci = (0, 0)
+    ci = [0, 0]
     cls = list(color_palette.keys())
     for i, device in enumerate(list(df.columns)):
         if device.startswith('normalized'):
@@ -186,19 +186,19 @@ def linechart(df, plot_label, line=True, full=False):
         for c in color_key:
             if c in d2 or d2 in c:
                 cmap = color_key[c]
-            else:
+            if not cmap:
                 cmap = color_palette[cls[ci[0]]][ci[1]]
-                if ci[1] < len(color_palette[cls[ci[0]]]):
+                if ci[1] < len(color_palette[cls[ci[0]]]) - 1:
                     ci[1] = ci[1] + 1
                 else:
-                    ci[0] = ci[0] + 1 if ci[0] < len(color_palette.keys()) else 0
+                    ci[0] = ci[0] + 1 if ci[0] < (len(color_palette.keys()) - 1) else 0
                     ci[1] = 0
         if line:
-            ax.plot_date(x=plot_line.index, y=plot_line, alpha=0.5,
+            ax.plot_date(x=plot_line.index, y=plot_line, alpha=0.4,
                          label=label, marker="", linestyle="solid",
                          color=cmap)
         else:
-            ax.plot_date(x=plot_line.index, y=plot_line, alpha=0.5,
+            ax.plot_date(x=plot_line.index, y=plot_line, alpha=0.4,
                          label=label, marker="o", linestyle="None",
                          color=cmap)
         ax.legend(loc='best', fancybox=True, framealpha=0.5)
