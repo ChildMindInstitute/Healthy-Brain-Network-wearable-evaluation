@@ -1,7 +1,8 @@
 from cycler import cycler
 import json
 import os
-with open(os.path.join('Color_palette.json')) as color_palette:
+with open(os.path.join(__file__, os.pardir, 'Color_palette.json')) as         \
+     color_palette:
     color_key = json.load(color_palette)
 
 def CMI_color_palette():
