@@ -24,19 +24,19 @@ Keywords: actimetry, pediatrics, biometrics, ActiGraph wGT3X-BT, Empatica Embrac
 
 * Python 3.6.1
 
-* * dateutil 2.6.0
+ * dateutil 2.6.0
 
-* * matplotlib 2.0.2
+ * matplotlib 2.0.2
 
-* * numpy 1.12.1
+ * numpy 1.12.1
 
-* * pandas 0.20.1
+ * pandas 0.20.1
 
-* * rpy2 2.8.6
+ * rpy2 2.8.6
 
 * R 3.4.1 "Single Candle"
 
-* * GENEAread 1.0
+ * GENEAread 1.0
 
 * GGIR 1.5-12
 
