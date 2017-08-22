@@ -20,7 +20,7 @@ rawurls = {'accelerometer': {'ActiGraph wGT3X-BT':
                              'GENEActiv Original (black)':
                              'https://osf.io/df7zq/?action=download&version=2',
                              'GENEActiv Original (pink)':
-                            'https://osf.io/yjc7s/?action=download&version=2'},
+                            'https://osf.io/yjc7s/?action=download&version=5'},
            'photoplethysmograph': {'Empatica E4':
                              'https://osf.io/v3ad6/?action=download&version=3',
                                    'Wavelet Wristband':
