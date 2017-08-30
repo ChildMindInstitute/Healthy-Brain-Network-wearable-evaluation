@@ -15,6 +15,8 @@ rawurls = {'accelerometer': {'ActiGraph wGT3X-BT':
                              'https://osf.io/rjhv6/?action=download&version=3',
                              'Empatica E4':
                              'https://osf.io/kc2xz/?action=download&version=5',
+                             'Empatica Embrace':
+                             'https://osf.io/kgnj5/?action=download&version=1',
                              'Wavelet Wristband':
                              'https://osf.io/8zpkn/?action=download&version=2',
                              'GENEActiv Original (black)':
@@ -26,7 +28,9 @@ rawurls = {'accelerometer': {'ActiGraph wGT3X-BT':
                                    'Wavelet Wristband':
                             'https://osf.io/c5b9z/?action=download&version=1'},
            'electrodermal activity': {'Empatica E4':
-                            'https://osf.io/53vwz/?action=download&version=2'},
+                            'https://osf.io/53vwz/?action=download&version=2',
+                                      'Empatica Embrace':
+                            'https://osf.io/b7fx9/?action=download&version=1'},
            'gyroscopy': {},
            'electrocardiography': {'ActiGraph wGT3X-BT':
                              'https://osf.io/cde76/?action=download&version=1',
@@ -39,11 +43,13 @@ rawurls = {'accelerometer': {'ActiGraph wGT3X-BT':
                      'GENEActiv Original (pink)':
                             'https://osf.io/b75g8/?action=download&version=1'},
            'temperature': {'Empatica E4':
-                             'https://osf.io/38pyj/?action=download&version=3',
+                           'https://osf.io/38pyj/?action=download&version=3',
+                           'Empatica Embrace':
+                           'https://osf.io/tkefa/?action=download&version=1',
                            'GENEActiv Original (black)':
-                             'https://osf.io/hync2/?action=download&version=1',
+                           'https://osf.io/hync2/?action=download&version=1',
                            'GENEActiv Original (pink)':
-                            'https://osf.io/vhd8w/?action=download&version=1'},
+                           'https://osf.io/vhd8w/?action=download&version=1'},
            'raw_accelerometer': {'ActiGraph wGT3X-BT':
                              'https://osf.io/va9kc/?action=download&version=1',
                                  'GENEActiv Original (black)':
